@@ -27,37 +27,37 @@ export const StylePicker: React.FC<StylePickerProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn">
-      <div className="bg-[#111827] border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-surface-panel border border-surface-border rounded-xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#162032]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-surface-border bg-surface-subpanel/60">
           <div className="flex items-center space-x-2">
-            <div className="p-2 rounded-xl bg-indigo-600/20 text-indigo-400">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-7 h-7 rounded-md bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Fooocus Style Presets</h2>
-              <p className="text-xs text-slate-400">Select multiple artistic styles to combine modifiers</p>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-100 font-mono">Fooocus Style Presets</h2>
+              <p className="text-[11px] text-slate-400">Select multiple artistic styles to blend modifiers</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1 rounded hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Search & Categories */}
-        <div className="p-4 border-b border-slate-800 bg-[#0d131f] space-y-3">
+        <div className="p-4 border-b border-surface-border bg-surface-base space-y-3">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3.5 top-3 text-slate-400" />
             <input
               type="text"
-              placeholder="Search style presets..."
+              placeholder="Search styles (cinematic, anime, cyberpunk, brutalist...)"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+              className="w-full bg-surface-panel border border-surface-border rounded-md pl-9 pr-4 py-2 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition"
             />
           </div>
 
@@ -66,10 +66,10 @@ export const StylePicker: React.FC<StylePickerProps> = ({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+                className={`px-2.5 py-1 rounded text-[11px] font-mono whitespace-nowrap transition ${
                   selectedCategory === cat
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700'
+                    ? 'bg-brand-600 text-white font-medium'
+                    : 'bg-surface-panel text-slate-400 hover:text-slate-200 hover:bg-surface-hover border border-surface-border'
                 }`}
               >
                 {cat}
@@ -79,50 +79,50 @@ export const StylePicker: React.FC<StylePickerProps> = ({
         </div>
 
         {/* Style Grid */}
-        <div className="p-6 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1 bg-[#0b0f19]">
+        <div className="p-5 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 flex-1 bg-surface-base">
           {filteredStyles.map((style) => {
             const isSelected = selectedStyles.includes(style.name);
             return (
               <button
                 key={style.name}
                 onClick={() => onToggleStyle(style.name)}
-                className={`flex flex-col text-left p-3.5 rounded-xl border transition-all relative ${
+                className={`flex flex-col text-left p-3 rounded-lg border transition-all relative font-mono ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-950/40 shadow-lg shadow-indigo-600/20'
-                    : 'border-slate-800 bg-[#131b2c] hover:border-slate-700 hover:bg-[#18233a]'
+                    ? 'border-brand-500/70 bg-brand-500/10 shadow-sm'
+                    : 'border-surface-border bg-surface-panel hover:border-surface-borderLight hover:bg-surface-hover'
                 }`}
               >
-                <div className="flex items-start justify-between w-full mb-1.5">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <div className="flex items-start justify-between w-full mb-1">
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wider">
                     {style.category}
                   </span>
                   <div
-                    className={`w-4 h-4 rounded-md flex items-center justify-center border transition ${
+                    className={`w-3.5 h-3.5 rounded flex items-center justify-center border transition ${
                       isSelected
-                        ? 'bg-indigo-600 border-indigo-500 text-white'
-                        : 'border-slate-700 bg-slate-800/60'
+                        ? 'bg-brand-600 border-brand-500 text-white'
+                        : 'border-surface-border text-transparent'
                     }`}
                   >
-                    {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    <Check className="w-2.5 h-2.5" />
                   </div>
                 </div>
-                <div className="text-xs font-bold text-slate-100 mb-1">{style.name}</div>
-                <div className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
-                  {style.positive_prompt.replace('{prompt}, ', '')}
-                </div>
+
+                <span className={`text-xs font-medium ${isSelected ? 'text-brand-300' : 'text-slate-200'}`}>
+                  {style.name}
+                </span>
               </button>
             );
           })}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-3 border-t border-slate-800 bg-[#141b2b]">
-          <span className="text-xs text-slate-400">
-            <strong>{selectedStyles.length}</strong> style{selectedStyles.length !== 1 ? 's' : ''} selected
+        <div className="px-5 py-3 border-t border-surface-border bg-surface-subpanel/60 flex items-center justify-between font-mono text-[11px]">
+          <span className="text-slate-400">
+            Selected: <span className="text-brand-400 font-semibold">{selectedStyles.length}</span> styles
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition"
+            className="px-4 py-1.5 rounded bg-brand-600 hover:bg-brand-500 text-white font-medium shadow-sm transition"
           >
             Done
           </button>

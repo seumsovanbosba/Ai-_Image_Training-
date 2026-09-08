@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="dark h-full bg-[#08090d]" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ANTIGRAVITY STUDIO — Production AI Inference Suite</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              base: '#08090d',
+              panel: '#0e1017',
+              subpanel: '#131620',
+              card: '#181c28',
+              border: '#1e2333',
+              borderLight: '#2c3349',
+              hover: '#1b202e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts & Custom Styling -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-layout">
+    /* Subtle custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2436;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2b334d;
+    }
+    input[type=range] {
+      accent-color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="h-full bg-[#08090d] text-slate-300 font-sans antialiased flex flex-col select-none overflow-hidden text-[13px]">
+<!-- BEGIN: Sleek Spacious Global Header -->
+<header class="h-14 border-b border-surface-border/80 bg-[#0c0e14]/90 backdrop-blur-md px-6 flex items-center justify-between flex-shrink-0 z-30" data-purpose="primary-navigation">
+<!-- Brand & Workspace Tabs -->
+<div class="flex items-center space-x-8">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" viewbox="0 0 24 24">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+</svg>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-semibold text-slate-100 tracking-wider text-xs uppercase font-mono">Antigravity</span>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-subpanel text-slate-400 border border-surface-border font-medium">v2.4.0</span>
+</div>
+</div>
+<!-- Main Navigation Tabs -->
+<nav aria-label="Workspaces" class="flex items-center space-x-1 bg-surface-subpanel/80 p-1 rounded-lg border border-surface-border/70">
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-white bg-surface-card border border-surface-borderLight/60 shadow-sm flex items-center space-x-2 transition-all">
+<svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="3"></rect>
+<circle cx="8.5" cy="8.5" r="1.5"></circle>
+<path d="M21 15l-5-5L5 21"></path>
+</svg>
+<span>Studio Generation</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-surface-hover/50 transition-colors flex items-center space-x-2">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="m18 2 4 4-12 12H6v-4L18 2z"></path>
+</svg>
+<span>Inpainting Canvas</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-surface-hover/50 transition-colors flex items-center space-x-2">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="6" cy="6" r="3"></circle>
+<circle cx="6" cy="18" r="3"></circle>
+<line x1="20" x2="8.12" y1="4" y2="15.88"></line>
+<line x1="14.47" x2="20" y1="14.48" y2="20"></line>
+<line x1="8.12" x2="12" y1="8.12" y2="12"></line>
+</svg>
+<span>DAG Pipeline</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-surface-hover/50 transition-colors flex items-center space-x-2">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+</svg>
+<span>Queue &amp; History</span>
+</button>
+</nav>
+</div>
+<!-- Live Telemetry & Engineering Indicators -->
+<div class="flex items-center space-x-4 font-mono text-[11px]">
+<div class="flex items-center space-x-2 px-2.5 py-1 rounded-md bg-emerald-950/30 border border-emerald-800/40 text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="tracking-wide text-[10px] font-semibold">AIR-GAPPED OFFLINE</span>
+</div>
+<div class="flex items-center space-x-2 text-slate-400 bg-surface-subpanel/70 px-3 py-1 rounded-md border border-surface-border">
+<span class="text-slate-500">BACKEND:</span>
+<span class="text-slate-200 font-medium flex items-center space-x-1.5">
+<span>ComfyUI v0.3.18</span>
+<span class="text-emerald-400 font-medium">[READY]</span>
+</span>
+</div>
+<div class="flex items-center space-x-3 text-slate-400 bg-surface-subpanel/70 px-3 py-1 rounded-md border border-surface-border">
+<span class="text-slate-500">VRAM:</span>
+<span class="text-slate-200 font-medium">14.2 / 24.0 GB</span>
+<div class="w-14 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-brand-500 h-full w-[59%] rounded-full"></div>
+</div>
+</div>
+<button class="w-8 h-8 rounded-md border border-surface-border bg-surface-subpanel/70 hover:bg-surface-hover flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: Global Header -->
+<!-- BEGIN: Expanded Full-Width Workspace -->
+<main class="flex-1 flex overflow-hidden w-full" data-purpose="main-workspace">
+<!-- LEFT PANEL: Clean, Spacious Controls (48% width with ample breathing room) -->
+<section class="w-[48%] max-w-[760px] border-r border-surface-border bg-surface-base flex flex-col overflow-y-auto" data-purpose="generation-controls">
+<div class="p-7 space-y-6 max-w-2xl mx-auto w-full">
+<!-- Conditioning Prompt Card -->
+<div class="bg-surface-panel/70 border border-surface-border/80 rounded-xl p-5 space-y-3.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2.5">
+<span class="w-2 h-2 rounded-full bg-brand-500"></span>
+<span class="text-xs font-mono font-semibold tracking-wide uppercase text-slate-200">Primary Conditioning Prompt</span>
+</div>
+<div class="flex items-center space-x-3 text-[11px] font-mono">
+<span class="text-slate-400">Tokens: <span class="text-brand-400 font-semibold">24</span> / 75</span>
+<button class="px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 hover:bg-surface-subpanel transition-colors">Clear</button>
+</div>
+</div>
+<!-- Prompt Box -->
+<div class="relative rounded-lg border border-surface-border bg-[#0b0c13] p-4 focus-within:border-brand-500/60 focus-within:ring-1 focus-within:ring-brand-500/20 transition-all">
+<div class="font-mono text-[13px] leading-relaxed min-h-[64px] text-slate-100 outline-none select-text" contenteditable="true" spellcheck="false">
+              Vichea, architectural interior of brutalist sanctuary, <span class="text-blue-400 font-medium">(ornate brass geometric relief partition:1.25)</span>, linen king platform bed, dramatic natural rim-lighting, morning volumetric rays, muted color grading, <span class="text-emerald-400 font-medium">&lt;lora:offset_light_xl:0.75&gt;</span>, high visual coherence
+            </div>
+<!-- Modules & Options Row -->
+<div class="mt-3.5 pt-3 border-t border-surface-border/70 flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center space-x-2">
+<span class="text-[11px] font-mono text-slate-400">Modules:</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-surface-subpanel border border-surface-border text-[11px] font-mono text-slate-300 gap-1.5">
+                  Fooocus V2
+                  <button class="text-slate-500 hover:text-slate-300">×</button>
+</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-surface-subpanel border border-surface-border text-[11px] font-mono text-slate-300 gap-1.5">
+                  SDXL Film Grain v1
+                  <button class="text-slate-500 hover:text-slate-300">×</button>
+</span>
+<button class="text-[11px] font-mono text-brand-400 hover:text-brand-300 px-2 py-0.5 border border-dashed border-brand-500/30 hover:border-brand-500/60 rounded-md transition-colors">+ Add Module</button>
+</div>
+<div class="text-[11px] font-mono text-slate-400 flex items-center space-x-1.5">
+<span>Auto-Expand:</span>
+<span class="text-slate-200 font-medium px-2 py-0.5 rounded bg-surface-subpanel border border-surface-border">Architectural</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Negative Prompt -->
+<details class="group rounded-lg border border-surface-border/60 bg-surface-subpanel/50 overflow-hidden">
+<summary class="px-4 py-2.5 cursor-pointer flex items-center justify-between text-xs font-mono text-slate-400 hover:text-slate-200 list-none transition-colors">
+<div class="flex items-center space-x-2">
+<svg class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+<span>Negative Conditioning Filters</span>
+</div>
+<span class="text-[10px] text-slate-500">12 quality rules active</span>
+</summary>
+<div class="px-4 pb-3.5 pt-1">
+<textarea class="w-full bg-[#090b10] border border-surface-border rounded-md p-2.5 text-xs font-mono text-slate-400 focus:outline-none focus:border-brand-500/50 resize-none h-16 leading-relaxed" placeholder="Negative tokens...">low quality, artifacts, blurry, bad anatomy, blown out contrast, chromatic aberration, cartoon, oversaturated</textarea>
+</div>
+</details>
+</div>
+<!-- Inference Parameters Group -->
+<div class="bg-surface-panel/70 border border-surface-border/80 rounded-xl p-5 space-y-5 shadow-sm">
+<div class="flex items-center justify-between border-b border-surface-border/60 pb-3">
+<div class="flex items-center space-x-2.5">
+<svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path>
+</svg>
+<span class="text-xs font-mono font-semibold tracking-wide uppercase text-slate-200">Inference Core Parameters</span>
+</div>
+<span class="text-[11px] font-mono text-slate-500">SDXL-Refined Latent Pipeline</span>
+</div>
+<!-- Base Model Selector -->
+<div class="space-y-2">
+<div class="flex justify-between items-center text-[11px] font-mono">
+<label class="text-slate-400 uppercase tracking-wide">Base Model Safetensors</label>
+<span class="text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40 text-[10px]">SHA-256: 31e35c80d4</span>
+</div>
+<div class="relative">
+<select class="w-full bg-surface-subpanel border border-surface-border rounded-lg px-3.5 py-2.5 text-xs font-mono text-slate-200 appearance-none focus:border-brand-500 focus:outline-none">
+<option selected="">sd_xl_base_1.0.safetensors [Arch: SDXL Base • FP16 • 6.46 GB]</option>
+<option>juggernautXL_version8Rundiffusion.safetensors [SDXL • 6.62 GB]</option>
+<option>flux1-dev-fp8.safetensors [Arch: Flux.1 Dev • 12.0 GB]</option>
+<option>sd_turbo_v1.0.safetensors [SD-Turbo • Fast-Iter • 3.97 GB]</option>
+</select>
+<div class="absolute right-3.5 top-3.5 pointer-events-none text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</div>
+</div>
+</div>
+<!-- Resolution & Aspect Ratio Grid -->
+<div class="space-y-2.5">
+<div class="flex justify-between items-center text-[11px] font-mono">
+<label class="text-slate-400 uppercase tracking-wide">Canvas Spatial Resolution</label>
+<span class="text-brand-400 font-semibold">1024 × 1024 px (1:1 Native SDXL)</span>
+</div>
+<div class="grid grid-cols-4 gap-2 font-mono">
+<button class="p-2.5 rounded-lg bg-surface-card border-2 border-brand-500 text-slate-100 flex flex-col items-center justify-center space-y-1.5 shadow-sm">
+<div class="w-4 h-4 border border-brand-400 bg-brand-500/20 rounded-sm"></div>
+<span class="font-bold text-xs">1 : 1</span>
+<span class="text-[10px] text-slate-400">1024×1024</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-4.5 h-3.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">9 : 7</span>
+<span class="text-[10px] text-slate-500">1152×896</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-3.5 h-4.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">7 : 9</span>
+<span class="text-[10px] text-slate-500">896×1152</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-5 h-3 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">16 : 9</span>
+<span class="text-[10px] text-slate-500">1344×768</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-4.5 h-3.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">19 : 13</span>
+<span class="text-[10px] text-slate-500">1216×832</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-3.5 h-4.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">13 : 19</span>
+<span class="text-[10px] text-slate-500">832×1216</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-2.5 h-4.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">9 : 16</span>
+<span class="text-[10px] text-slate-500">768×1344</span>
+</button>
+<button class="p-2.5 rounded-lg bg-surface-subpanel border border-surface-border hover:border-surface-borderLight text-slate-300 flex flex-col items-center justify-center space-y-1.5 transition-colors">
+<div class="w-5 h-2.5 border border-slate-600 bg-slate-800 rounded-sm"></div>
+<span class="text-xs">21 : 9</span>
+<span class="text-[10px] text-slate-500">1536×640</span>
+</button>
+</div>
+</div>
+<!-- Sliders: Steps & CFG -->
+<div class="grid grid-cols-2 gap-5 pt-1">
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-mono">
+<span class="text-slate-400">DENOISING STEPS</span>
+<span class="text-slate-100 font-bold">60</span>
+</div>
+<div class="flex items-center space-x-3">
+<input class="w-full h-1.5 bg-[#252b3b] rounded-lg appearance-none cursor-pointer" max="100" min="1" type="range" value="60"/>
+<input class="w-14 bg-surface-subpanel border border-surface-border rounded-md py-1 px-2 text-right font-mono text-xs text-slate-200" type="number" value="60"/>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-mono">
+<span class="text-slate-400">CFG SCALE</span>
+<span class="text-slate-100 font-bold">7.0</span>
+</div>
+<div class="flex items-center space-x-3">
+<input class="w-full h-1.5 bg-[#252b3b] rounded-lg appearance-none cursor-pointer" max="20" min="1" step="0.5" type="range" value="7.0"/>
+<input class="w-14 bg-surface-subpanel border border-surface-border rounded-md py-1 px-2 text-right font-mono text-xs text-slate-200" step="0.5" type="number" value="7.0"/>
+</div>
+</div>
+</div>
+<!-- Sampler & Scheduler -->
+<div class="grid grid-cols-2 gap-5">
+<div class="space-y-1.5">
+<label class="text-[11px] font-mono text-slate-400 uppercase">SAMPLER METHOD</label>
+<div class="relative">
+<select class="w-full bg-surface-subpanel border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-slate-200 appearance-none">
+<option selected="">dpmpp_2m (DPM++ 2M)</option>
+<option>dpmpp_2m_sde</option>
+<option>euler_ancestral</option>
+<option>uni_pc</option>
+</select>
+<div class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</div>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-mono text-slate-400 uppercase">SCHEDULER CURVE</label>
+<div class="relative">
+<select class="w-full bg-surface-subpanel border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-slate-200 appearance-none">
+<option selected="">karras (Standard)</option>
+<option>exponential</option>
+<option>sgm_uniform</option>
+<option>normal</option>
+</select>
+<div class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Seed & Target Bucket -->
+<div class="space-y-1.5">
+<div class="flex justify-between text-[11px] font-mono">
+<span class="text-slate-400">LATENT SEED</span>
+<span class="text-slate-500">(-1 = Non-deterministic / Random)</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="relative flex-1">
+<input class="w-full bg-surface-subpanel border border-surface-border rounded-lg px-3 py-2 font-mono text-xs text-slate-200 focus:outline-none focus:border-brand-500" type="text" value="-1"/>
+<button class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-200" title="Copy current seed">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="13" rx="2" ry="2" width="13" x="9" y="9"></rect>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>
+</button>
+</div>
+<button class="px-3.5 py-2 bg-surface-card border border-surface-border hover:bg-surface-hover rounded-lg text-slate-200 font-mono text-xs font-medium flex items-center space-x-1.5 transition-colors">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+</svg>
+<span>Randomize</span>
+</button>
+</div>
+</div>
+<!-- Queue Inference Primary Button -->
+<div class="pt-2">
+<button class="w-full h-12 bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-medium rounded-xl flex items-center justify-center space-x-2.5 shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 transition-all duration-150 border border-brand-400/30">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<polygon points="5 3 19 12 5 21 5 3"></polygon>
+</svg>
+<span class="tracking-wide text-xs uppercase font-semibold">Queue Inference Job</span>
+<span class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-brand-700/60 text-blue-200 border border-brand-500/50">Ctrl + Enter</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Left Panel -->
+<!-- RIGHT PANEL: Expansive Viewport Canvas & Output Monitor -->
+<section class="flex-1 bg-[#090b10] flex flex-col justify-between overflow-hidden border-l border-surface-border/40" data-purpose="viewport-inspector">
+<!-- Top Viewport Control Bar -->
+<div class="h-12 border-b border-surface-border/80 px-6 bg-[#0d0f17]/70 backdrop-blur-sm flex items-center justify-between flex-shrink-0">
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+<span class="font-mono text-xs font-semibold text-slate-200">JOB #84920-A</span>
+</div>
+<span class="text-slate-700">|</span>
+<span class="font-mono text-[11px] text-slate-400">COMPLETED IN 7.42s (2.41 it/s)</span>
+</div>
+<!-- Inspection Tools -->
+<div class="flex items-center space-x-1 font-mono">
+<button class="px-2.5 py-1.5 rounded-md hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition-colors text-xs" title="100% Zoom">
+            1:1
+          </button>
+<button class="p-2 rounded-md hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition-colors" title="Fit Screen">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+</svg>
+</button>
+<button class="p-2 rounded-md hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition-colors" title="Split Screen Compare">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="3" y2="21"></line>
+<rect height="18" rx="2" width="18" x="3" y="3"></rect>
+</svg>
+</button>
+<button class="p-2 rounded-md hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition-colors" title="Histogram">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 3v18h18"></path>
+<rect height="7" width="3" x="7" y="10"></rect>
+<rect height="11" width="3" x="13" y="6"></rect>
+<rect height="4" width="2" x="19" y="13"></rect>
+</svg>
+</button>
+<div class="h-4 w-px bg-surface-border mx-2"></div>
+<button class="p-2 rounded-md hover:bg-surface-hover text-slate-400 hover:text-slate-200 transition-colors" title="Metadata Inspector">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="12" x2="12" y1="16" y2="12"></line>
+<line x1="12" x2="12.01" y1="8" y2="8"></line>
+</svg>
+</button>
+</div>
+</div>
+<!-- Execution Status Line -->
+<div class="w-full bg-surface-border/40 h-[2px]">
+<div class="bg-emerald-500 h-full w-full"></div>
+</div>
+<!-- Main Visual Workspace: Full-height, Centered, Generously Sized -->
+<div class="flex-1 overflow-hidden p-8 flex items-center justify-center relative bg-[radial-gradient(#161b26_1px,transparent_1px)] [background-size:20px_20px]">
+<!-- Canvas Frame Container -->
+<div class="relative max-h-full max-w-full aspect-square border border-surface-borderLight/80 rounded-2xl bg-black overflow-hidden shadow-2xl group flex items-center justify-center">
+<!-- Rendered High-Quality Image -->
+<img alt="AI Rendered Studio Output - Architectural Sanctuary" class="object-contain max-h-full max-w-full rounded-xl select-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2H_wd_4hyRhmfQm7Wr3oNEOuy98JRGaceSxyUV_2zT2Z2l4xqDgVOk_pLVs3jWC98mFguKOtTZ06D9DcYYAAMp1CHp_6bZwbAvhrrj3hJ0nA80HgW7r9EZKFMygMAHaafv07C3ICTcWE6UYvrHjVhMl84xycUQhqYf1NGPae2QDrA1Vkpbzgwu_7lqJbL4Fqgj0rTjZE0issZtX4WMrt1XXil0_yKse5MeTk9sPzCJpQuz56C-m-UVgx7283w_fz-IA"/>
+<!-- Tech Specs Pill Badge -->
+<div class="absolute top-4 left-4 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-lg border border-white/10 font-mono text-[11px] space-y-0.5 pointer-events-none shadow-lg">
+<div class="text-slate-200 font-semibold flex items-center space-x-2">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>1024 × 1024 • RGB • 24bpp</span>
+</div>
+<div class="text-slate-400 text-[10px]">Seed: <span class="text-slate-300">4194029112</span> • CFG 7.0</div>
+<div class="text-slate-500 text-[9px]">Model: sd_xl_base_1.0_fix</div>
+</div>
+<!-- Floating Actions On Hover -->
+<div class="absolute top-4 right-4 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-lg bg-black/80 backdrop-blur-md text-slate-200 hover:text-white border border-white/15 transition-colors shadow-lg" title="Send to Inpaint">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="m18 2 4 4-12 12H6v-4L18 2z"></path>
+</svg>
+</button>
+<button class="p-2 rounded-lg bg-black/80 backdrop-blur-md text-slate-200 hover:text-white border border-white/15 transition-colors shadow-lg" title="Full Screen Preview">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="15 3 21 3 21 9"></polyline>
+<polyline points="9 21 3 21 3 15"></polyline>
+<line x1="21" x2="14" y1="3" y2="10"></line>
+<line x1="3" x2="10" y1="21" y2="14"></line>
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Action & Export Toolbar -->
+<div class="h-14 border-t border-surface-border/80 bg-[#0d0f17]/80 backdrop-blur-sm px-6 flex items-center justify-between flex-shrink-0">
+<!-- History Strip / Batch Queue -->
+<div class="flex items-center space-x-3">
+<span class="font-mono text-xs text-slate-400 font-medium uppercase tracking-wider">BATCH QUEUE</span>
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-lg border-2 border-brand-500 bg-surface-card overflow-hidden cursor-pointer relative shadow-sm">
+<div class="w-full h-full bg-slate-700/50"></div>
+<span class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-brand-400 font-bold">#01</span>
+</div>
+<div class="w-8 h-8 rounded-lg border border-surface-border bg-surface-subpanel/50 hover:border-surface-borderLight cursor-pointer transition-colors"></div>
+<div class="w-8 h-8 rounded-lg border border-surface-border bg-surface-subpanel/30"></div>
+</div>
+</div>
+<!-- Export & Workflow Utilities -->
+<div class="flex items-center space-x-3 font-mono text-xs">
+<button class="px-3.5 py-2 rounded-lg border border-surface-border hover:bg-surface-hover text-slate-300 hover:text-white transition-colors flex items-center space-x-2" title="Copy generation JSON">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+<rect height="4" rx="1" ry="1" width="8" x="8" y="2"></rect>
+</svg>
+<span>Copy Metadata</span>
+</button>
+<button class="px-3.5 py-2 rounded-lg border border-surface-border hover:bg-surface-hover text-slate-300 hover:text-white transition-colors flex items-center space-x-2">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path>
+</svg>
+<span>Export PNG</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-surface-card hover:bg-surface-hover text-white font-medium border border-surface-borderLight flex items-center space-x-2 transition-colors shadow-sm">
+<svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="m18 2 4 4-12 12H6v-4L18 2z"></path>
+</svg>
+<span>Send to Inpaint Mask</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: Right Panel -->
+</main>
+<!-- END: Expanded Full-Width Workspace -->
+</body></html>

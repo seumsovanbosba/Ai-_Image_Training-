@@ -163,150 +163,153 @@ export const InpaintCanvas: React.FC<InpaintCanvasProps> = ({
     };
   };
 
+  const drawCursor = (x: number, y: number) => {
+    const cursorCanvas = cursorCanvasRef.current;
+    if (!cursorCanvas) return;
+    const ctx = cursorCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+    ctx.beginPath();
+    ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = tool === 'brush' ? '#60a5fa' : '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!hasBaseImage) return;
     setIsDrawing(true);
-    draw(e);
+    const { x, y } = getCanvasCoords(e);
+    drawStroke(x, y);
   };
 
   const stopDrawing = () => {
     if (isDrawing) {
       setIsDrawing(false);
       saveHistoryState();
-      exportDataUrls();
+      exportMaskData();
     }
   };
 
   const draw = (e: React.MouseEvent<HTMLDivElement>) => {
-    const maskCanvas = maskCanvasRef.current;
-    const cursorCanvas = cursorCanvasRef.current;
-    if (!maskCanvas || !cursorCanvas) return;
-
     const { x, y } = getCanvasCoords(e);
-
-    // Update cursor overlay
-    const curCtx = cursorCanvas.getContext('2d');
-    if (curCtx) {
-      curCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
-      curCtx.beginPath();
-      curCtx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
-      curCtx.strokeStyle = tool === 'brush' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)';
-      curCtx.lineWidth = 2;
-      curCtx.stroke();
+    drawCursor(x, y);
+    if (isDrawing && hasBaseImage) {
+      drawStroke(x, y);
     }
+  };
 
-    if (!isDrawing) return;
-
+  const drawStroke = (x: number, y: number) => {
+    const maskCanvas = maskCanvasRef.current;
+    if (!maskCanvas) return;
     const ctx = maskCanvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.save();
-    if (tool === 'brush') {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
-    } else {
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    }
-
     ctx.beginPath();
     ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+
+    if (tool === 'brush') {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.75)';
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fill();
+    }
   };
 
-  // Export Base Image and Binary Mask
-  const exportDataUrls = () => {
-    if (!baseCanvasRef.current || !maskCanvasRef.current || !onMaskReady) return;
-
-    const baseDataUrl = baseCanvasRef.current.toDataURL('image/png');
-
-    // Generate strict binary mask for ComfyUI VAEEncodeForInpaint:
-    // White (#FFFFFF) for inpaint target, Black (#000000) for unmasked
+  // Convert mask layer into grayscale binarized data URL for ComfyUI / Inpaint pipeline
+  const exportMaskData = () => {
+    const baseCanvas = baseCanvasRef.current;
     const maskCanvas = maskCanvasRef.current;
-    const binaryCanvas = document.createElement('canvas');
-    binaryCanvas.width = maskCanvas.width;
-    binaryCanvas.height = maskCanvas.height;
-    const bCtx = binaryCanvas.getContext('2d');
-    if (!bCtx) return;
+    if (!baseCanvas || !maskCanvas || !onMaskReady) return;
 
-    // Fill completely black
-    bCtx.fillStyle = '#000000';
-    bCtx.fillRect(0, 0, binaryCanvas.width, binaryCanvas.height);
+    const baseDataUrl = baseCanvas.toDataURL('image/png');
 
-    // Read drawn mask
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = maskCanvas.width;
+    tempCanvas.height = maskCanvas.height;
+    const tCtx = tempCanvas.getContext('2d');
+    if (!tCtx) return;
+
+    tCtx.fillStyle = 'black';
+    tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
     const maskCtx = maskCanvas.getContext('2d');
-    if (maskCtx) {
-      const srcData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
-      const binData = bCtx.getImageData(0, 0, binaryCanvas.width, binaryCanvas.height);
-      for (let i = 0; i < srcData.data.length; i += 4) {
-        if (srcData.data[i + 3] > 20) {
-          binData.data[i] = 255;
-          binData.data[i + 1] = 255;
-          binData.data[i + 2] = 255;
-          binData.data[i + 3] = 255;
-        }
-      }
-      bCtx.putImageData(binData, 0, 0);
-    }
+    if (!maskCtx) return;
+    const maskImgData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+    const maskData = maskImgData.data;
 
-    const binaryMaskUrl = binaryCanvas.toDataURL('image/png');
-    onMaskReady(baseDataUrl, binaryMaskUrl, maskCanvas.width, maskCanvas.height);
+    const targetImgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    const targetData = targetImgData.data;
+
+    for (let i = 0; i < maskData.length; i += 4) {
+      if (maskData[i + 3] > 10) {
+        targetData[i] = 255;
+        targetData[i + 1] = 255;
+        targetData[i + 2] = 255;
+      }
+    }
+    tCtx.putImageData(targetImgData, 0, 0);
+    const maskDataUrl = tempCanvas.toDataURL('image/png');
+
+    onMaskReady(baseDataUrl, maskDataUrl, imageDimensions.width, imageDimensions.height);
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0d121f] rounded-xl border border-slate-800 overflow-hidden shadow-2xl">
-      {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between px-4 py-2.5 bg-[#131b2e] border-b border-slate-800 gap-2">
-        <div className="flex items-center space-x-2">
-          {/* Tool selectors */}
+    <div className="flex flex-col h-full bg-surface-panel border border-surface-border rounded-lg overflow-hidden shadow-2xl font-mono text-xs">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center justify-between px-4 py-2 bg-surface-subpanel/70 border-b border-surface-border gap-2">
+        {/* Tool Selectors */}
+        <div className="flex items-center space-x-1.5">
           <button
             onClick={() => setTool('brush')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium transition ${
               tool === 'brush'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'bg-surface-panel text-slate-400 hover:text-slate-200 border border-surface-border'
             }`}
           >
             <Paintbrush className="w-3.5 h-3.5" />
-            <span>Brush Mask</span>
+            <span>Brush</span>
           </button>
 
           <button
             onClick={() => setTool('eraser')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium transition ${
               tool === 'eraser'
-                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
-                : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'bg-surface-panel text-slate-400 hover:text-slate-200 border border-surface-border'
             }`}
           >
             <Eraser className="w-3.5 h-3.5" />
             <span>Eraser</span>
           </button>
 
-          <div className="h-4 w-px bg-slate-700 mx-1" />
+          <div className="h-4 w-px bg-surface-border mx-1" />
 
           {/* Brush size slider */}
-          <div className="flex items-center space-x-2 bg-slate-900/70 px-3 py-1 rounded-lg border border-slate-800">
-            <span className="text-[11px] text-slate-400 font-mono">Size:</span>
+          <div className="flex items-center space-x-2 bg-surface-base px-2.5 py-1 rounded-md border border-surface-border">
+            <span className="text-[10px] text-slate-400">Size:</span>
             <input
               type="range"
               min="5"
               max="160"
               value={brushSize}
               onChange={(e) => setBrushSize(Number(e.target.value))}
-              className="w-24 accent-indigo-500 cursor-pointer h-1.5 bg-slate-700 rounded-lg"
+              className="w-20 cursor-pointer h-1 bg-surface-subpanel rounded-lg"
             />
-            <span className="text-xs text-indigo-400 font-mono w-6 text-right">{brushSize}</span>
+            <span className="text-[11px] text-brand-400 w-5 text-right font-semibold">{brushSize}</span>
           </div>
 
           {/* Mask visibility toggle */}
           <button
             onClick={() => setMaskVisible(!maskVisible)}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
+            className="p-1.5 rounded-md bg-surface-panel text-slate-400 hover:text-slate-200 border border-surface-border transition"
             title={maskVisible ? 'Hide Mask Overlay' : 'Show Mask Overlay'}
           >
-            {maskVisible ? <Eye className="w-4 h-4 text-emerald-400" /> : <EyeOff className="w-4 h-4 text-slate-400" />}
+            {maskVisible ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-500" />}
           </button>
         </div>
 
@@ -315,26 +318,26 @@ export const InpaintCanvas: React.FC<InpaintCanvasProps> = ({
           <button
             onClick={handleUndo}
             disabled={historyIndex <= 0}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="p-1.5 rounded-md bg-surface-panel text-slate-400 hover:text-slate-200 border border-surface-border disabled:opacity-40 disabled:cursor-not-allowed"
             title="Undo Mask Stroke"
           >
-            <Undo2 className="w-4 h-4" />
+            <Undo2 className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleRedo}
             disabled={historyIndex >= history.length - 1}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="p-1.5 rounded-md bg-surface-panel text-slate-400 hover:text-slate-200 border border-surface-border disabled:opacity-40 disabled:cursor-not-allowed"
             title="Redo Mask Stroke"
           >
-            <Redo2 className="w-4 h-4" />
+            <Redo2 className="w-3.5 h-3.5" />
           </button>
 
-          <div className="h-4 w-px bg-slate-700 mx-1" />
+          <div className="h-4 w-px bg-surface-border mx-1" />
 
           <button
             onClick={invertMask}
             disabled={!hasBaseImage}
-            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-40"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-md text-[11px] bg-surface-panel text-slate-300 hover:text-slate-100 border border-surface-border disabled:opacity-40"
             title="Invert Inpaint Mask"
           >
             <FlipHorizontal className="w-3.5 h-3.5" />
@@ -344,16 +347,16 @@ export const InpaintCanvas: React.FC<InpaintCanvasProps> = ({
           <button
             onClick={clearMask}
             disabled={!hasBaseImage}
-            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-800 text-rose-400 hover:bg-rose-950/40 disabled:opacity-40"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-md text-[11px] bg-surface-panel text-rose-400 hover:bg-rose-950/30 border border-surface-border disabled:opacity-40"
             title="Clear Mask"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear</span>
           </button>
 
-          <label className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer transition shadow-sm">
+          <label className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium bg-brand-600 hover:bg-brand-500 text-white cursor-pointer transition shadow-sm">
             <Upload className="w-3.5 h-3.5" />
-            <span>Upload Base Image</span>
+            <span>Upload Image</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
@@ -362,29 +365,29 @@ export const InpaintCanvas: React.FC<InpaintCanvasProps> = ({
       {/* Main Canvas Viewport */}
       <div 
         ref={containerRef}
-        className="relative flex-1 flex items-center justify-center p-4 bg-[#0a0e1a] overflow-auto cursor-crosshair min-h-[480px]"
+        className="relative flex-1 flex items-center justify-center p-4 bg-[#07080a] bg-[radial-gradient(#141822_1px,transparent_1px)] [background-size:20px_20px] overflow-auto cursor-crosshair min-h-[400px]"
         onMouseDown={startDrawing}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
         onMouseMove={draw}
       >
         {!hasBaseImage ? (
-          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 rounded-2xl p-12 max-w-md text-center bg-slate-900/40 backdrop-blur-sm">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-400 mb-4 ring-1 ring-indigo-500/20">
-              <Upload className="w-8 h-8" />
+          <div className="flex flex-col items-center justify-center border border-dashed border-surface-borderLight rounded-xl p-10 max-w-md text-center bg-surface-panel/60 backdrop-blur-sm">
+            <div className="w-12 h-12 rounded-lg bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-3 shadow-sm">
+              <Upload className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-semibold text-slate-100 mb-1">InvokeAI Production Inpaint Canvas</h3>
-            <p className="text-xs text-slate-400 mb-6">
-              Drop an image here or click below to upload. You can also select "Send to Canvas" from the image gallery.
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-100 mb-1">InvokeAI Inpaint Canvas</h3>
+            <p className="text-[11px] text-slate-400 mb-5 leading-relaxed font-sans">
+              Drop an image here or click below to upload. You can also select "Send to Inpaint" directly from your generated output.
             </p>
-            <label className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shadow-lg shadow-indigo-600/30 transition">
+            <label className="px-3.5 py-1.5 rounded-md text-xs font-medium bg-brand-600 hover:bg-brand-500 text-white cursor-pointer shadow transition">
               Select Base Image
               <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
             </label>
           </div>
         ) : (
           <div 
-            className="relative shadow-2xl rounded-lg overflow-hidden border border-slate-800"
+            className="relative shadow-2xl rounded-lg overflow-hidden border border-surface-border bg-black"
             style={{ 
               maxWidth: '100%', 
               maxHeight: '100%',
@@ -413,14 +416,14 @@ export const InpaintCanvas: React.FC<InpaintCanvasProps> = ({
 
       {/* Footer Info */}
       {hasBaseImage && (
-        <div className="flex items-center justify-between px-4 py-2 bg-[#101728] border-t border-slate-800 text-[11px] text-slate-400">
+        <div className="flex items-center justify-between px-4 py-2 bg-surface-subpanel/70 border-t border-surface-border text-[10px] text-slate-400">
           <div className="flex items-center space-x-4">
             <span>Canvas: <strong className="text-slate-200">{imageDimensions.width} × {imageDimensions.height} px</strong></span>
-            <span>Tool: <strong className="text-indigo-400 capitalize">{tool}</strong></span>
+            <span>Tool: <strong className="text-brand-400 capitalize">{tool}</strong></span>
           </div>
           <div className="flex items-center space-x-2 text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Mask sync active (White = Inpaint target)</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Dual-layer mask active</span>
           </div>
         </div>
       )}
