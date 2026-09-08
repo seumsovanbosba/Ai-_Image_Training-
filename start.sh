@@ -56,4 +56,8 @@ echo "[INFO] Available at http://127.0.0.1:8000"
 echo ""
 
 # 5. LAUNCH FASTAPI SERVER
-exec "$VENV_PYTHON" -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir "${SCRIPT_DIR}/backend"
+# FastAPI lives in backend/app. cd there so `import app` works on Linux.
+# (Windows CRLF in --app-dir would otherwise make the path backend\r.)
+cd "${SCRIPT_DIR}/backend"
+export PYTHONPATH="${SCRIPT_DIR}/backend${PYTHONPATH:+:$PYTHONPATH}"
+exec "$VENV_PYTHON" -m uvicorn app.main:app --host 127.0.0.1 --port 8000
