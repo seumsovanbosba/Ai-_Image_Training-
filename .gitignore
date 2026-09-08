@@ -35,3 +35,7 @@ outputs/*
 
 # Cloned ComfyUI engine repository
 comfy_engine/ComfyUI/
+
+# Local MCP credentials (API keys)
+.cursor/mcp.json
+

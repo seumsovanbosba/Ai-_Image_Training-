@@ -71,7 +71,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             onClick={() => setSelectedBoardId(null)}
             className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-[11px] font-medium transition ${
               selectedBoardId === null
-                ? 'bg-brand-600 text-white shadow-sm'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-surface-hover'
             }`}
           >
@@ -88,7 +88,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               onClick={() => setSelectedBoardId(b.id)}
               className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-[11px] font-medium transition ${
                 selectedBoardId === b.id
-                  ? 'bg-brand-600 text-white shadow-sm'
+                  ? 'bg-primary text-on-primary shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-surface-hover'
               }`}
             >
@@ -202,7 +202,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-3.5 py-1.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-xs font-medium"
+                className="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-fixed-dim text-on-primary text-xs font-medium"
               >
                 Create
               </button>

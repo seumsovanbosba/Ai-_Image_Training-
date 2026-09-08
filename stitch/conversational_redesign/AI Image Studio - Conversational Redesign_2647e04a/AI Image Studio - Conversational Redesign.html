@@ -1,0 +1,530 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-bright":"#363940","on-primary-fixed":"#001e2c","secondary-fixed-dim":"#adc6ff","tertiary-fixed-dim":"#4edea3","on-secondary":"#002e6a","surface-dim":"#101319","primary":"#8ed5ff","surface-container-low":"#191c22","on-error":"#690005","inverse-on-surface":"#2e3037","on-surface-variant":"#bdc8d1","secondary-fixed":"#d8e2ff","on-primary-fixed-variant":"#004c69","surface-variant":"#32353c","inverse-surface":"#e1e2eb","primary-container":"#38bdf8","error":"#ffb4ab","primary-fixed-dim":"#7bd0ff","on-background":"#e1e2eb","background":"#101319","on-tertiary":"#003824","secondary-container":"#0566d9","tertiary-container":"#30c88f","on-tertiary-container":"#004e34","surface":"#101319","inverse-primary":"#00668a","surface-container":"#1d2026","tertiary-fixed":"#6ffbbe","tertiary":"#56e5a9","on-secondary-fixed-variant":"#004395","outline":"#87929a","on-primary-container":"#004965","surface-container-highest":"#32353c","error-container":"#93000a","secondary":"#adc6ff","on-error-container":"#ffdad6","on-secondary-container":"#e6ecff","surface-container-lowest":"#0b0e14","on-surface":"#e1e2eb","on-tertiary-fixed-variant":"#005236","primary-fixed":"#c4e7ff","surface-container-high":"#272a31","on-primary":"#00354a","surface-tint":"#7bd0ff","on-secondary-fixed":"#001a42","on-tertiary-fixed":"#002113","outline-variant":"#3e484f"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"dock-max-width":"54rem","space-base":"1rem","space-xl":"2rem","space-lg":"1.5rem","modal-width":"28rem","space-md":"0.75rem","space-xs":"0.25rem","space-2xs":"0.125rem","sidebar-width":"17.5rem","space-2xl":"3rem","space-sm":"0.5rem"},"fontFamily":{"body-md":["Inter"],"label-caps":["JetBrains Mono"],"display-hero":["Inter"],"body-lg":["Inter"],"mono-data":["JetBrains Mono"],"display-hero-mobile":["Inter"],"headline-lg":["Inter"],"headline-md":["Inter"],"badge-sm":["Inter"]},"fontSize":{"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"500"}],"display-hero":["40px",{"lineHeight":"48px","letterSpacing":"-0.03em","fontWeight":"600"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"400"}],"mono-data":["12px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"400"}],"display-hero-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"500"}],"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.015em","fontWeight":"500"}],"badge-sm":["11px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"500"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 bottom-0 w-sidebar-width bg-surface-container-lowest z-40 flex flex-col justify-between p-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-sm"><div class="flex items-center justify-between px-space-xs py-space-2xs"><div class="flex items-center gap-space-sm"><div class="w-6 h-6 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[16px]">auto_awesome</span></div><span class="font-headline-md text-headline-md text-on-surface tracking-tight">Studio Canvas</span></div><button class="p-space-2xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[18px]">dock_to_left</span></button></div><a class="flex items-center justify-between w-full px-space-md py-space-sm rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors" data-path="ai-image-generator" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">add</span><span class="font-body-md text-body-md">New Generation</span></div><span class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-lowest px-space-2xs py-0.5 rounded">⌘N</span></a><div class="flex items-center gap-space-sm px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">search</span><input class="w-full bg-transparent font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" placeholder="Search chats..." type="text"></div><nav class="flex flex-col gap-space-2xs pt-space-xs" data-active-classes="bg-surface-container-high text-on-surface font-medium rounded-lg"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="media-gallery" href="#"><span class="material-symbols-outlined text-[20px]">photo_library</span><span class="font-body-md text-body-md flex-1">Images &amp; Assets</span><span class="font-mono-data text-mono-data text-on-surface-variant bg-surface-container px-space-2xs rounded-full">248</span></a></nav><div class="pt-space-xs"><div class="px-space-md py-space-2xs flex items-center justify-between text-outline"><span class="font-label-caps text-label-caps uppercase tracking-wider">Recents</span><span class="material-symbols-outlined text-[14px]">history</span></div><div class="flex flex-col gap-space-2xs overflow-y-auto max-h-[38vh]"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors group" data-path="brutalist-sanctuary" href="#"><span class="material-symbols-outlined text-[16px] opacity-70 group-hover:text-primary transition-colors">chat_bubble</span><span class="font-body-md text-body-md truncate">Brutalist Sanctuary Interior</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors group" data-path="cyberpunk-alleyway" href="#"><span class="material-symbols-outlined text-[16px] opacity-70 group-hover:text-primary transition-colors">chat_bubble</span><span class="font-body-md text-body-md truncate">Cyberpunk Alleyway Neon</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors group" data-path="bauhaus-motorcycle" href="#"><span class="material-symbols-outlined text-[16px] opacity-70 group-hover:text-primary transition-colors">chat_bubble</span><span class="font-body-md text-body-md truncate">3D Bauhaus Motorcycle</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors group" data-path="ethereal-cloud-arch" href="#"><span class="material-symbols-outlined text-[16px] opacity-70 group-hover:text-primary transition-colors">chat_bubble</span><span class="font-body-md text-body-md truncate">Ethereal Cloud Architecture</span></a></div></div></div><div class="flex flex-col gap-space-xs pt-space-sm"></div></aside><div class="pl-sidebar-width min-h-screen flex flex-col"><header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface/80 backdrop-blur-xl z-30 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs font-body-md text-body-md"><span class="text-outline">Studio</span><span class="text-outline-variant">/</span><span class="text-on-surface font-medium">AI Image Studio</span></div><div class="h-4 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-caps text-label-caps text-on-surface">Ready · SDXL LatentDiffusion</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-1 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-[16px] text-outline">memory</span><div class="flex flex-col"><div class="flex items-center justify-between gap-space-sm"><span class="font-label-caps text-label-caps text-outline">VRAM</span><span class="font-mono-data text-mono-data text-on-surface">14.2 / 24 GB</span></div><div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden"><div class="w-[59%] h-full bg-primary-container rounded-full"></div></div></div></div><div class="h-4 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-xs"><a class="p-space-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="help-documentation" href="#" title="Help &amp; Documentation"><span class="material-symbols-outlined text-[20px]">help_outline</span></a><a class="p-space-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="studio-settings" href="#" title="Global Studio Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a></div></div></div></header><main class="w-full pt-16 bg-surface flex-1 flex flex-col"><div class="flex flex-col w-full relative overflow-x-hidden min-h-[calc(100vh-4rem)]">
+<!-- Ambient Atmospheric Backdrop -->
+<div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-primary/5 rounded-full blur-[140px] opacity-70"></div>
+<div class="absolute bottom-12 left-1/3 w-[460px] h-[240px] bg-secondary-container/10 rounded-full blur-[120px] opacity-40"></div>
+</div>
+<!-- Primary Canvas Stage: Conversational Timeline & Preview Area -->
+<div class="flex-1 w-full max-w-5xl mx-auto px-space-base sm:px-space-lg flex flex-col pb-44">
+<!-- Hero Conversation Meta & Greeting -->
+<div class="pt-space-xl pb-space-lg flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container-low shadow-sm mb-space-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Active Model Instance: SDXL_Turbo_v1.02_latent</span>
+</div>
+<h1 class="font-display-hero text-display-hero text-on-surface tracking-tight max-w-2xl">
+        What shall we materialize today?
+      </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-2xs max-w-xl">
+        Iterative latent diffusion workspace with dynamic prompt interpolation and high-fidelity rendering.
+      </p>
+</div>
+<!-- Active Turn / Prompt History Block -->
+<div class="mt-space-md flex flex-col gap-space-lg">
+<!-- User Prompt Entry -->
+<div class="flex items-start gap-space-md max-w-3xl ml-auto">
+<div class="flex flex-col items-end gap-space-xs">
+<div class="bg-surface-container-high text-on-surface px-space-lg py-space-md rounded-2xl rounded-tr-sm shadow-md">
+<p class="font-body-lg text-body-lg text-on-surface select-text">
+              Vichea, architectural interior of brutalist sanctuary, ornate brass geometric relief partition, linen king platform bed, dramatic natural rim-lighting, morning mist
+            </p>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-mono-data text-mono-data pr-space-xs">
+<span class="">Today, 10:42 AM</span>
+<span class="">·</span>
+<span class="text-primary hover:underline cursor-pointer" onclick="copyPromptText()">Copy prompt</span>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+</div>
+<!-- AI Generation Result Card -->
+<div class="flex items-start gap-space-md max-w-4xl mr-auto w-full">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center shrink-0 mt-space-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+</div>
+<div class="flex-1 flex flex-col gap-space-md min-w-0">
+<!-- Main Preview Card Container -->
+<div class="w-full bg-surface-container-low rounded-2xl p-space-md shadow-xl overflow-hidden group">
+<!-- Metadata Top Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm text-on-surface-variant">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high font-mono-data text-mono-data text-primary">
+<span class="material-symbols-outlined text-[13px]">bolt</span> SDXL Base 1.0
+                </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container font-mono-data text-mono-data">
+                  1024 × 1024
+                </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container font-mono-data text-mono-data">
+                  30 Steps · 7.42s
+                </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container font-mono-data text-mono-data text-tertiary">
+                  Seed #89210432
+                </span>
+</div>
+<!-- Top Right Quick Toggle Group -->
+<div class="flex items-center gap-space-xs">
+<button class="p-space-2xs rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Full Resolution View">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+</button>
+<button class="p-space-2xs rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Image Histogram &amp; Tensors">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+</button>
+</div>
+</div>
+<!-- Visual Artboard / Render -->
+<div class="relative w-full aspect-square md:aspect-[16/10] bg-surface-container-lowest rounded-xl overflow-hidden flex items-center justify-center">
+<img class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.01]" data-alt="Editorial cinematic photograph of a serene brutalist concrete sanctuary bedroom interior. Massive monolithic ribbed gray concrete walls bathed in dramatic soft morning fog and golden volumetric sunlight spilling from a skylight. In the foreground, an elegant low king platform bed dressed in raw textured natural unbleached linen with a sculptural brushed brass geometric relief headboard partition. Intricate modernist textures, ambient dust motes in sunbeams, deep contrast shadows, architectural photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmmvwryOv5fu3ljzGUpipigCs7gMJICCwaogRM30tF9W4kDcXyhVB45C7t53t4Twd7mERpJGj0kFhdEk1q1TCo5sEANntpDzt0zdItHIDOq6ybMjs9XR9INJg_71qAeuJwamzt73TYAe9BraIx0WXkDMn_0Aw0_eKB2ijk_0_W9vfgF4w_Btq6oYf-NeGW4Nj9xNEx7IOGzGeiVqrH-25DmmztKcHkaKHjHCSNTq1vMzJ_hu0LOxLd">
+<!-- Floating Canvas Inspector Overlay on Render -->
+<div class="absolute top-space-md left-space-md bg-surface-dim/75 backdrop-blur-md px-space-md py-space-xs rounded-xl shadow-md flex items-center gap-space-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-caps text-label-caps tracking-wider uppercase">Latent Canvas Synchronized</span>
+</div>
+<!-- Quick Floating Lens Utility -->
+<div class="absolute bottom-space-md right-space-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-space-xs bg-surface-dim/80 backdrop-blur-md p-space-xs rounded-xl shadow-lg">
+<button class="px-space-sm py-space-2xs rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-caps text-label-caps flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[14px]">crop_free</span> Inspect Tiles
+                </button>
+<button class="px-space-sm py-space-2xs rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-caps text-label-caps flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[14px]">compare</span> Compare Pre-Pass
+                </button>
+</div>
+</div>
+<!-- Action Ribbon for Generative Workflows -->
+<div class="mt-space-md pt-space-2xs flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<!-- Upscale 2X CTA -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-md text-body-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">hd</span>
+<span class="">Upscale 2x</span>
+</button>
+<!-- Inpaint / Brush -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-md text-body-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">brush</span>
+<span class="">Inpaint</span>
+</button>
+<!-- Open in Canvas Studio -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-md text-body-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">palette</span>
+<span class="">Open in Canvas</span>
+</button>
+<!-- Variation Branching -->
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-md text-body-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">alt_route</span>
+<span class="">Vary Subtle</span>
+</button>
+</div>
+<!-- Utility actions right -->
+<div class="flex items-center gap-space-xs ml-auto">
+<button class="p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="copyPromptText()" title="Copy Prompt">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-primary text-on-primary font-body-md text-body-md font-medium hover:bg-primary-fixed-dim transition-colors shadow-sm" title="Download High-Res PNG">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span class="">Download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Generation Latency / Pipeline Diagnostics Pill -->
+<div class="flex items-center gap-space-md px-space-sm text-outline font-mono-data text-mono-data">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-tertiary">done</span> Diffusion complete
+            </span>
+<span class="">·</span>
+<span class="">Sampling: Euler Ancestral / Karras</span>
+<span class="">·</span>
+<span class="">Clip Skip: 2</span>
+<span class="">·</span>
+<span class="cursor-pointer text-primary hover:underline">View node graph trace</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FLOATING BOTTOM DOCK: Gemini / ChatGPT Style Conversational Generator -->
+<div class="fixed bottom-0 left-sidebar-width right-0 px-space-base sm:px-space-xl pb-space-lg pt-space-xs z-30 pointer-events-none flex flex-col items-center">
+<div class="w-full max-w-dock-max-width pointer-events-auto relative">
+<!-- Popover Menu: Triggered by the Leading '+' Plus Button -->
+<div class="hidden absolute -top-4 -translate-y-full left-0 w-72 bg-surface-container-high/95 backdrop-blur-2xl rounded-xl p-space-xs shadow-2xl z-40 transition-all" id="attachments-popover">
+<div class="px-space-sm py-space-2xs text-outline font-label-caps text-label-caps uppercase tracking-wider">
+          Input &amp; Synthesis Tools
+        </div>
+<div class="flex flex-col gap-1 mt-1">
+<button class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left">
+<span class="material-symbols-outlined text-[18px] text-primary">add_photo_alternate</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md">Image-to-Image Reference</span>
+<span class="font-mono-data text-mono-data text-outline">Upload guidance latents</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left">
+<span class="material-symbols-outlined text-[18px] text-secondary">tune</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md">Add Style Preset</span>
+<span class="font-mono-data text-mono-data text-outline">Brutalism, Film Grain, Macro</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left">
+<span class="material-symbols-outlined text-[18px] text-tertiary">filter_alt</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md">Negative Prompt Filter</span>
+<span class="font-mono-data text-mono-data text-outline">Prune artifacts, oversaturation</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed-dim">account_tree</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md">Load ComfyUI / DAG Workflow</span>
+<span class="font-mono-data text-mono-data text-outline">Import JSON node graph</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Main Input Capsule -->
+<div class="bg-surface-container/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.65)] p-space-sm flex flex-col gap-space-xs transition-shadow duration-300 focus-within:shadow-[0_0_24px_rgba(56,189,248,0.22)]">
+<!-- Text Input & Leading Actions -->
+<div class="flex items-center gap-space-sm px-space-xs">
+<!-- Popover Toggle Button (+) -->
+<button class="w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center shrink-0 transition-all" id="btn-toggle-tools" onclick="toggleToolsPopover()" title="Attach references &amp; presets">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200" id="plus-icon">add</span>
+</button>
+<!-- Conversational Prompt Textarea -->
+<div class="flex-1 relative">
+<textarea class="w-full bg-transparent font-body-lg text-body-lg text-on-surface placeholder:text-outline resize-none py-1.5 focus:outline-none max-h-36 overflow-y-auto" id="prompt-input" oninput="autoExpand(this)" placeholder="Describe what you want to imagine with SDXL..." rows="1"></textarea>
+</div>
+<!-- Generate Action Button -->
+
+</div>
+<!-- Inline Quick Controls Row Below Text Area -->
+<div class="flex flex-wrap items-center justify-between gap-space-xs pt-1 px-space-xs">
+<div class="flex flex-wrap items-center gap-space-xs">
+<!-- Model Switcher Chip -->
+<div class="relative">
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-mono-data text-mono-data transition-colors" onclick="toggleModelDropdown()">
+<span class="material-symbols-outlined text-[14px] text-primary">bolt</span>
+<span id="active-model-name" class="">SDXL Base 1.0</span>
+<span class="material-symbols-outlined text-[14px] text-outline">keyboard_arrow_down</span>
+</button>
+<!-- Model Dropdown -->
+<div class="hidden absolute bottom-full mb-2 left-0 w-64 bg-surface-container-high rounded-xl p-space-xs shadow-2xl z-40" id="model-dropdown">
+<div class="px-space-sm py-1 text-outline font-label-caps text-label-caps uppercase">Generative Checkpoint</div>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectModel('SDXL Base 1.0')">
+<span class="">SDXL Base 1.0</span>
+<span class="text-tertiary">Active</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectModel('SDXL Turbo Latent')">
+<span class="">SDXL Turbo Latent</span>
+<span class="text-outline">1 Step</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectModel('Flux.1 Schnell Dev')">
+<span class="">Flux.1 Schnell Dev</span>
+<span class="text-outline">12B Param</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectModel('Midjourney v6.1 Replica')">
+<span class="">MJ v6.1 Latent</span>
+<span class="text-outline">LoRA V2</span>
+</button>
+</div>
+</div>
+<!-- Aspect Ratio Selector Dropdown -->
+<div class="relative">
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-mono-data text-mono-data transition-colors" onclick="toggleAspectDropdown()">
+<span class="material-symbols-outlined text-[14px] text-secondary">crop_square</span>
+<span id="active-aspect-ratio" class="">1:1 Square</span>
+<span class="material-symbols-outlined text-[14px] text-outline">keyboard_arrow_down</span>
+</button>
+<!-- Aspect Ratio Selection Matrix -->
+<div class="hidden absolute bottom-full mb-2 left-0 w-56 bg-surface-container-high rounded-xl p-space-xs shadow-2xl z-40" id="aspect-dropdown">
+<div class="px-space-sm py-1 text-outline font-label-caps text-label-caps uppercase">Dimensions Preset</div>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectAspect('1:1 Square', '1024×1024')">
+<span class="">1:1 Square</span>
+<span class="text-outline">1024×1024</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectAspect('16:9 Cinema', '1344×768')">
+<span class="">16:9 Cinema</span>
+<span class="text-outline">1344×768</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectAspect('9:16 Portrait', '768×1344')">
+<span class="">9:16 Portrait</span>
+<span class="text-outline">768×1344</span>
+</button>
+<button class="w-full text-left px-space-sm py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono-data text-mono-data flex items-center justify-between" onclick="selectAspect('21:9 Ultra-Wide', '1536×640')">
+<span class="">21:9 Panoramic</span>
+<span class="text-outline">1536×640</span>
+</button>
+</div>
+</div>
+<!-- Active Style Capsule Tag (Dismissible) -->
+<div class="hidden sm:flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container font-mono-data text-mono-data text-on-surface-variant">
+<span class="">Architectural Brutalism</span>
+<button class="hover:text-on-surface ml-1 text-outline" onclick="this.parentElement.remove()">
+<span class="material-symbols-outlined text-[13px]">close</span>
+</button>
+</div>
+</div>
+<!-- Advanced Flyout Parameter Trigger -->
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps transition-colors" id="btn-toggle-parameters" onclick="toggleParameterInspector()" title="Sampling &amp; Inference Latent Parameters">
+<span class="material-symbols-outlined text-[15px] text-primary">tune</span>
+<span class="hidden md:inline">Advanced Parameters</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ADVANCED PARAMETERS MODAL / FLYOUT INSPECTOR -->
+<div class="fixed inset-y-0 right-0 w-full sm:w-modal-width bg-surface-container-low/95 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col p-space-lg overflow-y-auto" id="advanced-drawer">
+<!-- Drawer Header -->
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Inference Settings</h3>
+<span class="font-mono-data text-mono-data text-outline">Latent Denoising Pipeline v2</span>
+</div>
+</div>
+<button class="p-space-xs rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" onclick="toggleParameterInspector()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Parameter Controls Body -->
+<div class="flex flex-col gap-space-lg pt-space-sm">
+<!-- Sampling Steps Slider -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-body-md text-body-md text-on-surface font-medium">Sampling Steps</label>
+<span class="font-mono-data text-mono-data text-primary px-space-xs py-0.5 bg-surface-container rounded" id="steps-val">30 steps</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-high h-1.5 rounded-lg appearance-none cursor-pointer" id="steps-slider" max="80" min="1" oninput="document.getElementById('steps-val').innerText = this.value + ' steps'" type="range" value="30">
+<div class="flex justify-between text-outline font-mono-data text-mono-data">
+<span class="">Fast (15)</span>
+<span class="">Balanced (30)</span>
+<span class="">Ultra-HQ (60)</span>
+</div>
+</div>
+<!-- CFG Guidance Scale Slider -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-body-md text-body-md text-on-surface font-medium">CFG Scale (Prompt Adherence)</label>
+<span class="font-mono-data text-mono-data text-primary px-space-xs py-0.5 bg-surface-container rounded" id="cfg-val">7.0</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-high h-1.5 rounded-lg appearance-none cursor-pointer" id="cfg-slider" max="18.0" min="1.0" oninput="document.getElementById('cfg-val').innerText = parseFloat(this.value).toFixed(1)" step="0.5" type="range" value="7.0">
+<div class="flex justify-between text-outline font-mono-data text-mono-data">
+<span class="">Creative (4.0)</span>
+<span class="">Standard (7.0)</span>
+<span class="">Rigid (14.0)</span>
+</div>
+</div>
+<!-- Sampler Algorithm & Scheduler Group -->
+<div class="grid grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-md text-body-md text-on-surface font-medium">Sampler</label>
+<select class="bg-surface-container text-on-surface font-mono-data text-mono-data px-space-md py-space-sm rounded-lg focus:outline-none">
+<option selected="">DPM++ 2M</option>
+<option>Euler Ancestral</option>
+<option>DDIM Linear</option>
+<option>Heun Karras</option>
+<option>UniPC 2</option>
+</select>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-md text-body-md text-on-surface font-medium">Scheduler</label>
+<select class="bg-surface-container text-on-surface font-mono-data text-mono-data px-space-md py-space-sm rounded-lg focus:outline-none">
+<option selected="">Karras</option>
+<option>Exponential</option>
+<option>Simple</option>
+<option>SGM Uniform</option>
+</select>
+</div>
+</div>
+<!-- Latent Seed -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-body-md text-body-md text-on-surface font-medium">Latent Generation Seed</label>
+<button class="font-mono-data text-mono-data text-primary hover:underline flex items-center gap-1" onclick="randomizeSeed()">
+<span class="material-symbols-outlined text-[13px]">refresh</span> Randomize
+          </button>
+</div>
+<div class="flex items-center gap-space-sm">
+<input class="flex-1 bg-surface-container text-on-surface font-mono-data text-mono-data px-space-md py-space-sm rounded-lg focus:outline-none" id="seed-input" type="text" value="89210432">
+<button class="px-space-md py-space-sm bg-surface-container hover:bg-surface-bright font-mono-data text-mono-data rounded-lg text-outline transition-colors" onclick="document.getElementById('seed-input').value = '-1'">
+            -1 (Random)
+          </button>
+</div>
+</div>
+<!-- Advanced Computation & Precision Toggles -->
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">FP16 Half-Precision Engine</span>
+<span class="font-mono-data text-mono-data text-outline">Optimizes VRAM consumption &amp; speed</span>
+</div>
+<!-- Micro Switch UI -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-10 h-5 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">Clip Skip Latent Layer</span>
+<span class="font-mono-data text-mono-data text-outline">Skips the final CLIP transformer block</span>
+</div>
+<span class="font-mono-data text-mono-data text-primary px-2 py-0.5 bg-surface-container-high rounded">Layer 2</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">Enable Tiled VAE Decoding</span>
+<span class="font-mono-data text-mono-data text-outline">Prevents out-of-memory crash on 4K upscales</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-10 h-5 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<!-- Node Graph & Workflow Link -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">hub</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">Open DAG Node Graph</span>
+<span class="font-mono-data text-mono-data text-outline">Visualize diffusion tensors</span>
+</div>
+</div>
+<button class="p-space-2xs text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="mt-auto pt-space-md flex items-center gap-space-sm">
+<button class="flex-1 py-space-sm px-space-md rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface font-body-md text-body-md transition-colors" onclick="resetDefaults()">
+          Reset Defaults
+        </button>
+<button class="flex-1 py-space-sm px-space-md rounded-lg bg-primary hover:bg-primary-fixed-dim text-on-primary font-body-md text-body-md font-medium transition-colors" onclick="toggleParameterInspector()">
+          Apply Settings
+        </button>
+</div>
+</div>
+</div>
+<!-- Scrim / Backdrop for Advanced Drawer on Mobile / Small Desktops -->
+<div class="fixed inset-0 bg-background/60 backdrop-blur-xs z-40 hidden transition-opacity" id="drawer-scrim" onclick="toggleParameterInspector()"></div>
+</div>
+<!-- Client-side Interactive Logic -->
+<script>
+  function autoExpand(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 144) + 'px';
+  }
+
+  function toggleToolsPopover() {
+    const popover = document.getElementById('attachments-popover');
+    const plusIcon = document.getElementById('plus-icon');
+    if (popover.classList.contains('hidden')) {
+      popover.classList.remove('hidden');
+      plusIcon.classList.add('rotate-45');
+    } else {
+      popover.classList.add('hidden');
+      plusIcon.classList.remove('rotate-45');
+    }
+  }
+
+  function toggleModelDropdown() {
+    const el = document.getElementById('model-dropdown');
+    el.classList.toggle('hidden');
+    document.getElementById('aspect-dropdown').classList.add('hidden');
+  }
+
+  function selectModel(name) {
+    document.getElementById('active-model-name').innerText = name;
+    document.getElementById('model-dropdown').classList.add('hidden');
+  }
+
+  function toggleAspectDropdown() {
+    const el = document.getElementById('aspect-dropdown');
+    el.classList.toggle('hidden');
+    document.getElementById('model-dropdown').classList.add('hidden');
+  }
+
+  function selectAspect(label, resolution) {
+    document.getElementById('active-aspect-ratio').innerText = label;
+    document.getElementById('aspect-dropdown').classList.add('hidden');
+  }
+
+  function toggleParameterInspector() {
+    const drawer = document.getElementById('advanced-drawer');
+    const scrim = document.getElementById('drawer-scrim');
+    
+    if (drawer.classList.contains('translate-x-full')) {
+      drawer.classList.remove('translate-x-full');
+      scrim.classList.remove('hidden');
+    } else {
+      drawer.classList.add('translate-x-full');
+      scrim.classList.add('hidden');
+    }
+  }
+
+  function randomizeSeed() {
+    const random = Math.floor(Math.random() * 90000000) + 10000000;
+    document.getElementById('seed-input').value = random;
+  }
+
+  function resetDefaults() {
+    document.getElementById('steps-slider').value = 30;
+    document.getElementById('steps-val').innerText = '30 steps';
+    document.getElementById('cfg-slider').value = 7.0;
+    document.getElementById('cfg-val').innerText = '7.0';
+    document.getElementById('seed-input').value = '89210432';
+  }
+
+  function copyPromptText() {
+    const promptText = "Vichea, architectural interior of brutalist sanctuary, ornate brass geometric relief partition, linen king platform bed, dramatic natural rim-lighting, morning mist";
+    navigator.clipboard.writeText(promptText);
+  }
+
+  function simulateInference() {
+    const btn = document.getElementById('btn-generate');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>Sampling...</span>';
+    btn.classList.add('opacity-80', 'pointer-events-none');
+    
+    setTimeout(() => {
+      btn.innerHTML = originalContent;
+      btn.classList.remove('opacity-80', 'pointer-events-none');
+    }, 1500);
+  }
+
+  // Close popovers on outside click
+  document.addEventListener('click', function(event) {
+    const toolsBtn = document.getElementById('btn-toggle-tools');
+    const popover = document.getElementById('attachments-popover');
+    if (popover && !popover.contains(event.target) && !toolsBtn.contains(event.target)) {
+      popover.classList.add('hidden');
+      const plusIcon = document.getElementById('plus-icon');
+      if (plusIcon) plusIcon.classList.remove('rotate-45');
+    }
+
+    const modelDrop = document.getElementById('model-dropdown');
+    if (modelDrop && !modelDrop.contains(event.target) && !event.target.closest('button[onclick*="toggleModelDropdown"]')) {
+      modelDrop.classList.add('hidden');
+    }
+
+    const aspectDrop = document.getElementById('aspect-dropdown');
+    if (aspectDrop && !aspectDrop.contains(event.target) && !event.target.closest('button[onclick*="toggleAspectDropdown"]')) {
+      aspectDrop.classList.add('hidden');
+    }
+  });
+
+  // Hotkey support (⌘ + Enter to generate)
+  document.addEventListener('keydown', function(event) {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      simulateInference();
+    }
+  });
+</script></main></div>
+
+</body></html>

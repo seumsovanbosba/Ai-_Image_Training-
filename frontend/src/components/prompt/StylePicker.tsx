@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StylePreset } from '../../types';
-import { Sparkles, Check, X, Search } from 'lucide-react';
+import { Check, X, Search } from 'lucide-react';
 
 interface StylePickerProps {
   styles: StylePreset[];
@@ -27,14 +27,11 @@ export const StylePicker: React.FC<StylePickerProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
       <div className="bg-surface-panel border border-surface-border rounded-xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-surface-border bg-surface-subpanel/60">
           <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-md bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400">
-              <Sparkles className="w-3.5 h-3.5" />
-            </div>
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-100 font-mono">Fooocus Style Presets</h2>
               <p className="text-[11px] text-slate-400">Select multiple artistic styles to blend modifiers</p>
@@ -122,7 +119,7 @@ export const StylePicker: React.FC<StylePickerProps> = ({
           </span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded bg-brand-600 hover:bg-brand-500 text-white font-medium shadow-sm transition"
+            className="px-4 py-1.5 rounded-lg bg-primary hover:bg-primary-fixed-dim text-on-primary font-medium shadow-sm transition"
           >
             Done
           </button>

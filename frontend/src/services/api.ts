@@ -1,4 +1,4 @@
-import { StylePreset, ResolutionPreset, ModelInfo, Board, ImageAsset } from '../types';
+import { StylePreset, ResolutionPreset, ModelInfo, Board, ImageAsset, SystemStatus } from '../types';
 
 const BASE_URL = '/api';
 
@@ -18,7 +18,7 @@ export const api = {
     return res.json();
   },
 
-  async getSystemStatus(): Promise<any> {
+  async getSystemStatus(): Promise<SystemStatus> {
     const res = await fetch(`${BASE_URL}/system/status`);
     return res.json();
   },
