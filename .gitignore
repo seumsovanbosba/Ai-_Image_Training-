@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+*.sqlite
+*.sqlite-journal
+*.pytest_cache/
+.pytest_cache/
+
+# Node
+node_modules/
+.vite/
+
+# Large Model Checkpoints & Weights
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+*.onnx
+models/checkpoints/*
+!models/checkpoints/.gitkeep
+models/loras/*
+!models/loras/.gitkeep
+models/vae/*
+!models/vae/.gitkeep
+models/controlnet/*
+!models/controlnet/.gitkeep
+models/cache/
+
+# Outputs
+outputs/*
+!outputs/.gitkeep
+
+# Cloned ComfyUI engine repository
+comfy_engine/ComfyUI/

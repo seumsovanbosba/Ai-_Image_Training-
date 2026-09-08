@@ -1,0 +1,8 @@
+# extra_model_paths.yaml: Directs ComfyUI to use central local models
+antigravity_suite:
+    base_path: C:/Ai Training/models/
+    checkpoints: checkpoints/
+    loras: loras/
+    vae: vae/
+    controlnet: controlnet/
+    upscale_models: upscale_models/

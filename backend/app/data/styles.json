@@ -1,0 +1,74 @@
+﻿[
+  {
+    "name": "Fooocus V2",
+    "category": "General",
+    "positive_prompt": "{prompt}, highly detailed, sharp focus, intricate detail, professional 8k wallpaper",
+    "negative_prompt": "ugly, deformed, disfigured, poor details, bad anatomy, malformed limbs, blurry, watermark"
+  },
+  {
+    "name": "Fooocus Masterpiece",
+    "category": "General",
+    "positive_prompt": "{prompt}, masterpiece, award-winning, stunning visual quality, finely detailed, elegant composition, high resolution",
+    "negative_prompt": "low quality, worst quality, draft, amateur, grainy, pixelated, signature, text"
+  },
+  {
+    "name": "Photographic",
+    "category": "Photographic",
+    "positive_prompt": "cinematic photo of {prompt}, 35mm photograph, 8k uhd, dslr, high quality, film grain, Fujifilm XT4, hyper-realistic, natural skin texture",
+    "negative_prompt": "drawing, painting, cartoon, 3d render, anime, plastic, artificial, oversaturated, blur, bad focus"
+  },
+  {
+    "name": "Cinematic",
+    "category": "Cinematic",
+    "positive_prompt": "cinematic still of {prompt}, emotional lighting, 35mm film, anamorphic lens flare, Panavision, color graded, dramatic lighting, depth of field, blockbuster atmosphere",
+    "negative_prompt": "cartoon, illustration, anime, amateur, home video, washed out, flat lighting, oversaturated"
+  },
+  {
+    "name": "Anime / Manga",
+    "category": "Anime",
+    "positive_prompt": "{prompt}, anime aesthetic, Studio Ghibli and Makoto Shinkai style, vibrant colors, clean cel shading, expressive eyes, detailed scenic background, key visual",
+    "negative_prompt": "photo, photorealistic, 3d render, western comic, noisy, dull colors, bad lineart"
+  },
+  {
+    "name": "Digital Art",
+    "category": "Art",
+    "positive_prompt": "{prompt}, digital painting, trending on ArtStation, dynamic pose, rich vivid colors, smooth brush strokes, concept art, octane render 8k",
+    "negative_prompt": "photograph, grainy, amateur sketch, pixelated, flat texture, low resolution"
+  },
+  {
+    "name": "Concept Art",
+    "category": "Art",
+    "positive_prompt": "{prompt}, AAA game concept art, production artwork, atmospheric environment, moody lighting, matte painting, trending on ArtStation, high poly",
+    "negative_prompt": "snapshot, amateur, blurry, messy, watermark, signature, poorly drawn"
+  },
+  {
+    "name": "Cyberpunk / Sci-Fi",
+    "category": "Cinematic",
+    "positive_prompt": "{prompt}, futuristic cyberpunk aesthetic, neon glow, reflective rain puddles, volumetric smoke, high tech holographic displays, night city lights, synthwave palette",
+    "negative_prompt": "pastoral, medieval, fantasy, washed out, dull, vintage, low contrast"
+  },
+  {
+    "name": "Dark Fantasy",
+    "category": "Art",
+    "positive_prompt": "{prompt}, dark fantasy style, Elden Ring and Dark Souls inspired, grimdark, gothic architecture, mystical fog, chiaroscuro lighting, intricate armor, ominous",
+    "negative_prompt": "cheerful, bright cartoon, saturated, sunny, anime, low effort"
+  },
+  {
+    "name": "Watercolor",
+    "category": "Art",
+    "positive_prompt": "{prompt}, delicate watercolor painting, soft pigment bleeding, fluid wet-on-wet technique, paper texture, subtle gradients, artisanal fine art",
+    "negative_prompt": "photograph, harsh digital lines, 3d render, oversaturated, neon, mechanical"
+  },
+  {
+    "name": "Origami / Papercraft",
+    "category": "Creative",
+    "positive_prompt": "{prompt}, crafted entirely from folded origami paper and layered cardstock, intricate paper folds, delicate tactile paper texture, soft studio lighting, tilt-shift",
+    "negative_prompt": "metal, plastic, photorealistic person, liquid, glossy"
+  },
+  {
+    "name": "Macro Photography",
+    "category": "Photographic",
+    "positive_prompt": "extreme macro close-up of {prompt}, incredible microscopic details, shallow depth of field, ring light illumination, tack sharp focus, 100mm macro lens",
+    "negative_prompt": "wide shot, landscape, distant, blurry, low resolution, flat"
+  }
+]
