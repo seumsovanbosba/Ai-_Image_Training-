@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Plus, Zap, ChevronDown, SlidersHorizontal,
-  ArrowUp, Square, ImagePlus, Filter, X
+  ArrowUp, Square, ImagePlus, Filter, X, Paintbrush
 } from 'lucide-react';
 import { ModelInfo } from '../../types';
 
@@ -31,6 +31,9 @@ interface PromptDockProps {
   onOpenNegative: () => void;
   onOpenAdvanced: () => void;
   onAttachImage?: () => void;
+  referenceImage?: { dataUrl: string; name: string } | null;
+  onPickReference?: (dataUrl: string, name: string) => void;
+  onClearReference?: () => void;
 }
 
 const shortModel = (name: string) =>
@@ -60,12 +63,16 @@ export const PromptDock: React.FC<PromptDockProps> = ({
   onOpenNegative,
   onOpenAdvanced,
   onAttachImage,
+  referenceImage,
+  onPickReference,
+  onClearReference,
 }) => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [aspectOpen, setAspectOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const activeAspect = ASPECT_RATIOS.find((a) => a.w === width && a.h === height) || ASPECT_RATIOS[0];
 
@@ -95,13 +102,47 @@ export const PromptDock: React.FC<PromptDockProps> = ({
     }
   };
 
+  const readReferenceFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === 'string') {
+        onPickReference?.(reader.result, file.name);
+        setToolsOpen(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) readReferenceFile(file);
+  };
+
   return (
     <div
       className={`fixed bottom-0 right-0 px-4 sm:px-8 pb-6 pt-1 z-30 pointer-events-none flex flex-col items-center ${
         sidebarCollapsed ? 'left-14' : 'left-sidebar'
       }`}
     >
-      <div ref={wrapRef} className="w-full max-w-dock pointer-events-auto relative">
+      <div
+        ref={wrapRef}
+        className="w-full max-w-dock pointer-events-auto relative"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+      >
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) readReferenceFile(file);
+            e.target.value = '';
+          }}
+        />
         {toolsOpen && (
           <div className="absolute -top-4 -translate-y-full left-0 w-72 bg-surface-container-high/95 backdrop-blur-2xl rounded-xl p-1 shadow-2xl z-40">
             <div className="px-2 py-0.5 text-outline font-mono text-label-caps uppercase tracking-wider">
@@ -109,13 +150,26 @@ export const PromptDock: React.FC<PromptDockProps> = ({
             </div>
             <div className="flex flex-col gap-1 mt-1">
               <button
-                onClick={() => { setToolsOpen(false); onAttachImage?.(); }}
+                onClick={() => {
+                  setToolsOpen(false);
+                  fileRef.current?.click();
+                }}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left"
               >
                 <ImagePlus className="w-[18px] h-[18px] text-primary" />
                 <span className="flex flex-col">
                   <span className="text-body-md">Image-to-Image Reference</span>
-                  <span className="font-mono text-mono-data text-outline">Upload guidance latents</span>
+                  <span className="font-mono text-mono-data text-outline">Edit or restyle an uploaded image</span>
+                </span>
+              </button>
+              <button
+                onClick={() => { setToolsOpen(false); onAttachImage?.(); }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left"
+              >
+                <Paintbrush className="w-[18px] h-[18px] text-tertiary" />
+                <span className="flex flex-col">
+                  <span className="text-body-md">Open Inpaint Canvas</span>
+                  <span className="font-mono text-mono-data text-outline">Mask and rewrite a region</span>
                 </span>
               </button>
               <button
@@ -143,6 +197,26 @@ export const PromptDock: React.FC<PromptDockProps> = ({
         )}
 
         <div className="bg-surface-container/95 backdrop-blur-2xl rounded-2xl shadow-dock p-2 flex flex-col gap-1 transition-shadow duration-300 focus-within:shadow-dockFocus">
+          {referenceImage && (
+            <div className="flex items-center gap-2 px-2 pt-1">
+              <img
+                src={referenceImage.dataUrl}
+                alt={referenceImage.name}
+                className="w-10 h-10 rounded-lg object-cover border border-outline-variant/40"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="text-body-md text-on-surface truncate">{referenceImage.name}</div>
+                <div className="font-mono text-mono-data text-outline">Image-to-image source · prompt describes the change</div>
+              </div>
+              <button
+                onClick={onClearReference}
+                className="p-1 rounded-md hover:bg-surface-bright text-outline hover:text-on-surface"
+                title="Remove reference image"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
           <div className="flex items-end gap-2 px-1">
             <button
               onClick={() => { setToolsOpen((v) => !v); setModelOpen(false); setAspectOpen(false); }}
@@ -157,7 +231,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Describe what you want to imagine with SDXL..."
+                placeholder={referenceImage ? 'Describe how to change the attached image...' : 'Describe what you want to imagine with SDXL...'}
                 rows={1}
                 className="w-full bg-transparent text-body-lg text-on-surface placeholder:text-outline resize-none py-1.5 focus:outline-none max-h-36 overflow-y-auto select-text"
               />

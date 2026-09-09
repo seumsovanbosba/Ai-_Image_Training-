@@ -37,6 +37,8 @@ interface AdvancedDrawerProps {
   denoise: number;
   setDenoise: (n: number) => void;
   showDenoise: boolean;
+  denoiseLabel?: string;
+  denoiseHint?: string;
   boards: Board[];
   selectedBoardId: number | null;
   setSelectedBoardId: (id: number | null) => void;
@@ -61,6 +63,8 @@ export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
   denoise,
   setDenoise,
   showDenoise,
+  denoiseLabel = 'Inpaint Denoise',
+  denoiseHint,
   boards,
   selectedBoardId,
   setSelectedBoardId,
@@ -138,10 +142,15 @@ export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
           {showDenoise && (
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <label className="text-body-md text-on-surface font-medium">Inpaint Denoise</label>
+                <label className="text-body-md text-on-surface font-medium">{denoiseLabel}</label>
                 <span className="font-mono text-mono-data text-primary px-1 py-0.5 bg-surface-container rounded">{denoise.toFixed(2)}</span>
               </div>
               <input type="range" min={0.1} max={1} step={0.05} value={denoise} onChange={(e) => setDenoise(Number(e.target.value))} className="w-full" />
+              {denoiseHint && (
+                <div className="flex justify-between text-outline font-mono text-mono-data">
+                  <span>{denoiseHint}</span>
+                </div>
+              )}
             </div>
           )}
 

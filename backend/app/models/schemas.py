@@ -37,6 +37,42 @@ class InpaintRequest(BaseModel):
     seed: Optional[int] = -1
     board_id: Optional[int] = None
 
+class Img2ImgRequest(BaseModel):
+    prompt: str
+    negative_prompt: Optional[str] = ""
+    styles: List[str] = Field(default_factory=list)
+    auto_expand: bool = True
+    expansion_level: str = "medium"
+    base_image: str  # Base64 data URL
+    denoise: float = 0.55
+    width: Optional[int] = None
+    height: Optional[int] = None
+    model_name: Optional[str] = None
+    sampler: str = "dpmpp_2m"
+    scheduler: str = "karras"
+    steps: int = 30
+    cfg_scale: float = 7.0
+    seed: Optional[int] = -1
+    board_id: Optional[int] = None
+
+class UpscaleRequest(BaseModel):
+    prompt: str
+    negative_prompt: Optional[str] = ""
+    styles: List[str] = Field(default_factory=list)
+    auto_expand: bool = False
+    expansion_level: str = "none"
+    base_image: str  # Base64 data URL of the current result
+    denoise: float = 0.25
+    scale: float = 2.0
+    max_side: int = 2048
+    model_name: Optional[str] = None
+    sampler: str = "dpmpp_2m"
+    scheduler: str = "karras"
+    steps: int = 30
+    cfg_scale: float = 7.0
+    seed: Optional[int] = -1
+    board_id: Optional[int] = None
+
 class BoardCreate(BaseModel):
     name: str
     description: Optional[str] = None

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Sparkles, User, Zap, Maximize2, BarChart3, Monitor, Paintbrush,
-  Palette, GitBranch, Copy, Download, Check, Loader2, Scan, Columns2
+  Palette, GitBranch, Copy, Download, Check, Loader2, Scan, Columns2, ImagePlus
 } from 'lucide-react';
 import { ChatTurn, ImageAsset } from '../../types';
 
@@ -26,8 +26,9 @@ interface ConversationTimelineProps {
   onOpenDag: () => void;
   onOpenMetadata: (image: ImageAsset) => void;
   onFullscreen: (image: ImageAsset) => void;
-  onVary: (prompt: string) => void;
+  onVary: (image: ImageAsset) => void;
   onUpscale: (image: ImageAsset) => void;
+  onUseAsReference: (image: ImageAsset) => void;
 }
 
 const formatTime = (iso: string) => {
@@ -58,6 +59,7 @@ export const ConversationTimeline: React.FC<ConversationTimelineProps> = ({
   onFullscreen,
   onVary,
   onUpscale,
+  onUseAsReference,
 }) => {
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -122,6 +124,7 @@ export const ConversationTimeline: React.FC<ConversationTimelineProps> = ({
                     onFullscreen={onFullscreen}
                     onVary={onVary}
                     onUpscale={onUpscale}
+                    onUseAsReference={onUseAsReference}
                   />
                 </div>
               </div>
@@ -144,11 +147,12 @@ const ResultCard: React.FC<{
   onOpenDag: () => void;
   onOpenMetadata: (image: ImageAsset) => void;
   onFullscreen: (image: ImageAsset) => void;
-  onVary: (prompt: string) => void;
+  onVary: (image: ImageAsset) => void;
   onUpscale: (image: ImageAsset) => void;
+  onUseAsReference: (image: ImageAsset) => void;
 }> = ({
   turn, copiedId, onCopyPrompt, onDownload, onInpaint, onOpenCanvas,
-  onOpenDag, onOpenMetadata, onFullscreen, onVary, onUpscale,
+  onOpenDag, onOpenMetadata, onFullscreen, onVary, onUpscale, onUseAsReference,
 }) => {
   const image = turn.image;
   const preview = turn.progress?.preview_base64;
@@ -281,11 +285,20 @@ const ResultCard: React.FC<{
               <span>Open in Canvas</span>
             </button>
             <button
-              onClick={() => onVary(turn.prompt)}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm"
+              disabled={!image}
+              onClick={() => image && onVary(image)}
+              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm disabled:opacity-40"
             >
               <GitBranch className="w-4 h-4 text-outline" />
               <span>Vary Subtle</span>
+            </button>
+            <button
+              disabled={!image}
+              onClick={() => image && onUseAsReference(image)}
+              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm disabled:opacity-40"
+            >
+              <ImagePlus className="w-4 h-4 text-primary" />
+              <span>Use as Reference</span>
             </button>
           </div>
           <div className="flex items-center gap-1 ml-auto">

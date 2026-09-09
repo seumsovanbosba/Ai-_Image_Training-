@@ -12,6 +12,7 @@ import { MetadataModal } from './components/common/MetadataModal';
 import { SettingsModal } from './components/common/SettingsModal';
 import { api } from './services/api';
 import { ProgressWebSocket } from './services/websocket';
+import { urlToDataUrl } from './utils/image';
 import {
   StylePreset, ResolutionPreset, ModelInfo, Board,
   ImageAsset, TaskProgress, WorkspaceTab, ChatTurn, RecentChat
@@ -55,6 +56,8 @@ export const App: React.FC = () => {
   const [scheduler, setScheduler] = useState('karras');
   const [seed, setSeed] = useState(-1);
   const [denoise, setDenoise] = useState(0.85);
+  const [img2imgDenoise, setImg2imgDenoise] = useState(0.55);
+  const [referenceImage, setReferenceImage] = useState<{ dataUrl: string; name: string } | null>(null);
   const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null);
 
   const [canvasBaseImage, setCanvasBaseImage] = useState<string | null>(null);
@@ -170,6 +173,7 @@ export const App: React.FC = () => {
     setActiveRecentId(null);
     setPendingTurn(null);
     setPrompt('');
+    setReferenceImage(null);
     setActiveTab('studio');
   };
 
@@ -185,6 +189,10 @@ export const App: React.FC = () => {
     width?: number;
     height?: number;
     seed?: number;
+    mode?: 'txt2img' | 'img2img' | 'upscale' | 'vary';
+    baseImage?: string;
+    denoise?: number;
+    autoExpand?: boolean;
   }) => {
     const nextPrompt = (override?.prompt ?? prompt).trim();
     if (!nextPrompt || isGenerating) return;
@@ -192,6 +200,8 @@ export const App: React.FC = () => {
     const runWidth = override?.width ?? width;
     const runHeight = override?.height ?? height;
     const runSeed = override?.seed ?? seed;
+    const runAutoExpand = override?.autoExpand ?? autoExpand;
+    const referenceDataUrl = override?.baseImage || referenceImage?.dataUrl || null;
 
     setIsGenerating(true);
     setCurrentProgress(null);
@@ -210,12 +220,12 @@ export const App: React.FC = () => {
 
     try {
       let task_id: string;
-      if (activeTab === 'canvas' && inpaintData) {
+      if (activeTab === 'canvas' && inpaintData && override?.mode !== 'upscale' && override?.mode !== 'vary' && override?.mode !== 'img2img') {
         const res = await api.inpaint({
           prompt: nextPrompt,
           negative_prompt: negativePrompt,
           styles: selectedStyles,
-          auto_expand: autoExpand,
+          auto_expand: runAutoExpand,
           base_image: inpaintData.baseDataUrl,
           mask_image: inpaintData.maskDataUrl,
           denoise,
@@ -230,12 +240,50 @@ export const App: React.FC = () => {
           board_id: selectedBoardId,
         });
         task_id = res.task_id;
+      } else if (override?.mode === 'upscale' && override.baseImage) {
+        const res = await api.upscale({
+          prompt: nextPrompt,
+          negative_prompt: negativePrompt,
+          styles: selectedStyles,
+          auto_expand: false,
+          expansion_level: 'none',
+          base_image: override.baseImage,
+          denoise: override.denoise ?? 0.25,
+          scale: 2,
+          model_name: selectedModel,
+          sampler,
+          scheduler,
+          steps,
+          cfg_scale: cfgScale,
+          seed: runSeed,
+          board_id: selectedBoardId,
+        });
+        task_id = res.task_id;
+      } else if ((override?.mode === 'vary' || override?.mode === 'img2img' || (activeTab !== 'canvas' && referenceImage)) && referenceDataUrl) {
+        const res = await api.img2img({
+          prompt: nextPrompt,
+          negative_prompt: negativePrompt,
+          styles: selectedStyles,
+          auto_expand: runAutoExpand,
+          expansion_level: expansionLevel,
+          base_image: referenceDataUrl,
+          denoise: override?.denoise ?? img2imgDenoise,
+          ...(override?.mode === 'vary' ? { width: runWidth, height: runHeight } : {}),
+          model_name: selectedModel,
+          sampler,
+          scheduler,
+          steps,
+          cfg_scale: cfgScale,
+          seed: runSeed,
+          board_id: selectedBoardId,
+        });
+        task_id = res.task_id;
       } else {
         const res = await api.generate({
           prompt: nextPrompt,
           negative_prompt: negativePrompt,
           styles: selectedStyles,
-          auto_expand: autoExpand,
+          auto_expand: runAutoExpand,
           expansion_level: expansionLevel,
           width: runWidth,
           height: runHeight,
@@ -292,7 +340,7 @@ export const App: React.FC = () => {
   }, [
     prompt, isGenerating, activeTab, inpaintData, negativePrompt, selectedStyles,
     autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
-    steps, cfgScale, seed, selectedBoardId, denoise,
+    steps, cfgScale, seed, selectedBoardId, denoise, img2imgDenoise, referenceImage,
   ]);
 
   const handleInterrupt = async () => {
@@ -459,17 +507,49 @@ export const App: React.FC = () => {
               onOpenDag={() => setActiveTab('dag')}
               onOpenMetadata={(img) => { setSelectedImage(img); setShowMetadataModal(true); }}
               onFullscreen={(img) => { setSelectedImage(img); setShowFullScreen(true); }}
-              onVary={(p) => {
-                setPrompt(p);
-                startGeneration({ prompt: p, seed: Math.floor(Math.random() * 2147483647) });
+              onVary={async (img) => {
+                try {
+                  const dataUrl = await urlToDataUrl(img.url);
+                  setPrompt(img.prompt);
+                  startGeneration({
+                    prompt: img.prompt,
+                    width: img.width,
+                    height: img.height,
+                    seed: Math.floor(Math.random() * 2147483647),
+                    mode: 'vary',
+                    baseImage: dataUrl,
+                    denoise: 0.35,
+                    autoExpand: false,
+                  });
+                } catch (err) {
+                  console.error('Failed to vary image', err);
+                }
               }}
-              onUpscale={(img) => {
-                setPrompt(img.prompt);
-                startGeneration({
-                  prompt: img.prompt,
-                  width: Math.min(img.width * 2, 2048),
-                  height: Math.min(img.height * 2, 2048),
-                });
+              onUpscale={async (img) => {
+                try {
+                  const dataUrl = await urlToDataUrl(img.url);
+                  setPrompt(img.prompt);
+                  startGeneration({
+                    prompt: img.prompt,
+                    mode: 'upscale',
+                    baseImage: dataUrl,
+                    denoise: 0.25,
+                    autoExpand: false,
+                    seed: img.seed,
+                  });
+                } catch (err) {
+                  console.error('Failed to upscale image', err);
+                }
+              }}
+              onUseAsReference={async (img) => {
+                try {
+                  const dataUrl = await urlToDataUrl(img.url);
+                  setReferenceImage({ dataUrl, name: img.filename || 'generated.png' });
+                  if (!prompt.trim()) setPrompt(img.prompt);
+                  setActiveTab('studio');
+                } catch (err) {
+                  console.error('Failed to attach reference', err);
+                }
               }}
             />
           )}
@@ -494,6 +574,12 @@ export const App: React.FC = () => {
               onOpenNegative={() => setShowAdvanced(true)}
               onOpenAdvanced={() => setShowAdvanced(true)}
               onAttachImage={() => setActiveTab('canvas')}
+              referenceImage={referenceImage}
+              onPickReference={(dataUrl, name) => {
+                setReferenceImage({ dataUrl, name });
+                setActiveTab('studio');
+              }}
+              onClearReference={() => setReferenceImage(null)}
             />
           )}
         </main>
@@ -512,9 +598,11 @@ export const App: React.FC = () => {
         setScheduler={setScheduler}
         seed={seed}
         setSeed={setSeed}
-        denoise={denoise}
-        setDenoise={setDenoise}
-        showDenoise={activeTab === 'canvas'}
+        denoise={activeTab === 'canvas' ? denoise : img2imgDenoise}
+        setDenoise={activeTab === 'canvas' ? setDenoise : setImg2imgDenoise}
+        showDenoise={activeTab === 'canvas' || Boolean(referenceImage)}
+        denoiseLabel={activeTab === 'canvas' ? 'Inpaint Denoise' : 'Image-to-Image Denoise'}
+        denoiseHint="Low keeps the source image. High follows the prompt more."
         boards={boards}
         selectedBoardId={selectedBoardId}
         setSelectedBoardId={setSelectedBoardId}

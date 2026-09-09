@@ -245,12 +245,18 @@ class ComfyUIClient:
         # Determine prompt and dimensions from workflow DAG
         prompt_text = "Generated Image"
         width, height = 1024, 1024
+        source_path = None
         for k, v in workflow_dag.items():
             if v.get("class_type") == "CLIPTextEncode" and k == "2":
                 prompt_text = v.get("inputs", {}).get("text", prompt_text)
             if v.get("class_type") == "EmptyLatentImage":
                 width = v.get("inputs", {}).get("width", 1024)
                 height = v.get("inputs", {}).get("height", 1024)
+            if v.get("class_type") == "ImageScale":
+                width = v.get("inputs", {}).get("width", width)
+                height = v.get("inputs", {}).get("height", height)
+            if v.get("class_type") == "LoadImage":
+                source_path = settings.OUTPUTS_DIR / v.get("inputs", {}).get("image", "")
 
         for step in range(1, steps + 1):
             await asyncio.sleep(0.15)
@@ -278,20 +284,32 @@ class ComfyUIClient:
             })
 
         # Generate final crisp output image
-        final_img = Image.new("RGB", (width, height), color=(15, 23, 42))
-        draw = ImageDraw.Draw(final_img)
-        # Decorative gradient-like grid
-        for i in range(0, width, 64):
-            draw.line([(i, 0), (i, height)], fill=(30, 41, 59), width=1)
-        for j in range(0, height, 64):
-            draw.line([(0, j), (width, j)], fill=(30, 41, 59), width=1)
+        final_img = None
+        if source_path and source_path.exists():
+            try:
+                with Image.open(source_path) as src:
+                    final_img = src.convert("RGB").resize((width, height), Image.Resampling.LANCZOS)
+            except Exception:
+                final_img = None
+        if final_img is None:
+            final_img = Image.new("RGB", (width, height), color=(15, 23, 42))
+            draw = ImageDraw.Draw(final_img)
+            # Decorative gradient-like grid
+            for i in range(0, width, 64):
+                draw.line([(i, 0), (i, height)], fill=(30, 41, 59), width=1)
+            for j in range(0, height, 64):
+                draw.line([(0, j), (width, j)], fill=(30, 41, 59), width=1)
 
-        draw.rounded_rectangle([40, 40, width - 40, height - 40], radius=16, outline=(99, 102, 241), width=3)
-        draw.text((60, 60), "Antigravity AI Generation Suite (Offline Engine)", fill=(248, 250, 252))
-        draw.text((60, 100), f"Resolution: {width}x{height}", fill=(148, 163, 184))
-        draw.text((60, 130), f"Prompt: {prompt_text[:80]}", fill=(226, 232, 240))
-        draw.text((60, 160), f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}", fill=(148, 163, 184))
-        draw.text((60, 200), "Status: 100% Offline Generation Complete", fill=(74, 222, 128))
+            draw.rounded_rectangle([40, 40, width - 40, height - 40], radius=16, outline=(99, 102, 241), width=3)
+            draw.text((60, 60), "Antigravity AI Generation Suite (Offline Engine)", fill=(248, 250, 252))
+            draw.text((60, 100), f"Resolution: {width}x{height}", fill=(148, 163, 184))
+            draw.text((60, 130), f"Prompt: {prompt_text[:80]}", fill=(226, 232, 240))
+            draw.text((60, 160), f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}", fill=(148, 163, 184))
+            draw.text((60, 200), "Status: 100% Offline Generation Complete", fill=(74, 222, 128))
+        else:
+            draw = ImageDraw.Draw(final_img)
+            draw.rectangle([12, 12, min(width - 12, 520), 52], fill=(15, 23, 42))
+            draw.text((20, 22), f"Image-conditioned pass  {width}x{height}", fill=(74, 222, 128))
 
         filename = f"antigravity_{task_id[:8]}_{int(time.time())}.png"
         filepath = settings.OUTPUTS_DIR / filename
