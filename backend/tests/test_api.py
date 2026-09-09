@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 import base64
 from io import BytesIO
 from PIL import Image
@@ -10,11 +10,24 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.main import app
-from app.database import init_db
+from app.database import init_db, engine
+from sqlmodel import Session, select
+from app.models.generation import Board
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
     init_db()
+    with Session(engine) as s:
+        existing = s.exec(select(Board).where(Board.name == "Test Favorites")).all()
+        for b in existing:
+            s.delete(b)
+        s.commit()
+    yield
+    with Session(engine) as s:
+        existing = s.exec(select(Board).where(Board.name == "Test Favorites")).all()
+        for b in existing:
+            s.delete(b)
+        s.commit()
 
 client = TestClient(app)
 

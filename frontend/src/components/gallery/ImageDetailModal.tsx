@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ImageAsset, Board } from '../../types';
 import { 
   X, Download, Copy, Trash2, Send, FolderPlus, 
-  Sparkles, Check, Info, Calendar, Layers, Paintbrush 
+  Sparkles, Check, Info, Calendar, Layers, Paintbrush, Monitor 
 } from 'lucide-react';
 
 interface ImageDetailModalProps {
@@ -13,6 +13,7 @@ interface ImageDetailModalProps {
   onReuseSettings: (image: ImageAsset) => void;
   onDeleteImage: (imageId: number) => Promise<void>;
   onAssignBoard: (imageId: number, boardId: number | null) => Promise<void>;
+  onUpscale?: (image: ImageAsset) => void;
 }
 
 export const ImageDetailModal: React.FC<ImageDetailModalProps> = ({
@@ -23,6 +24,7 @@ export const ImageDetailModal: React.FC<ImageDetailModalProps> = ({
   onReuseSettings,
   onDeleteImage,
   onAssignBoard,
+  onUpscale,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -83,6 +85,15 @@ export const ImageDetailModal: React.FC<ImageDetailModalProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-brand-400" />
               <span>Reuse Settings</span>
             </button>
+            {onUpscale && (
+              <button
+                onClick={() => onUpscale(image)}
+                className="col-span-2 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-md bg-primary text-on-primary hover:bg-primary-fixed-dim font-medium shadow-sm transition"
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                <span>Upscale 2x (Hi-Res Refine)</span>
+              </button>
+            )}
           </div>
 
           {/* Conditioning Prompt */}

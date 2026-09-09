@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 import json
 import logging
 import uuid
@@ -110,10 +110,16 @@ class ComfyUIClient:
                         err = await resp.text()
                         raise RuntimeError(f"ComfyUI prompt error {resp.status}: {err}")
         else:
-            # Fallback mock simulator mode
-            logger.info(f"ComfyUI offline; running task {task_id} in offline simulation mode.")
-            asyncio.create_task(self._simulate_generation(task_id, workflow_dag))
-            return task_id
+            # If ComfyUI is installed, raise error so user is alerted rather than misled by synthetic mock graphic
+            comfy_main = settings.BASE_DIR / "comfy_engine" / "ComfyUI" / "main.py"
+            if comfy_main.exists():
+                logger.error(f"ComfyUI engine is offline or still starting up at {self.base_url}. Task {task_id} aborted.")
+                raise RuntimeError("ComfyUI engine is offline or still starting up. Please wait for the engine to finish loading on port 8188.")
+            else:
+                # Fallback mock simulator mode only when ComfyUI is not installed at all
+                logger.info(f"ComfyUI not installed; running task {task_id} in offline simulation mode.")
+                asyncio.create_task(self._simulate_generation(task_id, workflow_dag))
+                return task_id
 
     async def interrupt(self) -> bool:
         '''
@@ -156,7 +162,7 @@ class ComfyUIClient:
 
     async def start_ws_listener(self):
         '''
-        Connects to ComfyUI's WebSocket to receive execution progress and previews.
+        Connects to ComfyUI's WebSocket to receive execution progress, errors, and previews.
         '''
         self._is_running = True
         while self._is_running:
@@ -220,6 +226,30 @@ class ComfyUIClient:
                                         "output_images": saved_filenames
                                     })
                                     del self.active_tasks[prompt_id]
+                            elif msg_type == "execution_error":
+                                prompt_id = msg_data.get("prompt_id")
+                                exception_message = msg_data.get("exception_message", "Unknown execution error")
+                                node_type = msg_data.get("node_type", "ComfyNode")
+                                err_msg = f"{node_type} error: {exception_message}"
+                                logger.error(f"ComfyUI execution error for prompt {prompt_id}: {err_msg}")
+                                task_info = self.active_tasks.get(prompt_id)
+                                if task_info:
+                                    await self._notify(task_info["task_id"], {
+                                        "type": "failed",
+                                        "status": "failed",
+                                        "error": err_msg
+                                    })
+                                    del self.active_tasks[prompt_id]
+                            elif msg_type == "execution_interrupted":
+                                prompt_id = msg_data.get("prompt_id")
+                                logger.info(f"ComfyUI execution interrupted for prompt {prompt_id}")
+                                task_info = self.active_tasks.get(prompt_id)
+                                if task_info:
+                                    await self._notify(task_info["task_id"], {
+                                        "type": "interrupted",
+                                        "status": "interrupted"
+                                    })
+                                    del self.active_tasks[prompt_id]
                         elif isinstance(msg, bytes):
                             # Binary latent preview: 8-byte header followed by JPEG/PNG bytes
                             if len(msg) > 8:
@@ -233,6 +263,14 @@ class ComfyUIClient:
                                     })
             except Exception as e:
                 logger.debug(f"ComfyUI WS reconnecting in 3s... ({e})")
+                # Fail any pending active tasks so frontend doesn't hang indefinitely
+                for prompt_id, task_info in list(self.active_tasks.items()):
+                    await self._notify(task_info["task_id"], {
+                        "type": "failed",
+                        "status": "failed",
+                        "error": f"ComfyUI engine disconnected: {e}"
+                    })
+                    del self.active_tasks[prompt_id]
                 await asyncio.sleep(3)
 
     async def _simulate_generation(self, task_id: str, workflow_dag: Dict[str, Any]):

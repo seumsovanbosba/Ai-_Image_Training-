@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Plus, Zap, ChevronDown, SlidersHorizontal,
+<<<<<<< HEAD
   ArrowUp, Square, ImagePlus, Filter, X, Paintbrush
+=======
+  ArrowUp, Square, ImagePlus, Filter, X, Wand2
+>>>>>>> refs/remotes/origin/main
 } from 'lucide-react';
-import { ModelInfo } from '../../types';
+import { ModelInfo, ImageReference } from '../../types';
 
 export const ASPECT_RATIOS = [
   { label: '1:1 Square', sub: '1024×1024', w: 1024, h: 1024 },
@@ -31,9 +35,17 @@ interface PromptDockProps {
   onOpenNegative: () => void;
   onOpenAdvanced: () => void;
   onAttachImage?: () => void;
+<<<<<<< HEAD
   referenceImage?: { dataUrl: string; name: string } | null;
   onPickReference?: (dataUrl: string, name: string) => void;
   onClearReference?: () => void;
+=======
+  imageReference?: ImageReference | null;
+  onUpdateReferenceFidelity?: (fidelity: number) => void;
+  onRemoveReference?: () => void;
+  autoExpand?: boolean;
+  setAutoExpand?: (v: boolean) => void;
+>>>>>>> refs/remotes/origin/main
 }
 
 const shortModel = (name: string) =>
@@ -63,9 +75,17 @@ export const PromptDock: React.FC<PromptDockProps> = ({
   onOpenNegative,
   onOpenAdvanced,
   onAttachImage,
+<<<<<<< HEAD
   referenceImage,
   onPickReference,
   onClearReference,
+=======
+  imageReference,
+  onUpdateReferenceFidelity,
+  onRemoveReference,
+  autoExpand = false,
+  setAutoExpand,
+>>>>>>> refs/remotes/origin/main
 }) => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
@@ -192,11 +212,29 @@ export const PromptDock: React.FC<PromptDockProps> = ({
                   <span className="font-mono text-mono-data text-outline">Prune artifacts, oversaturation</span>
                 </span>
               </button>
+              <button
+                onClick={() => { setAutoExpand?.(!autoExpand); setToolsOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left"
+              >
+                <Wand2 className={`w-[18px] h-[18px] ${autoExpand ? 'text-amber-400' : 'text-outline'}`} />
+                <span className="flex flex-col">
+                  <span className="text-body-md flex items-center gap-1.5">
+                    Fooocus Auto-Expand
+                    <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${autoExpand ? 'bg-amber-500/20 text-amber-300' : 'bg-surface-container text-outline'}`}>
+                      {autoExpand ? 'ON' : 'OFF'}
+                    </span>
+                  </span>
+                  <span className="font-mono text-mono-data text-outline">
+                    {autoExpand ? 'Enriching with lighting & details' : 'Using raw prompt without additions'}
+                  </span>
+                </span>
+              </button>
             </div>
           </div>
         )}
 
         <div className="bg-surface-container/95 backdrop-blur-2xl rounded-2xl shadow-dock p-2 flex flex-col gap-1 transition-shadow duration-300 focus-within:shadow-dockFocus">
+<<<<<<< HEAD
           {referenceImage && (
             <div className="flex items-center gap-2 px-2 pt-1">
               <img
@@ -217,6 +255,53 @@ export const PromptDock: React.FC<PromptDockProps> = ({
               </button>
             </div>
           )}
+=======
+          {/* Active Image-to-Image Reference Badge */}
+          {imageReference && (
+            <div className="flex items-center justify-between px-3 py-1.5 mb-0.5 rounded-xl bg-surface-container-high/90 border border-primary/30 text-on-surface text-xs font-mono">
+              <div className="flex items-center gap-2.5 truncate">
+                <div className="w-8 h-8 rounded-lg overflow-hidden border border-primary/50 shrink-0 bg-black">
+                  <img src={imageReference.dataUrl} alt="Ref" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col truncate">
+                  <span className="text-primary font-semibold text-[11px] truncate max-w-[150px]">
+                    {imageReference.name}
+                  </span>
+                  <span className="text-[10px] text-outline">
+                    {imageReference.width && imageReference.height ? `${imageReference.width}×${imageReference.height}` : 'Img2Img Reference'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-1.5" title="Image Fidelity: Higher stays closer to original composition, lower allows more creative freedom">
+                  <span className="text-[10px] text-outline">Fidelity:</span>
+                  <input
+                    type="range"
+                    min="10"
+                    max="90"
+                    step="5"
+                    value={Math.round((imageReference.fidelity ?? 0.65) * 100)}
+                    onChange={(e) => onUpdateReferenceFidelity?.(Number(e.target.value) / 100)}
+                    className="w-20 h-1 accent-primary cursor-pointer"
+                  />
+                  <span className="text-[11px] text-primary font-bold w-8 text-right">
+                    {Math.round((imageReference.fidelity ?? 0.65) * 100)}%
+                  </span>
+                </div>
+
+                <button
+                  onClick={onRemoveReference}
+                  className="p-1 rounded-md hover:bg-surface-bright text-outline hover:text-rose-400 transition"
+                  title="Remove reference image"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+>>>>>>> refs/remotes/origin/main
           <div className="flex items-end gap-2 px-1">
             <button
               onClick={() => { setToolsOpen((v) => !v); setModelOpen(false); setAspectOpen(false); }}
@@ -326,6 +411,19 @@ export const PromptDock: React.FC<PromptDockProps> = ({
                   </button>
                 </div>
               ))}
+
+              <button
+                onClick={() => setAutoExpand?.(!autoExpand)}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-lg font-mono text-mono-data transition-colors ${
+                  autoExpand
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : 'bg-surface-container-high hover:bg-surface-bright text-outline hover:text-on-surface'
+                }`}
+                title={autoExpand ? 'Fooocus Auto-Expand: ON (Enriches prompt with cinematic lighting & micro-details)' : 'Fooocus Auto-Expand: OFF (Exact prompt as entered)'}
+              >
+                <Wand2 className="w-3.5 h-3.5" />
+                <span>{autoExpand ? 'Auto-Expand: ON' : 'Auto-Expand: OFF'}</span>
+              </button>
             </div>
 
             <button

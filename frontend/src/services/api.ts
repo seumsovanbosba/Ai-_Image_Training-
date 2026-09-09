@@ -43,7 +43,11 @@ export const api = {
     return res.json();
   },
 
+<<<<<<< HEAD
   async img2img(data: any): Promise<{ task_id: string; seed: number; processed_prompt: any }> {
+=======
+  async img2img(data: any): Promise<{ task_id: string; seed: number; processed_prompt: any; denoise?: number }> {
+>>>>>>> refs/remotes/origin/main
     const res = await fetch(`${BASE_URL}/img2img`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -53,7 +57,11 @@ export const api = {
     return res.json();
   },
 
+<<<<<<< HEAD
   async upscale(data: any): Promise<{ task_id: string; seed: number; processed_prompt: any }> {
+=======
+  async upscale(data: any): Promise<{ task_id: string; seed: number; target_width: number; target_height: number }> {
+>>>>>>> refs/remotes/origin/main
     const res = await fetch(`${BASE_URL}/upscale`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
