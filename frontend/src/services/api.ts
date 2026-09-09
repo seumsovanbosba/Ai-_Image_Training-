@@ -43,6 +43,26 @@ export const api = {
     return res.json();
   },
 
+  async img2img(data: any): Promise<{ task_id: string; seed: number; processed_prompt: any; denoise?: number }> {
+    const res = await fetch(`${BASE_URL}/img2img`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async upscale(data: any): Promise<{ task_id: string; seed: number; target_width: number; target_height: number }> {
+    const res = await fetch(`${BASE_URL}/upscale`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
   async interrupt(): Promise<{ status: string; interrupted: boolean }> {
     const res = await fetch(`${BASE_URL}/interrupt`, { method: 'POST' });
     return res.json();

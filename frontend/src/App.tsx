@@ -14,8 +14,10 @@ import { api } from './services/api';
 import { ProgressWebSocket } from './services/websocket';
 import {
   StylePreset, ResolutionPreset, ModelInfo, Board,
-  ImageAsset, TaskProgress, WorkspaceTab, ChatTurn, RecentChat
+  ImageAsset, TaskProgress, WorkspaceTab, ChatTurn, RecentChat,
+  ImageReference
 } from './types';
+import { ImageReferenceModal } from './components/studio/ImageReferenceModal';
 import { ParticleField } from './components/fx/ParticleField';
 import { X } from 'lucide-react';
 
@@ -44,8 +46,8 @@ export const App: React.FC = () => {
     'low quality, artifacts, blurry, bad anatomy, blown out contrast, chromatic aberration, cartoon, oversaturated'
   );
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [autoExpand] = useState(true);
-  const [expansionLevel] = useState('medium');
+  const [autoExpand, setAutoExpand] = useState(false);
+  const [expansionLevel, setExpansionLevel] = useState('medium');
   const [selectedModel, setSelectedModel] = useState('sd_xl_base_1.0.safetensors');
   const [width, setWidth] = useState(1024);
   const [height, setHeight] = useState(1024);
@@ -64,6 +66,9 @@ export const App: React.FC = () => {
     width: number;
     height: number;
   } | null>(null);
+
+  const [imageReference, setImageReference] = useState<ImageReference | null>(null);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentProgress, setCurrentProgress] = useState<TaskProgress | null>(null);
@@ -102,6 +107,18 @@ export const App: React.FC = () => {
       }
     };
     initData();
+
+    // Periodically poll engine status so UI badge updates live
+    const pollInterval = setInterval(async () => {
+      try {
+        const status = await api.getSystemStatus();
+        setComfyOnline(status.comfyui_online);
+      } catch (err) {
+        setComfyOnline(false);
+      }
+    }, 4000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   useEffect(() => {
@@ -230,6 +247,26 @@ export const App: React.FC = () => {
           board_id: selectedBoardId,
         });
         task_id = res.task_id;
+      } else if (imageReference) {
+        const res = await api.img2img({
+          prompt: nextPrompt,
+          negative_prompt: negativePrompt,
+          styles: selectedStyles,
+          auto_expand: autoExpand,
+          expansion_level: expansionLevel,
+          image: imageReference.dataUrl,
+          fidelity: imageReference.fidelity ?? 0.65,
+          width: runWidth,
+          height: runHeight,
+          model_name: selectedModel,
+          sampler,
+          scheduler,
+          steps,
+          cfg_scale: cfgScale,
+          seed: runSeed,
+          board_id: selectedBoardId,
+        });
+        task_id = res.task_id;
       } else {
         const res = await api.generate({
           prompt: nextPrompt,
@@ -252,6 +289,121 @@ export const App: React.FC = () => {
 
       const ws = new ProgressWebSocket(
         task_id,
+        (progress) => {
+          setCurrentProgress(progress);
+          const elapsed = (Date.now() - startTime) / 1000;
+          if (progress.type === 'failed' || progress.status === 'failed') {
+            setIsGenerating(false);
+            setPendingTurn((prev) => prev ? {
+              ...prev,
+              generating: false,
+              progress,
+              elapsedSeconds: Number(elapsed.toFixed(2)),
+            } : prev);
+            return;
+          }
+          if (progress.type === 'interrupted' || progress.status === 'interrupted') {
+            setIsGenerating(false);
+            setPendingTurn(null);
+            return;
+          }
+          setPendingTurn((prev) => prev ? {
+            ...prev,
+            generating: true,
+            progress,
+            elapsedSeconds: Number(elapsed.toFixed(2)),
+          } : prev);
+        },
+        async () => {
+          setIsGenerating(false);
+          const elapsed = (Date.now() - startTime) / 1000;
+          const updatedImages = await api.getImages();
+          setImages(updatedImages);
+          const latest = updatedImages[0];
+          if (latest) setSelectedImage(latest);
+          setPendingTurn((prev) => prev && latest && prev.progress?.type !== 'failed' && prev.progress?.status !== 'failed' ? {
+            ...prev,
+            generating: false,
+            image: latest,
+            elapsedSeconds: Number(elapsed.toFixed(2)),
+          } : prev);
+          setTimeout(() => {
+            setPendingTurn((prev) => (prev?.progress?.type === 'failed' || prev?.progress?.status === 'failed' ? prev : null));
+          }, 100);
+        },
+        (err) => {
+          console.error('WebSocket error:', err);
+          setIsGenerating(false);
+        }
+      );
+      setActiveWs(ws);
+    } catch (err: any) {
+      console.error('Generation request failed:', err);
+      setIsGenerating(false);
+      const errMsg = err?.message || 'Generation request failed';
+      setPendingTurn((prev) => prev ? {
+        ...prev,
+        generating: false,
+        progress: {
+          task_id: '',
+          status: 'failed',
+          type: 'failed',
+          error: errMsg,
+        },
+      } : null);
+    }
+  }, [
+    prompt, isGenerating, activeTab, inpaintData, imageReference, negativePrompt, selectedStyles,
+    autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
+    steps, cfgScale, seed, selectedBoardId, denoise,
+  ]);
+
+  const handleInterrupt = async () => {
+    try {
+      await api.interrupt();
+    } catch (e) {
+      console.error('Failed to interrupt:', e);
+    } finally {
+      if (activeWs) activeWs.close();
+      setIsGenerating(false);
+      setPendingTurn(null);
+    }
+  };
+
+  const handleUpscale = useCallback(async (image: ImageAsset) => {
+    if (isGenerating) return;
+
+    setIsGenerating(true);
+    setCurrentProgress(null);
+    setFreshSession(false);
+    setActiveTab('studio');
+    const startTime = Date.now();
+    const turnId = `upscale-${Date.now()}`;
+    const cleanPrompt = image.prompt.replace(/^\[Upscaled \d+x\]\s*/i, '');
+    const upscalePrompt = `[Upscaled 2x] ${cleanPrompt}`;
+
+    setPendingTurn({
+      id: turnId,
+      prompt: upscalePrompt,
+      createdAt: new Date().toISOString(),
+      generating: true,
+      progress: null,
+      elapsedSeconds: 0,
+    });
+
+    try {
+      const res = await api.upscale({
+        image_id: image.id,
+        prompt: cleanPrompt,
+        scale_factor: 2.0,
+        denoise: 0.30,
+        model_name: image.model_name,
+        sampler: image.sampler,
+        scheduler: image.scheduler,
+      });
+
+      const ws = new ProgressWebSocket(
+        res.task_id,
         (progress) => {
           setCurrentProgress(progress);
           const elapsed = (Date.now() - startTime) / 1000;
@@ -278,34 +430,18 @@ export const App: React.FC = () => {
           setTimeout(() => setPendingTurn(null), 50);
         },
         (err) => {
-          console.error('WebSocket error:', err);
+          console.error('Upscale WebSocket error:', err);
           setIsGenerating(false);
           setPendingTurn(null);
         }
       );
       setActiveWs(ws);
     } catch (err) {
-      console.error('Generation request failed:', err);
+      console.error('Upscale request failed:', err);
       setIsGenerating(false);
       setPendingTurn(null);
     }
-  }, [
-    prompt, isGenerating, activeTab, inpaintData, negativePrompt, selectedStyles,
-    autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
-    steps, cfgScale, seed, selectedBoardId, denoise,
-  ]);
-
-  const handleInterrupt = async () => {
-    try {
-      await api.interrupt();
-    } catch (e) {
-      console.error('Failed to interrupt:', e);
-    } finally {
-      if (activeWs) activeWs.close();
-      setIsGenerating(false);
-      setPendingTurn(null);
-    }
-  };
+  }, [isGenerating]);
 
   const handleSendToCanvas = (imageUrl: string) => {
     setCanvasBaseImage(imageUrl);
@@ -396,6 +532,7 @@ export const App: React.FC = () => {
         <StudioTopBar
           sidebarCollapsed={sidebarCollapsed}
           activeTab={activeTab}
+          comfyOnline={comfyOnline}
           onOpenSettings={() => setShowSettingsModal(true)}
         />
 
@@ -413,6 +550,7 @@ export const App: React.FC = () => {
                 onReuseSettings={handleReuseSettings}
                 onDeleteImage={handleDeleteImage}
                 onAssignBoard={handleAssignBoard}
+                onUpscale={handleUpscale}
               />
             </div>
           )}
@@ -463,14 +601,7 @@ export const App: React.FC = () => {
                 setPrompt(p);
                 startGeneration({ prompt: p, seed: Math.floor(Math.random() * 2147483647) });
               }}
-              onUpscale={(img) => {
-                setPrompt(img.prompt);
-                startGeneration({
-                  prompt: img.prompt,
-                  width: Math.min(img.width * 2, 2048),
-                  height: Math.min(img.height * 2, 2048),
-                });
-              }}
+              onUpscale={handleUpscale}
             />
           )}
 
@@ -493,7 +624,14 @@ export const App: React.FC = () => {
               onOpenStyles={() => setShowStylePicker(true)}
               onOpenNegative={() => setShowAdvanced(true)}
               onOpenAdvanced={() => setShowAdvanced(true)}
-              onAttachImage={() => setActiveTab('canvas')}
+              onAttachImage={() => setShowReferenceModal(true)}
+              imageReference={imageReference}
+              onUpdateReferenceFidelity={(fid) => {
+                setImageReference((prev) => prev ? { ...prev, fidelity: fid } : prev);
+              }}
+              onRemoveReference={() => setImageReference(null)}
+              autoExpand={autoExpand}
+              setAutoExpand={setAutoExpand}
             />
           )}
         </main>
@@ -521,6 +659,10 @@ export const App: React.FC = () => {
         negativePrompt={negativePrompt}
         setNegativePrompt={setNegativePrompt}
         onOpenDag={() => { setShowAdvanced(false); setActiveTab('dag'); }}
+        autoExpand={autoExpand}
+        setAutoExpand={setAutoExpand}
+        expansionLevel={expansionLevel}
+        setExpansionLevel={setExpansionLevel}
       />
 
       {showStylePicker && (
@@ -565,6 +707,17 @@ export const App: React.FC = () => {
             <X className="w-5 h-5" />
           </button>
         </div>
+      )}
+
+      {showReferenceModal && (
+        <ImageReferenceModal
+          images={images}
+          onClose={() => setShowReferenceModal(false)}
+          onSelect={(ref) => {
+            setImageReference(ref);
+            setShowReferenceModal(false);
+          }}
+        />
       )}
     </div>
   );

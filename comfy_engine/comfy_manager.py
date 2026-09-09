@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import subprocess
 import time
@@ -30,7 +30,7 @@ def check_comfy_health(host="127.0.0.1", port=8188) -> bool:
     except Exception:
         return False
 
-def start_comfyui_headless(host="127.0.0.1", port=8188, highvram=True):
+def start_comfyui_headless(host="127.0.0.1", port=8188, highvram=False):
     enforce_offline_environment()
 
     if not COMFY_DIR.exists() or not (COMFY_DIR / "main.py").exists():

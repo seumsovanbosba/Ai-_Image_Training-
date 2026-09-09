@@ -1,6 +1,6 @@
-﻿from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 class Board(SQLModel, table=True):
@@ -9,7 +9,7 @@ class Board(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
     description: Optional[str] = Field(default=None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     
     images: List["ImageAsset"] = Relationship(back_populates="board")
 
@@ -31,10 +31,12 @@ class ImageAsset(SQLModel, table=True):
     width: int
     height: int
     is_inpaint: bool = Field(default=False)
+    is_img2img: bool = Field(default=False)
+    is_upscale: bool = Field(default=False)
     
     board_id: Optional[int] = Field(default=None, foreign_key="boards.id")
     board: Optional[Board] = Relationship(back_populates="images")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class GenerationTask(SQLModel, table=True):
     __tablename__ = "generation_tasks"
@@ -47,5 +49,5 @@ class GenerationTask(SQLModel, table=True):
     preview_url: Optional[str] = Field(default=None)
     output_images: Optional[str] = Field(default="[]")  # JSON encoded list of filenames
     error_message: Optional[str] = Field(default=None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

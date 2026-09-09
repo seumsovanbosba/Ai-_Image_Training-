@@ -31,7 +31,12 @@ interface ConversationTimelineProps {
 }
 
 const formatTime = (iso: string) => {
-  const d = new Date(iso);
+  if (!iso) return 'Just now';
+  let s = iso.trim();
+  if (!s.endsWith('Z') && !/[+-]\d{2}(:\d{2})?$/.test(s)) {
+    s = s.replace(' ', 'T') + 'Z';
+  }
+  const d = new Date(s);
   if (Number.isNaN(d.getTime())) return 'Just now';
   return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 };
@@ -201,6 +206,13 @@ const ResultCard: React.FC<{
               alt={image.prompt}
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.01]"
             />
+          ) : turn.progress?.status === 'failed' || turn.progress?.type === 'failed' ? (
+            <div className="flex flex-col items-center gap-2 p-6 text-center text-rose-400">
+              <span className="font-semibold text-sm">Generation Error</span>
+              <p className="text-xs text-rose-300/80 font-mono max-w-md">
+                {turn.progress?.error || 'An error occurred during generation.'}
+              </p>
+            </div>
           ) : preview ? (
             <img src={preview} alt="Live latent preview" className="w-full h-full object-contain" />
           ) : (

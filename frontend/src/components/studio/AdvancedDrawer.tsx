@@ -43,6 +43,10 @@ interface AdvancedDrawerProps {
   negativePrompt: string;
   setNegativePrompt: (v: string) => void;
   onOpenDag: () => void;
+  autoExpand?: boolean;
+  setAutoExpand?: (v: boolean) => void;
+  expansionLevel?: string;
+  setExpansionLevel?: (v: string) => void;
 }
 
 export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
@@ -67,6 +71,10 @@ export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
   negativePrompt,
   setNegativePrompt,
   onOpenDag,
+  autoExpand = false,
+  setAutoExpand,
+  expansionLevel = 'medium',
+  setExpansionLevel,
 }) => {
   const randomizeSeed = () => setSeed(Math.floor(Math.random() * 90000000) + 10000000);
   const resetDefaults = () => {
@@ -75,6 +83,8 @@ export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
     setSeed(-1);
     setSampler('dpmpp_2m');
     setScheduler('karras');
+    setAutoExpand?.(false);
+    setExpansionLevel?.('medium');
   };
 
   return (
@@ -224,6 +234,40 @@ export const AdvancedDrawer: React.FC<AdvancedDrawerProps> = ({
               placeholder="low quality, artifacts, blurry…"
               className="w-full h-24 bg-surface-container text-on-surface font-mono text-mono-data px-3 py-2 rounded-lg focus:outline-none resize-none select-text"
             />
+          </div>
+
+          <div className="bg-surface-container p-3 rounded-xl flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-body-md text-on-surface font-medium">Fooocus Prompt Auto-Expansion</span>
+                <span className="font-mono text-mono-data text-outline">
+                  {autoExpand ? 'Appends cinematic lighting, framing, & details' : 'Disabled: Raw prompt is preserved'}
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={autoExpand}
+                  onChange={(e) => setAutoExpand?.(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-10 h-5 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container" />
+              </label>
+            </div>
+            {autoExpand && (
+              <div className="flex items-center justify-between pt-1 border-t border-surface-container-high/60">
+                <span className="text-body-md text-on-surface font-medium">Expansion Intensity</span>
+                <select
+                  value={expansionLevel}
+                  onChange={(e) => setExpansionLevel?.(e.target.value)}
+                  className="bg-surface-container-high text-on-surface font-mono text-mono-data px-2 py-1 rounded focus:outline-none"
+                >
+                  <option value="light">Light</option>
+                  <option value="medium">Medium</option>
+                  <option value="heavy">Heavy</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="bg-surface-container p-3 rounded-xl flex flex-col gap-3">

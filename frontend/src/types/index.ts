@@ -45,8 +45,18 @@ export interface ImageAsset {
   width: number;
   height: number;
   is_inpaint: boolean;
+  is_img2img?: boolean;
+  is_upscale?: boolean;
   board_id?: number | null;
   created_at: string;
+}
+
+export interface ImageReference {
+  dataUrl: string;
+  name: string;
+  fidelity: number; // 0.1 to 0.9
+  width?: number;
+  height?: number;
 }
 
 export interface TaskProgress {

@@ -40,7 +40,7 @@ if not exist "%VENV_PYTHON%" (
 :: 4. CHECK HEADLESS COMFYUI ENGINE
 if exist "%~dp0comfy_engine\ComfyUI\main.py" (
     echo [INFO] Starting Headless ComfyUI Engine on port 8188...
-    start "ComfyUI Headless Engine" /min "%VENV_PYTHON%" "%~dp0comfy_engine\ComfyUI\main.py" --listen 127.0.0.1 --port 8188 --highvram --extra-model-paths-config "%~dp0comfy_engine\extra_model_paths.yaml"
+    start "ComfyUI Headless Engine" /min "%VENV_PYTHON%" "%~dp0comfy_engine\ComfyUI\main.py" --listen 127.0.0.1 --port 8188 --extra-model-paths-config "%~dp0comfy_engine\extra_model_paths.yaml"
 ) else (
     echo [NOTICE] ComfyUI directory not found at comfy_engine\ComfyUI.
     echo          The suite will run in standalone simulation / fallback mode.

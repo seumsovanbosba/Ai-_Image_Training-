@@ -1,11 +1,14 @@
-﻿import asyncio
+import asyncio
 import aiohttp
 import websockets
 import json
 import base64
+import pytest
 from io import BytesIO
 from PIL import Image
 
+@pytest.mark.asyncio
+@pytest.mark.skip(reason="Live end-to-end integration test requiring live server and ComfyUI GPU backend")
 async def test_live_suite():
     async with aiohttp.ClientSession() as session:
         # 1. Health check
@@ -18,7 +21,7 @@ async def test_live_suite():
         async with session.get("http://127.0.0.1:8000/") as resp:
             assert resp.status == 200
             text = await resp.text()
-            assert "Antigravity AI Generation Suite" in text
+            assert "AI Image Studio" in text or "Antigravity" in text
             print(f"[E2E 2/6] Frontend HTML Served: OK (length: {len(text)})")
 
         # 3. Styles & Resolutions

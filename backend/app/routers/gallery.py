@@ -1,6 +1,7 @@
-﻿from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select, func
 from typing import List, Optional
+from datetime import timezone
 import json
 import os
 from pathlib import Path
@@ -19,11 +20,12 @@ def list_boards(session: Session = Depends(get_session)):
     for b in boards:
         # Count images in board
         count = session.exec(select(func.count(ImageAsset.id)).where(ImageAsset.board_id == b.id)).one()
+        b_created = b.created_at.replace(tzinfo=timezone.utc) if b.created_at and b.created_at.tzinfo is None else b.created_at
         result.append(BoardRead(
             id=b.id,
             name=b.name,
             description=b.description,
-            created_at=b.created_at,
+            created_at=b_created,
             image_count=count
         ))
     return result
@@ -38,11 +40,12 @@ def create_board(req: BoardCreate, session: Session = Depends(get_session)):
     session.add(board)
     session.commit()
     session.refresh(board)
+    b_created = board.created_at.replace(tzinfo=timezone.utc) if board.created_at and board.created_at.tzinfo is None else board.created_at
     return BoardRead(
         id=board.id,
         name=board.name,
         description=board.description,
-        created_at=board.created_at,
+        created_at=b_created,
         image_count=0
     )
 
@@ -67,6 +70,7 @@ def list_images(
         except Exception:
             pass
 
+        img_created = img.created_at.replace(tzinfo=timezone.utc) if img.created_at and img.created_at.tzinfo is None else img.created_at
         result.append(ImageAssetRead(
             id=img.id,
             filename=img.filename,
@@ -84,8 +88,10 @@ def list_images(
             width=img.width,
             height=img.height,
             is_inpaint=img.is_inpaint,
+            is_img2img=getattr(img, "is_img2img", False),
+            is_upscale=getattr(img, "is_upscale", False),
             board_id=img.board_id,
-            created_at=img.created_at
+            created_at=img_created
         ))
     return result
 

@@ -1,4 +1,4 @@
-﻿import json
+import json
 import re
 from pathlib import Path
 from typing import List, Tuple, Dict, Any
@@ -147,7 +147,7 @@ class PromptPipeline:
         return ", ".join(all_tokens)
 
     def process(self, prompt: str, negative_prompt: str = "", styles: List[str] = None, 
-                auto_expand: bool = True, expansion_level: str = "medium") -> Dict[str, str]:
+                auto_expand: bool = False, expansion_level: str = "medium") -> Dict[str, str]:
         '''
         Full Fooocus pipeline processing:
         User Prompt -> [Auto-Expansion] -> [Style Injection] -> Final Positive & Negative Prompts

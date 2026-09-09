@@ -16,6 +16,7 @@ interface GalleryViewProps {
   onReuseSettings: (image: ImageAsset) => void;
   onDeleteImage: (imageId: number) => Promise<void>;
   onAssignBoard: (imageId: number, boardId: number | null) => Promise<void>;
+  onUpscale?: (image: ImageAsset) => void;
 }
 
 export const GalleryView: React.FC<GalleryViewProps> = ({
@@ -28,6 +29,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
   onReuseSettings,
   onDeleteImage,
   onAssignBoard,
+  onUpscale,
 }) => {
   const [selectedImage, setSelectedImage] = useState<ImageAsset | null>(null);
   const [showNewBoardModal, setShowNewBoardModal] = useState(false);
@@ -230,6 +232,10 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             setSelectedImage(null);
           }}
           onAssignBoard={onAssignBoard}
+          onUpscale={(img) => {
+            onUpscale?.(img);
+            setSelectedImage(null);
+          }}
         />
       )}
     </div>

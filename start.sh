@@ -42,7 +42,7 @@ fi
 # 4. CHECK HEADLESS COMFYUI ENGINE
 if [ -f "${SCRIPT_DIR}/comfy_engine/ComfyUI/main.py" ]; then
     echo "[INFO] Starting Headless ComfyUI Engine on port 8188..."
-    "$VENV_PYTHON" "${SCRIPT_DIR}/comfy_engine/ComfyUI/main.py" --listen 127.0.0.1 --port 8188 --highvram --extra-model-paths-config "${SCRIPT_DIR}/comfy_engine/extra_model_paths.yaml" &
+    "$VENV_PYTHON" "${SCRIPT_DIR}/comfy_engine/ComfyUI/main.py" --listen 127.0.0.1 --port 8188 --extra-model-paths-config "${SCRIPT_DIR}/comfy_engine/extra_model_paths.yaml" &
     COMFY_PID=$!
     trap "kill $COMFY_PID" EXIT
 else
