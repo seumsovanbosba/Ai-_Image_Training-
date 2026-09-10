@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from sqlmodel import Session, select
-from typing import Dict, Any
+from fastapi import APIRouter, Depends, HTTPException
+from sqlmodel import Session
+from typing import Optional
 import uuid
 import json
 import base64
-import time
 from datetime import datetime, timezone
 from io import BytesIO
 import random
@@ -16,6 +15,7 @@ from app.models.generation import GenerationTask, ImageAsset
 from app.models.schemas import GenerateRequest, InpaintRequest, Img2ImgRequest, UpscaleRequest
 from app.services.prompt_pipeline import PromptPipeline
 from app.services.workflow_compiler import WorkflowCompiler
+from app.services.model_manager import model_manager
 from app.services.comfy_client import comfy_client
 from app.config import settings
 
@@ -29,43 +29,20 @@ def _decode_b64(data_uri: str) -> bytes:
     return base64.b64decode(data_uri)
 
 
-def _snap8(value: int) -> int:
-    return max(8, int(round(value / 8) * 8))
+def _resolve_image_bytes(image: str) -> bytes:
+    if image.startswith("data:") or "," in image:
+        return _decode_b64(image)
+    raw_name = image.replace("/outputs/", "").strip("\\/")
+    raw_path = settings.OUTPUTS_DIR / raw_name
+    if raw_path.exists():
+        return raw_path.read_bytes()
+    return _decode_b64(image)
 
 
-def _inspect_image(image_bytes: bytes, fallback_w: int = 1024, fallback_h: int = 1024):
-    try:
-        with Image.open(BytesIO(image_bytes)) as pil_img:
-            return pil_img.size
-    except Exception:
-        return fallback_w, fallback_h
+def _lora_kwargs(lora_name: Optional[str], lora_strength: float) -> dict:
+    name = (lora_name or "").strip() or None
+    return {"lora_name": name, "lora_strength": lora_strength}
 
-
-async def _queue_image_task(session: Session, compiled: dict, req_meta: dict, steps: int):
-    task_id = str(uuid.uuid4())
-    actual_seed = compiled["seed"]
-    workflow_dag = compiled["workflow"]
-
-    db_task = GenerationTask(
-        id=task_id,
-        status="pending",
-        progress=0.0,
-        current_step=0,
-        total_steps=steps,
-        output_images="[]"
-    )
-    session.add(db_task)
-    session.commit()
-
-    req_meta = {**req_meta, "seed": actual_seed}
-
-    async def on_event(event):
-        if event.get("type") == "completed":
-            _save_task_completion(task_id, event.get("output_images", []), req_meta)
-
-    comfy_client.subscribe(task_id, on_event)
-    await comfy_client.queue_prompt(workflow_dag, task_id)
-    return task_id, actual_seed
 
 def _save_task_completion(task_id: str, output_images: list, req_meta: dict):
     '''Callback when generation finishes to persist image assets in the database.'''
@@ -77,7 +54,7 @@ def _save_task_completion(task_id: str, output_images: list, req_meta: dict):
             task.output_images = json.dumps(output_images)
             task.updated_at = datetime.now(timezone.utc)
             session.add(task)
-            
+
             for img_name in output_images:
                 img_path = str(settings.OUTPUTS_DIR / img_name)
                 out_w = req_meta.get("width", 1024)
@@ -109,8 +86,8 @@ def _save_task_completion(task_id: str, output_images: list, req_meta: dict):
                 session.add(asset)
             session.commit()
 
+
 def _save_task_failure(task_id: str, error_message: str):
-    '''Callback when generation fails to update task state in database.'''
     with Session(engine) as session:
         task = session.get(GenerationTask, task_id)
         if task:
@@ -120,8 +97,8 @@ def _save_task_failure(task_id: str, error_message: str):
             session.add(task)
             session.commit()
 
+
 def _save_task_interrupted(task_id: str):
-    '''Callback when generation is cancelled/interrupted.'''
     with Session(engine) as session:
         task = session.get(GenerationTask, task_id)
         if task:
@@ -130,14 +107,10 @@ def _save_task_interrupted(task_id: str):
             session.add(task)
             session.commit()
 
-def clamp_image_for_diffusion(image_bytes: bytes, max_dim: int = 1024) -> tuple[bytes, int, int]:
+
+def clamp_image_for_diffusion(image_bytes: bytes, max_dim: int = 1024) -> tuple:
     '''
     Ensures input image for img2img or inpaint is safely scaled to fit within SDXL bounds.
-    - Preserves aspect ratio.
-    - Restricts maximum dimension to max_dim (default 1024).
-    - Snaps width and height to multiples of 64 for optimal VAE encoding without artifacts or OOM.
-    - Converts alpha/palette to RGB.
-    Returns: (processed_bytes, width, height)
     '''
     with Image.open(BytesIO(image_bytes)) as pil_img:
         if pil_img.mode in ("RGBA", "P"):
@@ -160,7 +133,6 @@ def clamp_image_for_diffusion(image_bytes: bytes, max_dim: int = 1024) -> tuple[
             target_w = orig_w
             target_h = orig_h
 
-        # Snap to multiples of 64 (minimum 64)
         new_w = max(64, round(target_w / 64) * 64)
         new_h = max(64, round(target_h / 64) * 64)
 
@@ -171,11 +143,8 @@ def clamp_image_for_diffusion(image_bytes: bytes, max_dim: int = 1024) -> tuple[
         pil_img.save(buf, format="PNG")
         return buf.getvalue(), new_w, new_h
 
+
 def clamp_mask_to_dimensions(mask_bytes: bytes, target_w: int, target_h: int) -> bytes:
-    '''
-    Resizes mask image to match the exact dimensions of base image.
-    Uses NEAREST resampling to keep crisp binary edges.
-    '''
     with Image.open(BytesIO(mask_bytes)) as mask_img:
         if mask_img.size != (target_w, target_h):
             mask_img = mask_img.resize((target_w, target_h), Image.Resampling.NEAREST)
@@ -187,8 +156,7 @@ def clamp_mask_to_dimensions(mask_bytes: bytes, target_w: int, target_h: int) ->
 @router.post("/generate")
 async def generate_image(req: GenerateRequest, session: Session = Depends(get_session)):
     task_id = str(uuid.uuid4())
-    
-    # 1. Fooocus-style prompt processing
+
     processed = pipeline.process(
         prompt=req.prompt,
         negative_prompt=req.negative_prompt or "",
@@ -197,10 +165,7 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
         expansion_level=req.expansion_level
     )
 
-    # 2. Model resolution
     model_name = req.model_name or "sd_xl_base_1.0.safetensors"
-
-    # 3. Compile DAG workflow
     compiled = WorkflowCompiler.compile_txt2img(
         prompt=processed["positive_prompt"],
         negative_prompt=processed["negative_prompt"],
@@ -212,13 +177,13 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
         sampler_name=req.sampler,
         scheduler=req.scheduler,
         seed=req.seed,
-        batch_size=req.batch_size
+        batch_size=req.batch_size,
+        **_lora_kwargs(req.lora_name, req.lora_strength),
     )
 
     actual_seed = compiled["seed"]
     workflow_dag = compiled["workflow"]
 
-    # 4. Record task in DB
     db_task = GenerationTask(
         id=task_id,
         status="pending",
@@ -230,7 +195,6 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
     session.add(db_task)
     session.commit()
 
-    # 5. Metadata for persistence
     req_meta = {
         "prompt": req.prompt.strip(),
         "negative_prompt": processed["negative_prompt"],
@@ -247,7 +211,6 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
         "board_id": req.board_id
     }
 
-    # 6. Subscribe internal database persister to completion/error events
     async def on_event(event):
         ev_type = event.get("type")
         if ev_type == "completed":
@@ -258,8 +221,6 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
             _save_task_interrupted(task_id)
 
     comfy_client.subscribe(task_id, on_event)
-
-    # 7. Queue prompt to ComfyUI
     await comfy_client.queue_prompt(workflow_dag, task_id)
 
     return {
@@ -268,11 +229,11 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
         "processed_prompt": processed
     }
 
+
 @router.post("/inpaint")
 async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_session)):
     task_id = str(uuid.uuid4())
-    
-    # 1. Process prompt
+
     processed = pipeline.process(
         prompt=req.prompt,
         negative_prompt=req.negative_prompt or "",
@@ -281,31 +242,18 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
         expansion_level=req.expansion_level
     )
 
-    # 2. Decode base & mask images and upload to ComfyUI
     base_fn = f"inpaint_base_{task_id[:8]}.png"
     mask_fn = f"inpaint_mask_{task_id[:8]}.png"
 
-<<<<<<< HEAD
-    base_bytes = _decode_b64(req.base_image)
-    mask_bytes = _decode_b64(req.mask_image)
-=======
-    def decode_b64(data_uri: str) -> bytes:
-        if "," in data_uri:
-            data_uri = data_uri.split(",", 1)[1]
-        return base64.b64decode(data_uri)
+    raw_base_bytes = _decode_b64(req.base_image)
+    raw_mask_bytes = _decode_b64(req.mask_image)
 
-    raw_base_bytes = decode_b64(req.base_image)
-    raw_mask_bytes = decode_b64(req.mask_image)
->>>>>>> refs/remotes/origin/main
-
-    # Safely clamp base and mask images to SDXL bounds (max 1024) to prevent VAE OOM
     base_bytes, img_w, img_h = clamp_image_for_diffusion(raw_base_bytes, max_dim=1024)
     mask_bytes = clamp_mask_to_dimensions(raw_mask_bytes, img_w, img_h)
 
     await comfy_client.upload_image(base_bytes, base_fn)
     await comfy_client.upload_image(mask_bytes, mask_fn)
 
-    # 3. Model & DAG compilation
     model_name = req.model_name or "sd_xl_base_1.0.safetensors"
     compiled = WorkflowCompiler.compile_inpaint(
         prompt=processed["positive_prompt"],
@@ -318,13 +266,13 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
         sampler_name=req.sampler,
         scheduler=req.scheduler,
         denoise=req.denoise,
-        seed=req.seed
+        seed=req.seed,
+        **_lora_kwargs(req.lora_name, req.lora_strength),
     )
 
     actual_seed = compiled["seed"]
     workflow_dag = compiled["workflow"]
 
-    # 4. Save Task
     db_task = GenerationTask(
         id=task_id,
         status="pending",
@@ -370,18 +318,11 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
         "processed_prompt": processed
     }
 
-<<<<<<< HEAD
 
-@router.post("/img2img")
-async def img2img_image(req: Img2ImgRequest, session: Session = Depends(get_session)):
-    '''Edit or restyle an existing image while keeping its composition.'''
-=======
 @router.post("/img2img")
 async def img2img_image(req: Img2ImgRequest, session: Session = Depends(get_session)):
     task_id = str(uuid.uuid4())
 
-    # 1. Process prompt with Fooocus styles
->>>>>>> refs/remotes/origin/main
     processed = pipeline.process(
         prompt=req.prompt,
         negative_prompt=req.negative_prompt or "",
@@ -390,129 +331,21 @@ async def img2img_image(req: Img2ImgRequest, session: Session = Depends(get_sess
         expansion_level=req.expansion_level
     )
 
-<<<<<<< HEAD
-    base_bytes = _decode_b64(req.base_image)
-    src_w, src_h = _inspect_image(base_bytes, req.width or 1024, req.height or 1024)
-    out_w = _snap8(req.width or src_w)
-    out_h = _snap8(req.height or src_h)
-    longest = max(out_w, out_h)
-    max_side = 1536
-    if longest > max_side:
-        ratio = max_side / float(longest)
-        out_w = _snap8(int(round(out_w * ratio)))
-        out_h = _snap8(int(round(out_h * ratio)))
-
-    base_fn = f"img2img_base_{uuid.uuid4().hex[:8]}.png"
-    await comfy_client.upload_image(base_bytes, base_fn)
-
-    model_name = req.model_name or "v1-5-pruned-emaonly.safetensors"
-    compiled = WorkflowCompiler.compile_img2img(
-        prompt=processed["positive_prompt"],
-        base_image_name=base_fn,
-        negative_prompt=processed["negative_prompt"],
-        model_name=model_name,
-        steps=req.steps,
-        cfg=req.cfg_scale,
-        sampler_name=req.sampler,
-        scheduler=req.scheduler,
-        denoise=req.denoise,
-        seed=req.seed,
-        target_width=out_w,
-        target_height=out_h,
-        filename_prefix="Antigravity_I2I"
-    )
-
-    req_meta = {
-        "prompt": processed["positive_prompt"],
-        "negative_prompt": processed["negative_prompt"],
-        "styles": req.styles,
-        "model_name": model_name,
-        "sampler": req.sampler,
-        "scheduler": req.scheduler,
-        "steps": req.steps,
-        "cfg_scale": req.cfg_scale,
-        "width": out_w,
-        "height": out_h,
-        "is_inpaint": False,
-        "board_id": req.board_id
-    }
-    task_id, actual_seed = await _queue_image_task(session, compiled, req_meta, req.steps)
-    return {
-        "task_id": task_id,
-        "seed": actual_seed,
-        "processed_prompt": processed
-    }
-
-
-@router.post("/upscale")
-async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_session)):
-    '''
-    2x the current result by scaling the pixels, then lightly sampling so
-    details sharpen without inventing a new scene.
-    '''
-    processed = pipeline.process(
-        prompt=req.prompt,
-        negative_prompt=req.negative_prompt or "",
-        styles=req.styles,
-        auto_expand=req.auto_expand,
-        expansion_level=req.expansion_level
-    )
-
-    base_bytes = _decode_b64(req.base_image)
-    src_w, src_h = _inspect_image(base_bytes)
-
-    scale = max(float(req.scale or 2.0), 1.0)
-    max_side = max(int(req.max_side or 2048), 64)
-    longest = max(src_w, src_h)
-    if longest * scale > max_side:
-        scale = max_side / float(longest)
-
-    out_w = _snap8(int(round(src_w * scale)))
-    out_h = _snap8(int(round(src_h * scale)))
-    # Keep upscale denoise low so the sampler cannot wander into a new image.
-    denoise = min(max(float(req.denoise), 0.05), 0.45)
-
-    base_fn = f"upscale_base_{uuid.uuid4().hex[:8]}.png"
-    await comfy_client.upload_image(base_bytes, base_fn)
-
-    model_name = req.model_name or "v1-5-pruned-emaonly.safetensors"
-    compiled = WorkflowCompiler.compile_img2img(
-        prompt=processed["positive_prompt"],
-        base_image_name=base_fn,
-=======
-    # 2. Decode source image
     img_fn = f"img2img_{task_id[:8]}.png"
-
-    def decode_b64(data_uri: str) -> bytes:
-        if "," in data_uri:
-            data_uri = data_uri.split(",", 1)[1]
-        return base64.b64decode(data_uri)
-
-    if req.image.startswith("data:") or "," in req.image:
-        raw_bytes = decode_b64(req.image)
-    else:
-        raw_name = req.image.replace("/outputs/", "").strip("\\/")
-        raw_path = settings.OUTPUTS_DIR / raw_name
-        if raw_path.exists():
-            raw_bytes = raw_path.read_bytes()
-        else:
-            raw_bytes = decode_b64(req.image)
-
-    # Safely clamp reference image to SDXL bounds (max 1024) to prevent VAE OOM and extreme slowdown
+    raw_bytes = _resolve_image_bytes(req.image)
     img_bytes, img_w, img_h = clamp_image_for_diffusion(raw_bytes, max_dim=1024)
-
     await comfy_client.upload_image(img_bytes, img_fn)
 
-    # Map fidelity (0.1 to 0.9) to denoise (e.g. 0.8 fidelity -> 0.25 denoise; 0.5 fidelity -> 0.55 denoise; 0.2 fidelity -> 0.80 denoise)
     f = max(0.05, min(0.95, req.fidelity))
     denoise = round(1.0 - (f * 0.85), 2)
     denoise = max(0.15, min(0.95, denoise))
+    if processed.get("is_text_edit"):
+        denoise = min(max(denoise, 0.35), 0.50)
 
     model_name = req.model_name or "sd_xl_base_1.0.safetensors"
     compiled = WorkflowCompiler.compile_img2img(
         prompt=processed["positive_prompt"],
         base_image_name=img_fn,
->>>>>>> refs/remotes/origin/main
         negative_prompt=processed["negative_prompt"],
         model_name=model_name,
         steps=req.steps,
@@ -520,17 +353,8 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
         sampler_name=req.sampler,
         scheduler=req.scheduler,
         denoise=denoise,
-<<<<<<< HEAD
         seed=req.seed,
-        target_width=out_w,
-        target_height=out_h,
-        filename_prefix="Antigravity_Upscale"
-    )
-
-    req_meta = {
-        "prompt": processed["positive_prompt"],
-=======
-        seed=req.seed
+        **_lora_kwargs(req.lora_name, req.lora_strength),
     )
 
     actual_seed = compiled["seed"]
@@ -549,7 +373,6 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
 
     req_meta = {
         "prompt": req.prompt.strip(),
->>>>>>> refs/remotes/origin/main
         "negative_prompt": processed["negative_prompt"],
         "styles": req.styles,
         "model_name": model_name,
@@ -557,14 +380,6 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
         "scheduler": req.scheduler,
         "steps": req.steps,
         "cfg_scale": req.cfg_scale,
-<<<<<<< HEAD
-        "width": out_w,
-        "height": out_h,
-        "is_inpaint": False,
-        "board_id": req.board_id
-    }
-    task_id, actual_seed = await _queue_image_task(session, compiled, req_meta, req.steps)
-=======
         "seed": actual_seed,
         "width": img_w,
         "height": img_h,
@@ -586,26 +401,29 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
     comfy_client.subscribe(task_id, on_event)
     await comfy_client.queue_prompt(workflow_dag, task_id)
 
->>>>>>> refs/remotes/origin/main
     return {
         "task_id": task_id,
         "seed": actual_seed,
         "processed_prompt": processed,
-<<<<<<< HEAD
-        "width": out_w,
-        "height": out_h,
         "denoise": denoise
     }
 
-=======
-        "denoise": denoise
-    }
 
 @router.post("/upscale")
 async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_session)):
     task_id = str(uuid.uuid4())
 
-    # 1. Resolve source image from database ID or raw input
+    upscale_model = req.upscale_model_name or model_manager.find_upscale_model()
+    if not upscale_model:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "No upscale model found in models/upscale_models/. "
+                "On the GPU PC run: python scripts/download_upscale_model.py "
+                "then restart start.bat. Bicubic stretch is disabled on purpose."
+            ),
+        )
+
     source_asset = None
     if req.image_id:
         source_asset = session.get(ImageAsset, req.image_id)
@@ -625,19 +443,7 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
         sampler = req.sampler or source_asset.sampler
         scheduler = req.scheduler or source_asset.scheduler
     elif req.image:
-        def decode_b64(data_uri: str) -> bytes:
-            if "," in data_uri:
-                data_uri = data_uri.split(",", 1)[1]
-            return base64.b64decode(data_uri)
-        if req.image.startswith("data:") or "," in req.image:
-            img_bytes = decode_b64(req.image)
-        else:
-            raw_name = req.image.replace("/outputs/", "").strip("\\/")
-            img_path = settings.OUTPUTS_DIR / raw_name
-            if img_path.exists():
-                img_bytes = img_path.read_bytes()
-            else:
-                img_bytes = decode_b64(req.image)
+        img_bytes = _resolve_image_bytes(req.image)
         prompt = req.prompt or ""
         negative_prompt = req.negative_prompt or ""
         model_name = req.model_name or "sd_xl_base_1.0.safetensors"
@@ -662,17 +468,19 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
 
     compiled = WorkflowCompiler.compile_upscale(
         base_image_name=upscale_fn,
+        upscale_model_name=upscale_model,
+        target_width=target_w,
+        target_height=target_h,
         prompt=prompt,
         negative_prompt=negative_prompt,
         model_name=model_name,
-        scale_by=req.scale_factor,
-        upscale_method="bicubic",
         steps=req.steps,
         cfg=req.cfg_scale,
         sampler_name=sampler,
         scheduler=scheduler,
         denoise=req.denoise,
-        seed=seed
+        seed=seed,
+        **_lora_kwargs(req.lora_name, req.lora_strength),
     )
 
     actual_seed = compiled["seed"]
@@ -683,7 +491,7 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
         status="pending",
         progress=0.0,
         current_step=0,
-        total_steps=req.steps,
+        total_steps=max(req.steps, 1),
         output_images="[]"
     )
     session.add(db_task)
@@ -724,9 +532,11 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
         "task_id": task_id,
         "seed": actual_seed,
         "target_width": target_w,
-        "target_height": target_h
+        "target_height": target_h,
+        "upscale_model": upscale_model,
+        "denoise": req.denoise,
     }
->>>>>>> refs/remotes/origin/main
+
 
 @router.post("/interrupt")
 async def interrupt_generation():

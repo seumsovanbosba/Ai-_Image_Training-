@@ -20,6 +20,12 @@ export interface ModelInfo {
   size_gb: number;
 }
 
+export interface LoraInfo {
+  name: string;
+  path: string;
+  size_mb: number;
+}
+
 export interface Board {
   id: number;
   name: string;

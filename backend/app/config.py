@@ -43,6 +43,7 @@ settings.DATA_DIR.mkdir(parents=True, exist_ok=True)
 (settings.MODELS_DIR / "loras").mkdir(parents=True, exist_ok=True)
 (settings.MODELS_DIR / "vae").mkdir(parents=True, exist_ok=True)
 (settings.MODELS_DIR / "controlnet").mkdir(parents=True, exist_ok=True)
+(settings.MODELS_DIR / "upscale_models").mkdir(parents=True, exist_ok=True)
 
 # Enforce offline environment variables
 os.environ["HF_HUB_OFFLINE"] = settings.HF_HUB_OFFLINE

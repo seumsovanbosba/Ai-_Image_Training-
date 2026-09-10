@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_serializer
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 from datetime import datetime, timezone
 
 class GenerateRequest(BaseModel):
@@ -18,6 +18,8 @@ class GenerateRequest(BaseModel):
     seed: Optional[int] = -1
     batch_size: int = 1
     board_id: Optional[int] = None
+    lora_name: Optional[str] = None
+    lora_strength: float = 0.8
 
 class InpaintRequest(BaseModel):
     prompt: str
@@ -37,20 +39,13 @@ class InpaintRequest(BaseModel):
     cfg_scale: float = 7.0
     seed: Optional[int] = -1
     board_id: Optional[int] = None
+    lora_name: Optional[str] = None
+    lora_strength: float = 0.8
 
 class Img2ImgRequest(BaseModel):
     prompt: str
     negative_prompt: Optional[str] = ""
     styles: List[str] = Field(default_factory=list)
-<<<<<<< HEAD
-    auto_expand: bool = True
-    expansion_level: str = "medium"
-    base_image: str  # Base64 data URL
-    denoise: float = 0.55
-    width: Optional[int] = None
-    height: Optional[int] = None
-    model_name: Optional[str] = None
-=======
     auto_expand: bool = False
     expansion_level: str = "medium"
     image: str  # Base64 data URL or server filename
@@ -58,46 +53,31 @@ class Img2ImgRequest(BaseModel):
     width: Optional[int] = 1024
     height: Optional[int] = 1024
     model_name: Optional[str] = "sd_xl_base_1.0.safetensors"
->>>>>>> refs/remotes/origin/main
     sampler: str = "dpmpp_2m"
     scheduler: str = "karras"
     steps: int = 30
     cfg_scale: float = 7.0
     seed: Optional[int] = -1
     board_id: Optional[int] = None
+    lora_name: Optional[str] = None
+    lora_strength: float = 0.8
 
 class UpscaleRequest(BaseModel):
-<<<<<<< HEAD
-    prompt: str
-    negative_prompt: Optional[str] = ""
-    styles: List[str] = Field(default_factory=list)
-    auto_expand: bool = False
-    expansion_level: str = "none"
-    base_image: str  # Base64 data URL of the current result
-    denoise: float = 0.25
-    scale: float = 2.0
-    max_side: int = 2048
-    model_name: Optional[str] = None
-    sampler: str = "dpmpp_2m"
-    scheduler: str = "karras"
-    steps: int = 30
-    cfg_scale: float = 7.0
-    seed: Optional[int] = -1
-    board_id: Optional[int] = None
-=======
     image_id: Optional[int] = None
     image: Optional[str] = None  # Base64 data URL or filename if image_id not provided
     prompt: Optional[str] = None
     negative_prompt: Optional[str] = None
     scale_factor: float = 2.0
-    denoise: float = 0.30
+    denoise: float = 0.0  # 0 = ESRGAN only (recommended). >0 adds a light SDXL refine.
     model_name: Optional[str] = "sd_xl_base_1.0.safetensors"
+    upscale_model_name: Optional[str] = None
     sampler: str = "dpmpp_2m"
     scheduler: str = "karras"
-    steps: int = 20
+    steps: int = 12
     cfg_scale: float = 7.0
     seed: Optional[int] = -1
->>>>>>> refs/remotes/origin/main
+    lora_name: Optional[str] = None
+    lora_strength: float = 0.8
 
 class BoardCreate(BaseModel):
     name: str
@@ -159,6 +139,11 @@ class ModelInfo(BaseModel):
     path: str
     type: str  # 'sdxl', 'flux', 'sd15', 'unknown'
     size_gb: float
+
+class LoraInfo(BaseModel):
+    name: str
+    path: str
+    size_mb: float
 
 class StylePreset(BaseModel):
     name: str

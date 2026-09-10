@@ -13,8 +13,9 @@ import { SettingsModal } from './components/common/SettingsModal';
 import { api } from './services/api';
 import { ProgressWebSocket } from './services/websocket';
 import { urlToDataUrl } from './utils/image';
+import { looksLikeEdit, isTextRemoval } from './utils/editIntent';
 import {
-  StylePreset, ResolutionPreset, ModelInfo, Board,
+  StylePreset, ResolutionPreset, ModelInfo, LoraInfo, Board,
   ImageAsset, TaskProgress, WorkspaceTab, ChatTurn, RecentChat,
   ImageReference
 } from './types';
@@ -35,6 +36,7 @@ export const App: React.FC = () => {
   const [activeRecentId, setActiveRecentId] = useState<string | null>(null);
 
   const [models, setModels] = useState<ModelInfo[]>([]);
+  const [loras, setLoras] = useState<LoraInfo[]>([]);
   const [styles, setStyles] = useState<StylePreset[]>([]);
   const [resolutions, setResolutions] = useState<ResolutionPreset[]>([]);
   const [boards, setBoards] = useState<Board[]>([]);
@@ -50,6 +52,8 @@ export const App: React.FC = () => {
   const [autoExpand, setAutoExpand] = useState(false);
   const [expansionLevel, setExpansionLevel] = useState('medium');
   const [selectedModel, setSelectedModel] = useState('sd_xl_base_1.0.safetensors');
+  const [selectedLora, setSelectedLora] = useState<string | null>(null);
+  const [loraStrength, setLoraStrength] = useState(0.8);
   const [width, setWidth] = useState(1024);
   const [height, setHeight] = useState(1024);
   const [steps, setSteps] = useState(30);
@@ -58,8 +62,6 @@ export const App: React.FC = () => {
   const [scheduler, setScheduler] = useState('karras');
   const [seed, setSeed] = useState(-1);
   const [denoise, setDenoise] = useState(0.85);
-  const [img2imgDenoise, setImg2imgDenoise] = useState(0.55);
-  const [referenceImage, setReferenceImage] = useState<{ dataUrl: string; name: string } | null>(null);
   const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null);
 
   const [canvasBaseImage, setCanvasBaseImage] = useState<string | null>(null);
@@ -86,11 +88,16 @@ export const App: React.FC = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedMetadata, setCopiedMetadata] = useState(false);
 
+  const loraPayload = selectedLora
+    ? { lora_name: selectedLora, lora_strength: loraStrength }
+    : { lora_name: null, lora_strength: loraStrength };
+
   useEffect(() => {
     const initData = async () => {
       try {
-        const [mList, sList, rList, bList, imgList, status] = await Promise.all([
+        const [mList, lList, sList, rList, bList, imgList, status] = await Promise.all([
           api.getModels(),
+          api.getLoras(),
           api.getStyles(),
           api.getResolutions(),
           api.getBoards(),
@@ -99,6 +106,7 @@ export const App: React.FC = () => {
         ]);
         setModels(mList);
         if (mList.length > 0) setSelectedModel(mList[0].name);
+        setLoras(lList);
         setStyles(sList);
         setResolutions(rList);
         setBoards(bList);
@@ -111,7 +119,6 @@ export const App: React.FC = () => {
     };
     initData();
 
-    // Periodically poll engine status so UI badge updates live
     const pollInterval = setInterval(async () => {
       try {
         const status = await api.getSystemStatus();
@@ -190,7 +197,7 @@ export const App: React.FC = () => {
     setActiveRecentId(null);
     setPendingTurn(null);
     setPrompt('');
-    setReferenceImage(null);
+    setImageReference(null);
     setActiveTab('studio');
   };
 
@@ -206,9 +213,9 @@ export const App: React.FC = () => {
     width?: number;
     height?: number;
     seed?: number;
-    mode?: 'txt2img' | 'img2img' | 'upscale' | 'vary';
+    mode?: 'txt2img' | 'img2img' | 'vary';
     baseImage?: string;
-    denoise?: number;
+    fidelity?: number;
     autoExpand?: boolean;
   }) => {
     const nextPrompt = (override?.prompt ?? prompt).trim();
@@ -218,7 +225,13 @@ export const App: React.FC = () => {
     const runHeight = override?.height ?? height;
     const runSeed = override?.seed ?? seed;
     const runAutoExpand = override?.autoExpand ?? autoExpand;
-    const referenceDataUrl = override?.baseImage || referenceImage?.dataUrl || null;
+    const editIntent = looksLikeEdit(nextPrompt);
+    const textEdit = isTextRemoval(nextPrompt);
+    const fallbackSource = selectedImage?.url || images[0]?.url || null;
+    const sourceImage =
+      override?.baseImage ||
+      imageReference?.dataUrl ||
+      (editIntent ? fallbackSource : null);
 
     setIsGenerating(true);
     setCurrentProgress(null);
@@ -237,12 +250,12 @@ export const App: React.FC = () => {
 
     try {
       let task_id: string;
-      if (activeTab === 'canvas' && inpaintData && override?.mode !== 'upscale' && override?.mode !== 'vary' && override?.mode !== 'img2img') {
+      if (activeTab === 'canvas' && inpaintData && override?.mode !== 'img2img' && override?.mode !== 'vary') {
         const res = await api.inpaint({
           prompt: nextPrompt,
           negative_prompt: negativePrompt,
           styles: selectedStyles,
-          auto_expand: runAutoExpand,
+          auto_expand: false,
           base_image: inpaintData.baseDataUrl,
           mask_image: inpaintData.maskDataUrl,
           denoise,
@@ -255,50 +268,22 @@ export const App: React.FC = () => {
           cfg_scale: cfgScale,
           seed: runSeed,
           board_id: selectedBoardId,
+          ...loraPayload,
         });
         task_id = res.task_id;
-<<<<<<< HEAD
-      } else if (override?.mode === 'upscale' && override.baseImage) {
-        const res = await api.upscale({
-          prompt: nextPrompt,
-          negative_prompt: negativePrompt,
-          styles: selectedStyles,
-          auto_expand: false,
-          expansion_level: 'none',
-          base_image: override.baseImage,
-          denoise: override.denoise ?? 0.25,
-          scale: 2,
-          model_name: selectedModel,
-          sampler,
-          scheduler,
-          steps,
-          cfg_scale: cfgScale,
-          seed: runSeed,
-          board_id: selectedBoardId,
-        });
-        task_id = res.task_id;
-      } else if ((override?.mode === 'vary' || override?.mode === 'img2img' || (activeTab !== 'canvas' && referenceImage)) && referenceDataUrl) {
-=======
-      } else if (imageReference) {
->>>>>>> refs/remotes/origin/main
+      } else if (sourceImage) {
+        const fidelity = override?.fidelity
+          ?? (textEdit ? 0.60 : (imageReference?.fidelity ?? 0.65));
         const res = await api.img2img({
           prompt: nextPrompt,
           negative_prompt: negativePrompt,
           styles: selectedStyles,
-<<<<<<< HEAD
-          auto_expand: runAutoExpand,
+          auto_expand: editIntent ? false : runAutoExpand,
           expansion_level: expansionLevel,
-          base_image: referenceDataUrl,
-          denoise: override?.denoise ?? img2imgDenoise,
-          ...(override?.mode === 'vary' ? { width: runWidth, height: runHeight } : {}),
-=======
-          auto_expand: autoExpand,
-          expansion_level: expansionLevel,
-          image: imageReference.dataUrl,
-          fidelity: imageReference.fidelity ?? 0.65,
+          image: sourceImage,
+          fidelity,
           width: runWidth,
           height: runHeight,
->>>>>>> refs/remotes/origin/main
           model_name: selectedModel,
           sampler,
           scheduler,
@@ -306,6 +291,7 @@ export const App: React.FC = () => {
           cfg_scale: cfgScale,
           seed: runSeed,
           board_id: selectedBoardId,
+          ...loraPayload,
         });
         task_id = res.task_id;
       } else {
@@ -324,6 +310,7 @@ export const App: React.FC = () => {
           cfg_scale: cfgScale,
           seed: runSeed,
           board_id: selectedBoardId,
+          ...loraPayload,
         });
         task_id = res.task_id;
       }
@@ -396,7 +383,8 @@ export const App: React.FC = () => {
   }, [
     prompt, isGenerating, activeTab, inpaintData, imageReference, negativePrompt, selectedStyles,
     autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
-    steps, cfgScale, seed, selectedBoardId, denoise,
+    steps, cfgScale, seed, selectedBoardId, denoise, selectedImage, images,
+    selectedLora, loraStrength,
   ]);
 
   const handleInterrupt = async () => {
@@ -437,10 +425,11 @@ export const App: React.FC = () => {
         image_id: image.id,
         prompt: cleanPrompt,
         scale_factor: 2.0,
-        denoise: 0.30,
+        denoise: 0,
         model_name: image.model_name,
         sampler: image.sampler,
         scheduler: image.scheduler,
+        ...loraPayload,
       });
 
       const ws = new ProgressWebSocket(
@@ -448,6 +437,16 @@ export const App: React.FC = () => {
         (progress) => {
           setCurrentProgress(progress);
           const elapsed = (Date.now() - startTime) / 1000;
+          if (progress.type === 'failed' || progress.status === 'failed') {
+            setIsGenerating(false);
+            setPendingTurn((prev) => prev ? {
+              ...prev,
+              generating: false,
+              progress,
+              elapsedSeconds: Number(elapsed.toFixed(2)),
+            } : prev);
+            return;
+          }
           setPendingTurn((prev) => prev ? {
             ...prev,
             generating: true,
@@ -477,32 +476,38 @@ export const App: React.FC = () => {
         }
       );
       setActiveWs(ws);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Upscale request failed:', err);
       setIsGenerating(false);
-      setPendingTurn(null);
+      setPendingTurn((prev) => prev ? {
+        ...prev,
+        generating: false,
+        progress: {
+          task_id: '',
+          status: 'failed',
+          type: 'failed',
+          error: err?.message || 'Upscale failed. Install RealESRGAN with python scripts/download_upscale_model.py',
+        },
+      } : null);
     }
-<<<<<<< HEAD
-  }, [
-    prompt, isGenerating, activeTab, inpaintData, negativePrompt, selectedStyles,
-    autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
-    steps, cfgScale, seed, selectedBoardId, denoise, img2imgDenoise, referenceImage,
-  ]);
+  }, [isGenerating, selectedLora, loraStrength]);
 
-  const handleInterrupt = async () => {
+  const handleUseAsReference = async (img: ImageAsset) => {
     try {
-      await api.interrupt();
-    } catch (e) {
-      console.error('Failed to interrupt:', e);
-    } finally {
-      if (activeWs) activeWs.close();
-      setIsGenerating(false);
-      setPendingTurn(null);
+      const dataUrl = await urlToDataUrl(img.url);
+      setImageReference({
+        dataUrl,
+        name: img.filename || 'generated.png',
+        fidelity: 0.65,
+        width: img.width,
+        height: img.height,
+      });
+      if (!prompt.trim()) setPrompt(img.prompt.replace(/^\[Upscaled \d+x\]\s*/i, ''));
+      setActiveTab('studio');
+    } catch (err) {
+      console.error('Failed to attach reference', err);
     }
   };
-=======
-  }, [isGenerating]);
->>>>>>> refs/remotes/origin/main
 
   const handleSendToCanvas = (imageUrl: string) => {
     setCanvasBaseImage(imageUrl);
@@ -661,51 +666,23 @@ export const App: React.FC = () => {
               onVary={async (img) => {
                 try {
                   const dataUrl = await urlToDataUrl(img.url);
-                  setPrompt(img.prompt);
+                  setPrompt(img.prompt.replace(/^\[Upscaled \d+x\]\s*/i, ''));
                   startGeneration({
-                    prompt: img.prompt,
+                    prompt: img.prompt.replace(/^\[Upscaled \d+x\]\s*/i, ''),
                     width: img.width,
                     height: img.height,
                     seed: Math.floor(Math.random() * 2147483647),
                     mode: 'vary',
                     baseImage: dataUrl,
-                    denoise: 0.35,
+                    fidelity: 0.72,
                     autoExpand: false,
                   });
                 } catch (err) {
                   console.error('Failed to vary image', err);
                 }
               }}
-<<<<<<< HEAD
-              onUpscale={async (img) => {
-                try {
-                  const dataUrl = await urlToDataUrl(img.url);
-                  setPrompt(img.prompt);
-                  startGeneration({
-                    prompt: img.prompt,
-                    mode: 'upscale',
-                    baseImage: dataUrl,
-                    denoise: 0.25,
-                    autoExpand: false,
-                    seed: img.seed,
-                  });
-                } catch (err) {
-                  console.error('Failed to upscale image', err);
-                }
-              }}
-              onUseAsReference={async (img) => {
-                try {
-                  const dataUrl = await urlToDataUrl(img.url);
-                  setReferenceImage({ dataUrl, name: img.filename || 'generated.png' });
-                  if (!prompt.trim()) setPrompt(img.prompt);
-                  setActiveTab('studio');
-                } catch (err) {
-                  console.error('Failed to attach reference', err);
-                }
-              }}
-=======
               onUpscale={handleUpscale}
->>>>>>> refs/remotes/origin/main
+              onUseAsReference={handleUseAsReference}
             />
           )}
 
@@ -717,6 +694,11 @@ export const App: React.FC = () => {
               models={models}
               selectedModel={selectedModel}
               setSelectedModel={setSelectedModel}
+              loras={loras}
+              selectedLora={selectedLora}
+              setSelectedLora={setSelectedLora}
+              loraStrength={loraStrength}
+              setLoraStrength={setLoraStrength}
               width={width}
               height={height}
               setDimensions={(w, h) => { setWidth(w); setHeight(h); }}
@@ -728,15 +710,6 @@ export const App: React.FC = () => {
               onOpenStyles={() => setShowStylePicker(true)}
               onOpenNegative={() => setShowAdvanced(true)}
               onOpenAdvanced={() => setShowAdvanced(true)}
-<<<<<<< HEAD
-              onAttachImage={() => setActiveTab('canvas')}
-              referenceImage={referenceImage}
-              onPickReference={(dataUrl, name) => {
-                setReferenceImage({ dataUrl, name });
-                setActiveTab('studio');
-              }}
-              onClearReference={() => setReferenceImage(null)}
-=======
               onAttachImage={() => setShowReferenceModal(true)}
               imageReference={imageReference}
               onUpdateReferenceFidelity={(fid) => {
@@ -745,7 +718,6 @@ export const App: React.FC = () => {
               onRemoveReference={() => setImageReference(null)}
               autoExpand={autoExpand}
               setAutoExpand={setAutoExpand}
->>>>>>> refs/remotes/origin/main
             />
           )}
         </main>
@@ -764,11 +736,9 @@ export const App: React.FC = () => {
         setScheduler={setScheduler}
         seed={seed}
         setSeed={setSeed}
-        denoise={activeTab === 'canvas' ? denoise : img2imgDenoise}
-        setDenoise={activeTab === 'canvas' ? setDenoise : setImg2imgDenoise}
-        showDenoise={activeTab === 'canvas' || Boolean(referenceImage)}
-        denoiseLabel={activeTab === 'canvas' ? 'Inpaint Denoise' : 'Image-to-Image Denoise'}
-        denoiseHint="Low keeps the source image. High follows the prompt more."
+        denoise={denoise}
+        setDenoise={setDenoise}
+        showDenoise={activeTab === 'canvas'}
         boards={boards}
         selectedBoardId={selectedBoardId}
         setSelectedBoardId={setSelectedBoardId}

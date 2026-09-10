@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Plus, Zap, ChevronDown, SlidersHorizontal,
-<<<<<<< HEAD
-  ArrowUp, Square, ImagePlus, Filter, X, Paintbrush
-=======
-  ArrowUp, Square, ImagePlus, Filter, X, Wand2
->>>>>>> refs/remotes/origin/main
+  ArrowUp, Square, ImagePlus, Filter, X, Wand2, Layers
 } from 'lucide-react';
-import { ModelInfo, ImageReference } from '../../types';
+import { ModelInfo, LoraInfo, ImageReference } from '../../types';
 
 export const ASPECT_RATIOS = [
   { label: '1:1 Square', sub: '1024×1024', w: 1024, h: 1024 },
@@ -23,6 +19,11 @@ interface PromptDockProps {
   models: ModelInfo[];
   selectedModel: string;
   setSelectedModel: (v: string) => void;
+  loras: LoraInfo[];
+  selectedLora: string | null;
+  setSelectedLora: (v: string | null) => void;
+  loraStrength: number;
+  setLoraStrength: (v: number) => void;
   width: number;
   height: number;
   setDimensions: (w: number, h: number) => void;
@@ -35,17 +36,11 @@ interface PromptDockProps {
   onOpenNegative: () => void;
   onOpenAdvanced: () => void;
   onAttachImage?: () => void;
-<<<<<<< HEAD
-  referenceImage?: { dataUrl: string; name: string } | null;
-  onPickReference?: (dataUrl: string, name: string) => void;
-  onClearReference?: () => void;
-=======
   imageReference?: ImageReference | null;
   onUpdateReferenceFidelity?: (fidelity: number) => void;
   onRemoveReference?: () => void;
   autoExpand?: boolean;
   setAutoExpand?: (v: boolean) => void;
->>>>>>> refs/remotes/origin/main
 }
 
 const shortModel = (name: string) =>
@@ -63,6 +58,11 @@ export const PromptDock: React.FC<PromptDockProps> = ({
   models,
   selectedModel,
   setSelectedModel,
+  loras,
+  selectedLora,
+  setSelectedLora,
+  loraStrength,
+  setLoraStrength,
   width,
   height,
   setDimensions,
@@ -75,24 +75,18 @@ export const PromptDock: React.FC<PromptDockProps> = ({
   onOpenNegative,
   onOpenAdvanced,
   onAttachImage,
-<<<<<<< HEAD
-  referenceImage,
-  onPickReference,
-  onClearReference,
-=======
   imageReference,
   onUpdateReferenceFidelity,
   onRemoveReference,
   autoExpand = false,
   setAutoExpand,
->>>>>>> refs/remotes/origin/main
 }) => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
+  const [loraOpen, setLoraOpen] = useState(false);
   const [aspectOpen, setAspectOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const activeAspect = ASPECT_RATIOS.find((a) => a.w === width && a.h === height) || ASPECT_RATIOS[0];
 
@@ -108,6 +102,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
       if (!wrapRef.current?.contains(e.target as Node)) {
         setToolsOpen(false);
         setModelOpen(false);
+        setLoraOpen(false);
         setAspectOpen(false);
       }
     };
@@ -122,23 +117,9 @@ export const PromptDock: React.FC<PromptDockProps> = ({
     }
   };
 
-  const readReferenceFile = (file: File) => {
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === 'string') {
-        onPickReference?.(reader.result, file.name);
-        setToolsOpen(false);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (file) readReferenceFile(file);
-  };
+  const placeholder = imageReference
+    ? 'Describe the change (e.g. remove the words from the banners)…'
+    : 'Describe what you want to imagine with SDXL...';
 
   return (
     <div
@@ -146,23 +127,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
         sidebarCollapsed ? 'left-14' : 'left-sidebar'
       }`}
     >
-      <div
-        ref={wrapRef}
-        className="w-full max-w-dock pointer-events-auto relative"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) readReferenceFile(file);
-            e.target.value = '';
-          }}
-        />
+      <div ref={wrapRef} className="w-full max-w-dock pointer-events-auto relative">
         {toolsOpen && (
           <div className="absolute -top-4 -translate-y-full left-0 w-72 bg-surface-container-high/95 backdrop-blur-2xl rounded-xl p-1 shadow-2xl z-40">
             <div className="px-2 py-0.5 text-outline font-mono text-label-caps uppercase tracking-wider">
@@ -170,26 +135,13 @@ export const PromptDock: React.FC<PromptDockProps> = ({
             </div>
             <div className="flex flex-col gap-1 mt-1">
               <button
-                onClick={() => {
-                  setToolsOpen(false);
-                  fileRef.current?.click();
-                }}
+                onClick={() => { setToolsOpen(false); onAttachImage?.(); }}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left"
               >
                 <ImagePlus className="w-[18px] h-[18px] text-primary" />
                 <span className="flex flex-col">
                   <span className="text-body-md">Image-to-Image Reference</span>
-                  <span className="font-mono text-mono-data text-outline">Edit or restyle an uploaded image</span>
-                </span>
-              </button>
-              <button
-                onClick={() => { setToolsOpen(false); onAttachImage?.(); }}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-surface-bright text-on-surface transition-colors text-left"
-              >
-                <Paintbrush className="w-[18px] h-[18px] text-tertiary" />
-                <span className="flex flex-col">
-                  <span className="text-body-md">Open Inpaint Canvas</span>
-                  <span className="font-mono text-mono-data text-outline">Mask and rewrite a region</span>
+                  <span className="font-mono text-mono-data text-outline">Keep this photo, then describe the change</span>
                 </span>
               </button>
               <button
@@ -234,29 +186,6 @@ export const PromptDock: React.FC<PromptDockProps> = ({
         )}
 
         <div className="bg-surface-container/95 backdrop-blur-2xl rounded-2xl shadow-dock p-2 flex flex-col gap-1 transition-shadow duration-300 focus-within:shadow-dockFocus">
-<<<<<<< HEAD
-          {referenceImage && (
-            <div className="flex items-center gap-2 px-2 pt-1">
-              <img
-                src={referenceImage.dataUrl}
-                alt={referenceImage.name}
-                className="w-10 h-10 rounded-lg object-cover border border-outline-variant/40"
-              />
-              <div className="flex-1 min-w-0">
-                <div className="text-body-md text-on-surface truncate">{referenceImage.name}</div>
-                <div className="font-mono text-mono-data text-outline">Image-to-image source · prompt describes the change</div>
-              </div>
-              <button
-                onClick={onClearReference}
-                className="p-1 rounded-md hover:bg-surface-bright text-outline hover:text-on-surface"
-                title="Remove reference image"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-=======
-          {/* Active Image-to-Image Reference Badge */}
           {imageReference && (
             <div className="flex items-center justify-between px-3 py-1.5 mb-0.5 rounded-xl bg-surface-container-high/90 border border-primary/30 text-on-surface text-xs font-mono">
               <div className="flex items-center gap-2.5 truncate">
@@ -269,6 +198,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
                   </span>
                   <span className="text-[10px] text-outline">
                     {imageReference.width && imageReference.height ? `${imageReference.width}×${imageReference.height}` : 'Img2Img Reference'}
+                    {' · mask one word on Canvas for surgical edits'}
                   </span>
                 </div>
               </div>
@@ -301,10 +231,9 @@ export const PromptDock: React.FC<PromptDockProps> = ({
             </div>
           )}
 
->>>>>>> refs/remotes/origin/main
           <div className="flex items-end gap-2 px-1">
             <button
-              onClick={() => { setToolsOpen((v) => !v); setModelOpen(false); setAspectOpen(false); }}
+              onClick={() => { setToolsOpen((v) => !v); setModelOpen(false); setAspectOpen(false); setLoraOpen(false); }}
               className="w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center shrink-0 transition-all"
               title="Attach references & presets"
             >
@@ -316,7 +245,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={referenceImage ? 'Describe how to change the attached image...' : 'Describe what you want to imagine with SDXL...'}
+                placeholder={placeholder}
                 rows={1}
                 className="w-full bg-transparent text-body-lg text-on-surface placeholder:text-outline resize-none py-1.5 focus:outline-none max-h-36 overflow-y-auto select-text"
               />
@@ -345,7 +274,7 @@ export const PromptDock: React.FC<PromptDockProps> = ({
             <div className="flex flex-wrap items-center gap-1">
               <div className="relative">
                 <button
-                  onClick={() => { setModelOpen((v) => !v); setAspectOpen(false); setToolsOpen(false); }}
+                  onClick={() => { setModelOpen((v) => !v); setAspectOpen(false); setToolsOpen(false); setLoraOpen(false); }}
                   className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-mono text-mono-data transition-colors"
                 >
                   <Zap className="w-3.5 h-3.5 text-primary" />
@@ -375,7 +304,66 @@ export const PromptDock: React.FC<PromptDockProps> = ({
 
               <div className="relative">
                 <button
-                  onClick={() => { setAspectOpen((v) => !v); setModelOpen(false); setToolsOpen(false); }}
+                  onClick={() => { setLoraOpen((v) => !v); setModelOpen(false); setAspectOpen(false); setToolsOpen(false); }}
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded-lg font-mono text-mono-data transition-colors ${
+                    selectedLora
+                      ? 'bg-primary/15 text-primary border border-primary/30'
+                      : 'bg-surface-container-high hover:bg-surface-bright text-on-surface'
+                  }`}
+                  title="LoRA add-on. Include the trigger word in the prompt."
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>{selectedLora ? shortModel(selectedLora) : 'LoRA off'}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-outline" />
+                </button>
+                {loraOpen && (
+                  <div className="absolute bottom-full mb-2 left-0 w-72 bg-surface-container-high rounded-xl p-1 shadow-2xl z-40">
+                    <div className="px-2 py-1 text-outline font-mono text-label-caps uppercase tracking-wider">
+                      LoRA (drop files in models/loras)
+                    </div>
+                    <button
+                      onClick={() => { setSelectedLora(null); setLoraOpen(false); }}
+                      className="w-full text-left px-2 py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono text-mono-data"
+                    >
+                      None
+                    </button>
+                    {loras.length === 0 && (
+                      <div className="px-2 py-1.5 text-outline font-mono text-mono-data">
+                        No LoRAs yet. Train on the GPU PC, copy .safetensors here.
+                      </div>
+                    )}
+                    {loras.map((l) => (
+                      <button
+                        key={l.name}
+                        onClick={() => { setSelectedLora(l.name); setLoraOpen(false); }}
+                        className="w-full text-left px-2 py-1.5 rounded-lg hover:bg-surface-bright text-on-surface font-mono text-mono-data flex items-center justify-between"
+                      >
+                        <span className="truncate">{shortModel(l.name)}</span>
+                        <span className="text-outline shrink-0">{l.size_mb} MB</span>
+                      </button>
+                    ))}
+                    {selectedLora && (
+                      <div className="px-2 py-2 border-t border-surface-container flex items-center gap-2">
+                        <span className="text-outline font-mono text-[10px]">Strength</span>
+                        <input
+                          type="range"
+                          min={50}
+                          max={100}
+                          step={5}
+                          value={Math.round(loraStrength * 100)}
+                          onChange={(e) => setLoraStrength(Number(e.target.value) / 100)}
+                          className="flex-1 h-1 accent-primary"
+                        />
+                        <span className="text-primary font-mono text-[11px] w-8 text-right">{loraStrength.toFixed(2)}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="relative">
+                <button
+                  onClick={() => { setAspectOpen((v) => !v); setModelOpen(false); setToolsOpen(false); setLoraOpen(false); }}
                   className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-mono text-mono-data transition-colors"
                 >
                   <span>{activeAspect.label}</span>

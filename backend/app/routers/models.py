@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional
 from app.services.model_manager import model_manager
 from app.services.prompt_pipeline import PromptPipeline
 from app.services.comfy_client import comfy_client
-from app.models.schemas import ModelInfo, StylePreset, ResolutionPreset
+from app.models.schemas import ModelInfo, LoraInfo, StylePreset, ResolutionPreset
 
 router = APIRouter(prefix="/api", tags=["models"])
 pipeline = PromptPipeline()
@@ -69,6 +69,10 @@ async def _vram_from_nvidia_smi() -> Optional[Dict[str, Any]]:
 async def list_models():
     models = await model_manager.get_all_models()
     return models
+
+@router.get("/loras", response_model=List[LoraInfo])
+def list_loras():
+    return model_manager.scan_loras()
 
 @router.get("/styles", response_model=List[StylePreset])
 def list_styles():

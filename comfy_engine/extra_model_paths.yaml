@@ -1,6 +1,8 @@
-# extra_model_paths.yaml: Directs ComfyUI to use central local models
+# extra_model_paths.yaml: Directs ComfyUI to the repo's models/ folder.
+# base_path is relative to this file (comfy_engine/), so ../models works on
+# Windows 11 and Linux regardless of where the repo is cloned.
 antigravity_suite:
-    base_path: C:/Ai Training/models/
+    base_path: ../models
     checkpoints: checkpoints/
     loras: loras/
     vae: vae/

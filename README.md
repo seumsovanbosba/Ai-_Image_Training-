@@ -102,9 +102,12 @@ chmod +x start.sh
 │       └── types/                 # TypeScript interfaces
 ├── models/
 │   ├── checkpoints/               # Drop .safetensors (SDXL, Flux, SD 1.5) here
-│   ├── loras/                     # LoRA weights
+│   ├── loras/                     # LoRA weights (pick in the prompt dock)
 │   ├── vae/                       # Variational Autoencoders
-│   └── controlnet/                # ControlNet weights
+│   ├── controlnet/                # ControlNet weights
+│   └── upscale_models/            # RealESRGAN / UltraSharp for Upscale 2x
+├── docs/
+│   └── LORA_TRAINING.md           # Kohya checklist for the Windows GPU PC
 ├── outputs/                       # Generated image files
 ├── start.bat                      # Windows launcher
 ├── start.sh                       # Linux launcher
@@ -121,6 +124,28 @@ Place your `.safetensors` files directly in `models/checkpoints/`:
 - **SD 1.5**: `models/checkpoints/v1-5-pruned-emaonly.safetensors`
 
 The application automatically scans this folder and populates the Model selector in the UI.
+
+### LoRA (trained add-on, not a full model)
+
+1. Train on the Windows 11 GPU PC using [docs/LORA_TRAINING.md](docs/LORA_TRAINING.md).
+2. Copy `your_lora.safetensors` into `models/loras/` (do not commit the file).
+3. Restart `start.bat`. Pick the LoRA in the prompt dock, strength 0.7–1.0, and include the trigger word in the prompt.
+
+### Upscale 2x (RealESRGAN, not bicubic stretch)
+
+Upscale needs a dedicated upscaler, not SDXL at 2048. On the GPU PC, once:
+
+```bat
+python scripts/download_upscale_model.py
+```
+
+That drops `RealESRGAN_x4plus.pth` into `models/upscale_models/`. Restart `start.bat`. The result chip shows pixel size (e.g. 1024×1024 → 2048×2048).
+
+If the file is missing, `/api/upscale` returns 400 instead of silently stretching the same picture.
+
+### Image edits (“remove the words from the banners”)
+
+Attach the photo (`+` → Image-to-Image Reference) or click **Use as Reference** on a result. An edit-shaped prompt auto-routes to img2img and is rewritten into a desired-state caption. For one specific word, mask it on **Canvas** (inpaint) — that is more reliable than a global regen.
 
 ---
 
@@ -153,9 +178,20 @@ Once cloned, `start.bat` will detect `comfy_engine/ComfyUI/main.py` and run it a
   "cfg_scale": 7.0,
   "sampler": "dpmpp_2m",
   "scheduler": "karras",
-  "seed": -1
+  "seed": -1,
+  "lora_name": null,
+  "lora_strength": 0.8
 }
 ```
+
+### Image-to-Image
+- `POST /api/img2img` — `image` (data URL or `/outputs/filename.png`) + `fidelity` (0.1–0.9, higher stays closer to the photo)
+
+### Upscale
+- `POST /api/upscale` — `image_id` or `image`, `scale_factor` 2. Requires a file in `models/upscale_models/`
+
+### LoRAs
+- `GET /api/loras`
 
 ### Inpainting
 - `POST /api/inpaint`

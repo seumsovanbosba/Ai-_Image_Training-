@@ -27,6 +27,8 @@ models/vae/*
 !models/vae/.gitkeep
 models/controlnet/*
 !models/controlnet/.gitkeep
+models/upscale_models/*
+!models/upscale_models/.gitkeep
 models/cache/
 
 # Outputs

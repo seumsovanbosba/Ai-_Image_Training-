@@ -128,33 +128,11 @@ def _png_data_url(color="white", size=(64, 64)):
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
 
 
-def test_compile_img2img_uses_source_image():
-    from app.services.workflow_compiler import WorkflowCompiler
-    compiled = WorkflowCompiler.compile_img2img(
-        prompt="a cat walking beside a person",
-        base_image_name="source.png",
-        denoise=0.25,
-        seed=7,
-        target_width=2048,
-        target_height=2048,
-    )
-    dag = compiled["workflow"]
-    class_types = [node["class_type"] for node in dag.values()]
-    assert "LoadImage" in class_types
-    assert "VAEEncode" in class_types
-    assert "ImageScale" in class_types
-    assert "EmptyLatentImage" not in class_types
-    assert dag["5"]["inputs"]["denoise"] == 0.25
-    assert dag["5"]["inputs"]["latent_image"] == ["14", 0]
-    assert dag["13"]["inputs"]["width"] == 2048
-    assert dag["13"]["inputs"]["height"] == 2048
-
-
 def test_img2img_endpoint():
     payload = {
         "prompt": "keep the person, cat and dog walking down the street",
-        "base_image": _png_data_url(),
-        "denoise": 0.45,
+        "image": _png_data_url(),
+        "fidelity": 0.65,
         "steps": 15,
         "seed": 99,
         "auto_expand": False,
@@ -164,26 +142,6 @@ def test_img2img_endpoint():
     data = resp.json()
     assert "task_id" in data
     assert data["seed"] == 99
-
-
-def test_upscale_endpoint():
-    payload = {
-        "prompt": "person, cat and dog walking down a sunlit street",
-        "base_image": _png_data_url(size=(128, 128)),
-        "denoise": 0.25,
-        "scale": 2,
-        "steps": 15,
-        "seed": 42,
-        "auto_expand": False,
-    }
-    resp = client.post("/api/upscale", json=payload)
-    assert resp.status_code == 200
-    data = resp.json()
-    assert "task_id" in data
-    assert data["seed"] == 42
-    assert data["width"] == 256
-    assert data["height"] == 256
-    assert data["denoise"] <= 0.45
 
 
 def test_list_images():

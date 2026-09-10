@@ -26,6 +26,7 @@ if not exist "%~dp0models\checkpoints" mkdir "%~dp0models\checkpoints"
 if not exist "%~dp0models\loras" mkdir "%~dp0models\loras"
 if not exist "%~dp0models\vae" mkdir "%~dp0models\vae"
 if not exist "%~dp0models\controlnet" mkdir "%~dp0models\controlnet"
+if not exist "%~dp0models\upscale_models" mkdir "%~dp0models\upscale_models"
 if not exist "%~dp0outputs" mkdir "%~dp0outputs"
 
 :: 3. PYTHON VIRTUAL ENVIRONMENT CHECK

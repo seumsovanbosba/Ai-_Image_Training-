@@ -28,6 +28,7 @@ mkdir -p "${SCRIPT_DIR}/models/checkpoints"
 mkdir -p "${SCRIPT_DIR}/models/loras"
 mkdir -p "${SCRIPT_DIR}/models/vae"
 mkdir -p "${SCRIPT_DIR}/models/controlnet"
+mkdir -p "${SCRIPT_DIR}/models/upscale_models"
 mkdir -p "${SCRIPT_DIR}/outputs"
 
 # 3. PYTHON VIRTUAL ENVIRONMENT CHECK
