@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Sparkles, User, Zap, Maximize2, BarChart3, Monitor, Paintbrush,
-  Palette, GitBranch, Copy, Download, Check, Loader2, Scan, Columns2, ImagePlus
+  Palette, GitBranch, Copy, Download, Check, Loader2, Scan, Columns2, ImagePlus, Eraser
 } from 'lucide-react';
 import { ChatTurn, ImageAsset } from '../../types';
 
@@ -21,9 +21,12 @@ interface ConversationTimelineProps {
   copiedId: string | null;
   onCopyPrompt: (prompt: string, id: string) => void;
   onDownload: (image: ImageAsset) => void;
-  onInpaint: (imageUrl: string) => void;
-  onOpenCanvas: (imageUrl: string) => void;
+  onInpaint: (imageUrl: string, prompt?: string) => void;
+  onRemoveObject?: (imageUrl: string, prompt?: string) => void;
+  onOpenCanvas: (imageUrl?: string, prompt?: string) => void;
+  onUploadToInpaint?: (file: File) => void;
   onOpenDag: () => void;
+
   onOpenMetadata: (image: ImageAsset) => void;
   onFullscreen: (image: ImageAsset) => void;
   onVary: (image: ImageAsset) => void;
@@ -58,7 +61,9 @@ export const ConversationTimeline: React.FC<ConversationTimelineProps> = ({
   onCopyPrompt,
   onDownload,
   onInpaint,
+  onRemoveObject,
   onOpenCanvas,
+  onUploadToInpaint,
   onOpenDag,
   onOpenMetadata,
   onFullscreen,
@@ -86,7 +91,33 @@ export const ConversationTimeline: React.FC<ConversationTimelineProps> = ({
           <p className="text-body-lg text-on-surface-variant mt-1 max-w-xl">
             Iterative latent diffusion workspace with dynamic prompt interpolation and high-fidelity rendering.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-4">
+            {onUploadToInpaint && (
+              <label className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md border border-outline-variant/40 cursor-pointer transition shadow-sm">
+                <Paintbrush className="w-4 h-4 text-tertiary" />
+                <span>Upload to Inpaint</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) onUploadToInpaint(f);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+            )}
+            <button
+              onClick={() => onOpenCanvas()}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md border border-outline-variant/40 transition shadow-sm"
+            >
+              <Palette className="w-4 h-4 text-secondary" />
+              <span>Open Inpaint Canvas</span>
+            </button>
+          </div>
         </div>
+
 
         <div className="mt-3 flex flex-col gap-6">
           {turns.map((turn) => (
@@ -123,6 +154,7 @@ export const ConversationTimeline: React.FC<ConversationTimelineProps> = ({
                     onCopyPrompt={onCopyPrompt}
                     onDownload={onDownload}
                     onInpaint={onInpaint}
+                    onRemoveObject={onRemoveObject}
                     onOpenCanvas={onOpenCanvas}
                     onOpenDag={onOpenDag}
                     onOpenMetadata={onOpenMetadata}
@@ -147,8 +179,9 @@ const ResultCard: React.FC<{
   copiedId: string | null;
   onCopyPrompt: (prompt: string, id: string) => void;
   onDownload: (image: ImageAsset) => void;
-  onInpaint: (imageUrl: string) => void;
-  onOpenCanvas: (imageUrl: string) => void;
+  onInpaint: (imageUrl: string, prompt?: string) => void;
+  onRemoveObject?: (imageUrl: string, prompt?: string) => void;
+  onOpenCanvas: (imageUrl: string, prompt?: string) => void;
   onOpenDag: () => void;
   onOpenMetadata: (image: ImageAsset) => void;
   onFullscreen: (image: ImageAsset) => void;
@@ -156,7 +189,7 @@ const ResultCard: React.FC<{
   onUpscale: (image: ImageAsset) => void;
   onUseAsReference: (image: ImageAsset) => void;
 }> = ({
-  turn, copiedId, onCopyPrompt, onDownload, onInpaint, onOpenCanvas,
+  turn, copiedId, onCopyPrompt, onDownload, onInpaint, onRemoveObject, onOpenCanvas,
   onOpenDag, onOpenMetadata, onFullscreen, onVary, onUpscale, onUseAsReference,
 }) => {
   const image = turn.image;
@@ -282,15 +315,26 @@ const ResultCard: React.FC<{
             </button>
             <button
               disabled={!image}
-              onClick={() => image && onInpaint(image.url)}
+              onClick={() => image && onInpaint(image.url, image.prompt)}
               className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm disabled:opacity-40"
             >
               <Paintbrush className="w-4 h-4 text-tertiary" />
               <span>Inpaint</span>
             </button>
+            {onRemoveObject && (
+              <button
+                disabled={!image}
+                onClick={() => image && onRemoveObject(image.url, image.prompt)}
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm disabled:opacity-40"
+                title="Surgically remove glasses, hats, or unwanted objects using Inpaint Canvas"
+              >
+                <Eraser className="w-4 h-4 text-amber-400" />
+                <span>Remove Object</span>
+              </button>
+            )}
             <button
               disabled={!image}
-              onClick={() => image && onOpenCanvas(image.url)}
+              onClick={() => image && onOpenCanvas(image.url, image.prompt)}
               className="flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors shadow-sm disabled:opacity-40"
             >
               <Palette className="w-4 h-4 text-secondary" />

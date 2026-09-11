@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Sparkles, Plus, Search, Images, History, MessageSquare, PanelLeftClose, PanelLeftOpen
+  Sparkles, Plus, Search, Images, History, MessageSquare, PanelLeftClose, PanelLeftOpen,
+  Paintbrush, Trash2
 } from 'lucide-react';
 import { RecentChat, WorkspaceTab } from '../../types';
 
@@ -15,7 +16,9 @@ interface StudioSidebarProps {
   imageCount: number;
   onNewGeneration: () => void;
   onOpenGallery: () => void;
+  onOpenCanvas?: () => void;
   onSelectRecent: (recent: RecentChat) => void;
+  onDeleteRecent?: (recent: RecentChat) => void;
 }
 
 export const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -29,8 +32,12 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
   imageCount,
   onNewGeneration,
   onOpenGallery,
+  onOpenCanvas,
   onSelectRecent,
+  onDeleteRecent,
 }) => {
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const filtered = recents.filter((r) =>
     r.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -52,6 +59,17 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
         >
           <Plus className="w-4 h-4" />
         </button>
+        {onOpenCanvas && (
+          <button
+            onClick={onOpenCanvas}
+            className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
+              activeTab === 'canvas' ? 'bg-surface-container-high text-primary' : 'text-on-surface-variant hover:bg-surface-container-high'
+            }`}
+            title="Inpaint & Canvas"
+          >
+            <Paintbrush className="w-4 h-4" />
+          </button>
+        )}
         <button
           onClick={onOpenGallery}
           className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
@@ -110,6 +128,20 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
         </div>
 
         <nav className="flex flex-col gap-0.5 pt-1">
+          {onOpenCanvas && (
+            <button
+              onClick={onOpenCanvas}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                activeTab === 'canvas'
+                  ? 'bg-surface-container-high text-primary font-medium'
+                  : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+              }`}
+            >
+              <Paintbrush className="w-5 h-5 text-tertiary" />
+              <span className="text-body-md flex-1 text-left">Inpaint Canvas</span>
+            </button>
+          )}
+
           <button
             onClick={onOpenGallery}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
@@ -135,23 +167,75 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
             {filtered.length === 0 && (
               <p className="px-3 py-2 text-mono-data font-mono text-outline">No chats yet</p>
             )}
-            {filtered.map((recent) => (
-              <button
-                key={recent.id}
-                onClick={() => onSelectRecent(recent)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors group ${
-                  activeRecentId === recent.id
-                    ? 'bg-surface-container-high text-on-surface'
-                    : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                }`}
-              >
-                <MessageSquare className="w-4 h-4 opacity-70 group-hover:text-primary transition-colors shrink-0" />
-                <span className="text-body-md truncate">{recent.title}</span>
-              </button>
-            ))}
+            {filtered.map((recent) => {
+              const isConfirming = confirmDeleteId === recent.id;
+
+              if (isConfirming) {
+                return (
+                  <div
+                    key={recent.id}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-rose-950/40 border border-rose-500/30 text-rose-200 text-xs animate-fadeIn"
+                  >
+                    <span className="truncate pr-1 text-[11px]">Delete chat?</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDeleteId(null)}
+                        className="px-2 py-0.5 rounded text-[10px] bg-surface-panel hover:bg-surface-hover text-slate-300 border border-surface-border transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onDeleteRecent?.(recent);
+                          setConfirmDeleteId(null);
+                        }}
+                        className="px-2 py-0.5 rounded text-[10px] bg-rose-600 hover:bg-rose-500 text-white font-medium transition shadow-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={recent.id}
+                  onClick={() => onSelectRecent(recent)}
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors cursor-pointer group ${
+                    activeRecentId === recent.id
+                      ? 'bg-surface-container-high text-on-surface'
+                      : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <MessageSquare className="w-4 h-4 opacity-70 group-hover:text-primary transition-colors shrink-0" />
+                    <span className="text-body-md truncate">{recent.title}</span>
+                  </div>
+
+                  {onDeleteRecent && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmDeleteId(recent.id);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-rose-500/20 text-outline hover:text-rose-400 rounded transition shrink-0 ml-1"
+                      title="Delete recent chat"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
     </aside>
   );
 };
+

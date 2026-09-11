@@ -4,12 +4,50 @@ from pathlib import Path
 from typing import List, Tuple, Dict, Any
 from app.config import settings
 
-EDIT_VERBS = r"remove|delete|erase|change|replace|fix|without"
+EDIT_ACTION_VERBS = r"remove|delete|erase|take off|get rid of|clear|strip"
+EDIT_MODIFY_VERBS = r"change|replace|fix"
+ALL_EDIT_VERBS = rf"{EDIT_ACTION_VERBS}|{EDIT_MODIFY_VERBS}"
 TEXT_NOUNS = r"text|word|words|letter|letters|banner|banners|sign|logo|watermark|caption|writing|typography"
 TEXT_NEGATIVES = [
     "text", "letters", "words", "watermark", "caption", "logo",
     "typography", "writing", "signage text",
 ]
+
+# Targeted replacements for localized object removal in inpainting/edits:
+# Instead of prompting "remove X" (which activates cross-attention for X),
+# describe what should REPLACE the area and place X in negative prompts.
+OBJECT_TARGETS: Dict[str, Dict[str, Any]] = {
+    "glasses": {
+        "pattern": r"\b(glasses|sunglasses|spectacles|eyeglasses|eyewear|frames|eyeglass|reading glasses|shades)\b",
+        "replacement": "natural clear eyes, detailed realistic eyes, natural eyelids, smooth bare skin, clean nose bridge, realistic facial details",
+        "negatives": ["glasses", "sunglasses", "spectacles", "eyeglasses", "eyewear", "frames", "shades", "tinted lenses", "rims"],
+    },
+    "hat": {
+        "pattern": r"\b(hat|hats|cap|caps|beanie|beanies|fedora|headwear|helmet|helmets|beret|bonnet|baseball cap)\b",
+        "replacement": "natural hair, detailed realistic hairstyle, natural hair strands, clean head shape, realistic hair texture",
+        "negatives": ["hat", "cap", "beanie", "fedora", "headwear", "helmet", "beret", "bonnet", "head covering"],
+    },
+    "facial_hair": {
+        "pattern": r"\b(beard|beards|mustache|mustaches|moustache|moustaches|goatee|facial hair|stubble|whiskers)\b",
+        "replacement": "clean-shaven skin, smooth bare face, natural skin texture, clean jawline and chin",
+        "negatives": ["beard", "mustache", "moustache", "goatee", "facial hair", "stubble"],
+    },
+    "jewelry": {
+        "pattern": r"\b(jewelry|jewellery|watch|wrist watch|necklace|necklaces|earring|earrings|bracelet|bracelets|piercing|piercings|ring|rings)\b",
+        "replacement": "smooth bare skin, natural skin texture, clean skin",
+        "negatives": ["jewelry", "jewellery", "watch", "necklace", "earrings", "bracelet", "piercing", "accessory"],
+    },
+    "accessory": {
+        "pattern": r"\b(accessory|accessories|tie|necktie|bowtie|scarf|scarves|gloves)\b",
+        "replacement": "natural clothing, clean plain fabric, smooth natural texture",
+        "negatives": ["accessory", "accessories", "unwanted accessory", "clutter"],
+    },
+    "general_object": {
+        "pattern": r"\b(object|objects|item|items|unwanted object|background object|clutter|person in background)\b",
+        "replacement": "seamless matching background, natural environment, clean surface, realistic texture, coherent surrounding area",
+        "negatives": ["unwanted object", "unwanted item", "clutter", "artifacts", "distortion"],
+    },
+}
 
 
 class PromptPipeline:
@@ -39,16 +77,45 @@ class PromptPipeline:
     @staticmethod
     def is_edit_instruction(prompt: str) -> bool:
         '''
-        True for "remove the words from the banners".
-        False for short captions like "delete pair" so txt2img tests stay stable.
+        True for "remove the words from the banners", "remove glasses", "remove the hat", "remove this accessory", "without glasses".
+        False for short captions like "delete pair" or descriptive text like "portrait of a man without glasses".
         '''
         p = (prompt or "").strip().lower()
-        if not p or not re.search(rf"\b({EDIT_VERBS})\b", p):
+        if not p:
             return False
+
+        tokens = p.split()
+        if len(tokens) == 2 and tokens[0] in ["delete", "remove", "erase"] and tokens[1] in ["pair", "photo", "image"]:
+            return False
+
+        # Direct removal/absence instruction starting with without or no:
+        # e.g. "without glasses", "no hat", "without sunglasses"
+        if re.match(r"^(without|no)\s+(the\s+|this\s+|all\s+)?(glasses|sunglasses|spectacles|eyeglasses|eyewear|frames|shades|hat|hats|cap|caps|beanie|fedora|headwear|helmet|beard|mustache|facial hair|jewelry|jewellery|watch|necklace|earrings|accessory|accessories|object|objects|item|clutter|text|words|letters|banner|watermark)\b", p):
+            return True
+
+        if not re.search(rf"\b({ALL_EDIT_VERBS})\b", p):
+            return False
+
         has_text = bool(re.search(rf"\b({TEXT_NOUNS})\b", p))
         has_from = " from " in f" {p} "
         has_the = bool(re.search(r"\bthe\b", p))
-        return has_from or has_text or (has_the and len(p.split()) >= 4)
+
+        has_action = bool(re.search(rf"\b({EDIT_ACTION_VERBS})\b", p))
+        has_object = any(bool(re.search(cfg["pattern"], p)) for cfg in OBJECT_TARGETS.values())
+
+        if has_action and has_object:
+            return True
+
+        return has_from or has_text or (has_the and len(tokens) >= 4)
+
+    @staticmethod
+    def is_object_removal(prompt: str) -> bool:
+        p = (prompt or "").strip().lower()
+        if not PromptPipeline.is_edit_instruction(p):
+            return False
+        has_action = bool(re.search(rf"\b({EDIT_ACTION_VERBS})\b", p)) or bool(re.match(r"^(without|no)\s+", p))
+        has_object = any(bool(re.search(cfg["pattern"], p)) for cfg in OBJECT_TARGETS.values())
+        return has_action and has_object
 
     @staticmethod
     def is_text_removal(prompt: str) -> bool:
@@ -59,28 +126,42 @@ class PromptPipeline:
 
     def interpret_edit(self, prompt: str) -> Dict[str, Any]:
         original = (prompt or "").strip()
+        p_lower = original.lower()
         is_edit = self.is_edit_instruction(original)
         is_text = self.is_text_removal(original)
         rewritten = original
         extra_negatives: List[str] = []
+        detected_target: Optional[str] = None
 
         if is_edit:
-            if is_text:
-                rewritten = (
-                    f"the same scene and composition, {original}, "
-                    "blank banners with no text, no letters, no typography, "
-                    "keep lighting, camera angle, and all other details"
-                )
-                extra_negatives = list(TEXT_NEGATIVES)
-            else:
-                rewritten = (
-                    f"the same scene and composition, {original}, "
-                    "keep lighting, camera angle, and all other details"
-                )
+            # 1. Check for specific object removal targets (e.g. glasses, hat, accessories)
+            if self.is_object_removal(original):
+                for target_name, cfg in OBJECT_TARGETS.items():
+                    if re.search(cfg["pattern"], p_lower):
+                        detected_target = target_name
+                        rewritten = cfg["replacement"]
+                        extra_negatives = list(cfg["negatives"])
+                        break
+
+            # 2. If not a specific object removal, check text or generic scene edit
+            if not detected_target:
+                if is_text:
+                    rewritten = (
+                        f"the same scene and composition, {original}, "
+                        "blank banners with no text, no letters, no typography, "
+                        "keep lighting, camera angle, and all other details"
+                    )
+                    extra_negatives = list(TEXT_NEGATIVES)
+                else:
+                    rewritten = (
+                        f"the same scene and composition, {original}, "
+                        "keep lighting, camera angle, and all other details"
+                    )
 
         return {
             "is_edit": is_edit,
             "is_text_edit": is_text,
+            "detected_target": detected_target,
             "original_prompt": original,
             "rewritten_prompt": rewritten,
             "extra_negatives": extra_negatives,
@@ -246,4 +327,5 @@ class PromptPipeline:
             "styles_applied": styles,
             "is_edit": edit["is_edit"],
             "is_text_edit": edit["is_text_edit"],
+            "detected_target": edit.get("detected_target"),
         }

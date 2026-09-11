@@ -8,10 +8,11 @@ from pathlib import Path
 
 from app.database import get_session
 from app.models.generation import ImageAsset, Board
-from app.models.schemas import BoardCreate, BoardRead, ImageAssetRead
+from app.models.schemas import BoardCreate, BoardRead, ImageAssetRead, BatchDeleteImagesRequest
 from app.config import settings
 
 router = APIRouter(prefix="/api", tags=["gallery"])
+
 
 @router.get("/boards", response_model=List[BoardRead])
 def list_boards(session: Session = Depends(get_session)):
@@ -134,3 +135,21 @@ def delete_image(image_id: int, session: Session = Depends(get_session)):
     session.delete(image)
     session.commit()
     return {"status": "ok", "deleted_id": image_id}
+
+@router.post("/images/delete-batch")
+def delete_images_batch(req: BatchDeleteImagesRequest, session: Session = Depends(get_session)):
+    deleted_ids = []
+    for image_id in req.image_ids:
+        image = session.get(ImageAsset, image_id)
+        if image:
+            try:
+                fp = Path(image.filepath)
+                if fp.exists():
+                    fp.unlink()
+            except Exception:
+                pass
+            session.delete(image)
+            deleted_ids.append(image_id)
+    session.commit()
+    return {"status": "ok", "deleted_ids": deleted_ids}
+

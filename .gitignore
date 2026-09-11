@@ -8,6 +8,8 @@ env/
 *.sqlite-journal
 *.pytest_cache/
 .pytest_cache/
+*.log
+
 
 # Node
 node_modules/

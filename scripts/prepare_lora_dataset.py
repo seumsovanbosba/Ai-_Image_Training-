@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """Build a Kohya-style SDXL LoRA dataset folder from a folder of photos.
 
+The Golden Rules of LoRA Dataset Preparation:
+1. "Caption what you want to control; leave uncapped what you want to be permanent."
+   - If your subject wears glasses in some photos, explicitly caption "wearing eyeglasses"
+     in the sidecar .txt file so the model disentangles glasses from character identity.
+   - If an object appears in every photo without being captioned, the model permanently
+     bakes it into the trigger word!
+2. Pre-Cleaning Workflow (for unwanted objects present across photos):
+   - Raw training images -> Inpaint/remove unwanted object (using Antigravity Inpaint Canvas)
+   - Save cleaned images -> Run prepare_lora_dataset.py -> Train with Kohya.
+
 Example (Windows 11 GPU PC):
 
     python scripts/prepare_lora_dataset.py ^
@@ -100,6 +110,11 @@ def main():
     print(f"\n[DONE] {count} images in {class_dir}")
     print("In Kohya GUI: Image folder = the parent img/ directory (not the 10_ trigger folder).")
     print(f"Trigger to use in prompts: {args.trigger}")
+    print("\n[NOTE] Concept Disentanglement Check:")
+    print("  - 'Caption what you want to control; leave uncapped what you want to be permanent.'")
+    print("  - If the character wears glasses/hats in some photos, make sure their .txt sidecars")
+    print("    explicitly mention 'wearing eyeglasses' or 'wearing hat' so the accessory remains controllable.")
+    print("  - If all photos contain an unwanted object, pre-clean them using the Inpaint Canvas before training.")
 
 
 if __name__ == "__main__":

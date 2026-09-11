@@ -17,10 +17,24 @@ from app.services.prompt_pipeline import PromptPipeline
 from app.services.workflow_compiler import WorkflowCompiler
 from app.services.model_manager import model_manager
 from app.services.comfy_client import comfy_client
+import logging
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["generation"])
 pipeline = PromptPipeline()
+
+
+async def _safe_queue_prompt(workflow_dag: dict, task_id: str):
+    try:
+        return await comfy_client.queue_prompt(workflow_dag, task_id)
+    except RuntimeError as e:
+        logger.warning(f"Failed to queue prompt for task {task_id}: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"The AI generation engine (ComfyUI) is still starting up or offline. Please wait a moment for the model to load on port 8188 and try again. ({e})"
+        )
 
 
 def _decode_b64(data_uri: str) -> bytes:
@@ -148,9 +162,55 @@ def clamp_mask_to_dimensions(mask_bytes: bytes, target_w: int, target_h: int) ->
     with Image.open(BytesIO(mask_bytes)) as mask_img:
         if mask_img.size != (target_w, target_h):
             mask_img = mask_img.resize((target_w, target_h), Image.Resampling.NEAREST)
+
+        # ComfyUI's LoadImage node calculates its MASK tensor as:
+        #   if 'A' in image.getbands():
+        #       mask = 1.0 - (A / 255.0)
+        #   else:
+        #       mask = torch.zeros((64, 64))
+        #
+        # For inpainting to occur:
+        # - Target inpaint area must produce mask=1.0, requiring Alpha = 0.
+        # - Keep (unmasked) area must produce mask=0.0, requiring Alpha = 255.
+        # - RGB channels are set to White (inpaint) / Black (keep) for node compatibility.
+        import numpy as np
+        mask_rgba = mask_img.convert("RGBA")
+        arr = np.array(mask_rgba)  # shape (H, W, 4)
+        r = arr[:, :, 0].astype(np.float32)
+        g = arr[:, :, 1].astype(np.float32)
+        b = arr[:, :, 2].astype(np.float32)
+        a = arr[:, :, 3].astype(np.float32)
+
+        brightness = 0.299 * r + 0.587 * g + 0.114 * b
+        has_bright_rgb = bool((brightness > 80).any() or (r > 80).any() or (g > 80).any() or (b > 80).any())
+        has_varying_alpha = bool((a < 240).any() and (a > 20).any())
+
+        if has_bright_rgb:
+            # Standard white-on-black or colored stroke mask (e.g. RGB 255 for inpaint, 0 for keep)
+            is_masked = (brightness > 80) | (r > 80) | (g > 80) | (b > 80)
+        elif has_varying_alpha:
+            # RGB was zeroed out by canvas alpha premultiplication. Determine which alpha represents inpaint.
+            zeros_count = (a < 128).sum()
+            total_pixels = target_w * target_h
+            if zeros_count <= total_pixels // 2:
+                is_masked = a < 128
+            else:
+                is_masked = a >= 128
+        else:
+            is_masked = brightness > 80
+
+        out_arr = np.zeros((target_h, target_w, 4), dtype=np.uint8)
+        out_arr[:, :, 3] = 255  # default alpha 255 (keep area)
+        out_arr[is_masked, 0] = 255
+        out_arr[is_masked, 1] = 255
+        out_arr[is_masked, 2] = 255
+        out_arr[is_masked, 3] = 0  # inpaint area: alpha 0 (ComfyUI calculates 1.0 - 0/255 = 1.0)
+
+        out_img = Image.fromarray(out_arr, mode="RGBA")
         buf = BytesIO()
-        mask_img.save(buf, format="PNG")
+        out_img.save(buf, format="PNG")
         return buf.getvalue()
+
 
 
 @router.post("/generate")
@@ -221,7 +281,7 @@ async def generate_image(req: GenerateRequest, session: Session = Depends(get_se
             _save_task_interrupted(task_id)
 
     comfy_client.subscribe(task_id, on_event)
-    await comfy_client.queue_prompt(workflow_dag, task_id)
+    await _safe_queue_prompt(workflow_dag, task_id)
 
     return {
         "task_id": task_id,
@@ -245,8 +305,8 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
     base_fn = f"inpaint_base_{task_id[:8]}.png"
     mask_fn = f"inpaint_mask_{task_id[:8]}.png"
 
-    raw_base_bytes = _decode_b64(req.base_image)
-    raw_mask_bytes = _decode_b64(req.mask_image)
+    raw_base_bytes = _resolve_image_bytes(req.base_image)
+    raw_mask_bytes = _resolve_image_bytes(req.mask_image)
 
     base_bytes, img_w, img_h = clamp_image_for_diffusion(raw_base_bytes, max_dim=1024)
     mask_bytes = clamp_mask_to_dimensions(raw_mask_bytes, img_w, img_h)
@@ -267,6 +327,7 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
         scheduler=req.scheduler,
         denoise=req.denoise,
         seed=req.seed,
+        grow_mask_by=req.grow_mask_by,
         **_lora_kwargs(req.lora_name, req.lora_strength),
     )
 
@@ -310,7 +371,7 @@ async def inpaint_image(req: InpaintRequest, session: Session = Depends(get_sess
             _save_task_interrupted(task_id)
 
     comfy_client.subscribe(task_id, on_event)
-    await comfy_client.queue_prompt(workflow_dag, task_id)
+    await _safe_queue_prompt(workflow_dag, task_id)
 
     return {
         "task_id": task_id,
@@ -399,7 +460,7 @@ async def img2img_image(req: Img2ImgRequest, session: Session = Depends(get_sess
             _save_task_interrupted(task_id)
 
     comfy_client.subscribe(task_id, on_event)
-    await comfy_client.queue_prompt(workflow_dag, task_id)
+    await _safe_queue_prompt(workflow_dag, task_id)
 
     return {
         "task_id": task_id,
@@ -526,7 +587,7 @@ async def upscale_image(req: UpscaleRequest, session: Session = Depends(get_sess
             _save_task_interrupted(task_id)
 
     comfy_client.subscribe(task_id, on_event)
-    await comfy_client.queue_prompt(workflow_dag, task_id)
+    await _safe_queue_prompt(workflow_dag, task_id)
 
     return {
         "task_id": task_id,

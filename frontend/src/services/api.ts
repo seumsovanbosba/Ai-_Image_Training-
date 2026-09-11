@@ -2,6 +2,17 @@ import { StylePreset, ResolutionPreset, ModelInfo, LoraInfo, Board, ImageAsset, 
 
 const BASE_URL = '/api';
 
+async function handleResponseError(res: Response): Promise<never> {
+  let errText = await res.text();
+  try {
+    const parsed = JSON.parse(errText);
+    if (parsed.detail) {
+      errText = typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail);
+    }
+  } catch {}
+  throw new Error(errText);
+}
+
 export const api = {
   async getModels(): Promise<ModelInfo[]> {
     const res = await fetch(`${BASE_URL}/models`);
@@ -29,13 +40,18 @@ export const api = {
     return res.json();
   },
 
+  async startEngine(): Promise<{ status: string; comfyui_online: boolean; message?: string }> {
+    const res = await fetch(`${BASE_URL}/system/start-engine`, { method: 'POST' });
+    return res.json();
+  },
+
   async generate(data: any): Promise<{ task_id: string; seed: number; processed_prompt: any }> {
     const res = await fetch(`${BASE_URL}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) await handleResponseError(res);
     return res.json();
   },
 
@@ -45,7 +61,7 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) await handleResponseError(res);
     return res.json();
   },
 
@@ -55,7 +71,7 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) await handleResponseError(res);
     return res.json();
   },
 
@@ -65,7 +81,7 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) await handleResponseError(res);
     return res.json();
   },
 
@@ -83,6 +99,16 @@ export const api = {
   async deleteImage(id: number): Promise<void> {
     await fetch(`${BASE_URL}/images/${id}`, { method: 'DELETE' });
   },
+
+  async deleteImagesBatch(imageIds: number[]): Promise<void> {
+    if (!imageIds.length) return;
+    await fetch(`${BASE_URL}/images/delete-batch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_ids: imageIds }),
+    });
+  },
+
 
   async getBoards(): Promise<Board[]> {
     const res = await fetch(`${BASE_URL}/boards`);

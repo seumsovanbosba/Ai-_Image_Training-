@@ -106,6 +106,7 @@ export interface VramInfo {
 
 export interface SystemStatus {
   comfyui_online: boolean;
+  engine_starting?: boolean;
   offline_mode_enforced: boolean;
   stats?: unknown;
   vram?: VramInfo;

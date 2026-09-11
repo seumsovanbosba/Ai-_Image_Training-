@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 from fastapi import APIRouter
 from typing import List, Dict, Any, Optional
 from app.services.model_manager import model_manager
@@ -82,9 +82,18 @@ def list_styles():
 def list_resolutions():
     return pipeline.get_available_resolutions()
 
+from app.config import settings
+
 @router.get("/system/status")
 async def get_system_status():
     is_running = await comfy_client.is_comfy_running()
+    starting = False
+    try:
+        from comfy_engine.comfy_manager import is_comfy_starting
+        starting = is_comfy_starting()
+    except Exception:
+        pass
+
     stats = await comfy_client.get_system_stats()
     vram = _vram_from_comfy(stats)
     if vram is None:
@@ -101,7 +110,19 @@ async def get_system_status():
         }
     return {
         "comfyui_online": is_running,
+        "engine_starting": starting and not is_running,
         "offline_mode_enforced": True,
         "stats": stats,
         "vram": vram,
     }
+
+@router.post("/system/start-engine")
+async def trigger_start_engine():
+    try:
+        from comfy_engine.comfy_manager import ensure_comfy_running, check_comfy_health
+        if check_comfy_health(settings.COMFY_HOST, settings.COMFY_PORT):
+            return {"status": "already_running", "comfyui_online": True}
+        asyncio.create_task(ensure_comfy_running(settings.COMFY_HOST, settings.COMFY_PORT))
+        return {"status": "starting", "comfyui_online": False, "message": "ComfyUI engine launch initiated."}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "comfyui_online": False}

@@ -17,11 +17,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+import sys
+sys.path.insert(0, str(settings.BASE_DIR))
+
+try:
+    from comfy_engine.comfy_manager import ensure_comfy_running, stop_comfyui_headless
+except ImportError:
+    ensure_comfy_running = None
+    stop_comfyui_headless = None
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Initializing database...")
     init_db()
+
+    # Automatically launch/supervise ComfyUI engine if not running
+    if ensure_comfy_running:
+        logger.info("Checking & ensuring ComfyUI headless engine is active...")
+        asyncio.create_task(ensure_comfy_running(settings.COMFY_HOST, settings.COMFY_PORT))
     
     logger.info("Starting ComfyUI WebSocket background listener...")
     ws_task = asyncio.create_task(comfy_client.start_ws_listener())
@@ -36,6 +50,9 @@ async def lifespan(app: FastAPI):
         await ws_task
     except asyncio.CancelledError:
         pass
+
+    if stop_comfyui_headless:
+        stop_comfyui_headless()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

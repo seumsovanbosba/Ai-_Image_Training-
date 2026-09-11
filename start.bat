@@ -40,8 +40,9 @@ if not exist "%VENV_PYTHON%" (
 
 :: 4. CHECK HEADLESS COMFYUI ENGINE
 if exist "%~dp0comfy_engine\ComfyUI\main.py" (
+    echo [INFO] Headless ComfyUI Engine detected.
     echo [INFO] Starting Headless ComfyUI Engine on port 8188...
-    start "ComfyUI Headless Engine" /min "%VENV_PYTHON%" "%~dp0comfy_engine\ComfyUI\main.py" --listen 127.0.0.1 --port 8188 --extra-model-paths-config "%~dp0comfy_engine\extra_model_paths.yaml"
+    start "ComfyUI Headless Engine" /d "%~dp0comfy_engine\ComfyUI" /min "%VENV_PYTHON%" "%~dp0comfy_engine\ComfyUI\main.py" --listen 127.0.0.1 --port 8188 --extra-model-paths-config "%~dp0comfy_engine\extra_model_paths.yaml"
 ) else (
     echo [NOTICE] ComfyUI directory not found at comfy_engine\ComfyUI.
     echo          The suite will run in standalone simulation / fallback mode.
@@ -53,8 +54,8 @@ echo [INFO] Starting Antigravity Orchestrator Backend & Studio UI...
 echo [INFO] Opening browser at http://127.0.0.1:8000
 echo.
 
-:: Open browser after 2 seconds
-start "" /b cmd /c "timeout /t 2 >nul & start http://127.0.0.1:8000"
+:: Open browser after 4 seconds to give engine time to initialize
+start "" /b cmd /c "timeout /t 4 /nobreak >nul & start http://127.0.0.1:8000"
 
 :: 5. LAUNCH FASTAPI SERVER
 "%VENV_PYTHON%" -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir "%~dp0backend"

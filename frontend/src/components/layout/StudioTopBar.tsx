@@ -1,17 +1,20 @@
 import React from 'react';
-import { CircleHelp, Settings } from 'lucide-react';
+import { CircleHelp, Settings, ArrowLeft } from 'lucide-react';
 import { WorkspaceTab } from '../../types';
 
 interface StudioTopBarProps {
   sidebarCollapsed: boolean;
   activeTab: WorkspaceTab;
   comfyOnline: boolean;
+  engineStarting?: boolean;
+  onStartEngine?: () => void;
   onOpenSettings: () => void;
+  onBackToStudio?: () => void;
 }
 
 const TAB_LABEL: Record<WorkspaceTab, string> = {
   studio: 'AI Image Studio',
-  canvas: 'Canvas',
+  canvas: 'Inpaint Canvas',
   dag: 'DAG Pipeline',
   gallery: 'Images & Assets',
 };
@@ -20,7 +23,10 @@ export const StudioTopBar: React.FC<StudioTopBarProps> = ({
   sidebarCollapsed,
   activeTab,
   comfyOnline,
+  engineStarting,
+  onStartEngine,
   onOpenSettings,
+  onBackToStudio,
 }) => {
   return (
     <header
@@ -29,32 +35,72 @@ export const StudioTopBar: React.FC<StudioTopBarProps> = ({
       }`}
     >
       <div className="h-16 w-full px-6 flex items-center justify-between">
-        <div className="flex items-center gap-1 text-body-md">
-          <span className="text-outline">Studio</span>
+        <div className="flex items-center gap-2 text-body-md">
+          {activeTab !== 'studio' && onBackToStudio && (
+            <button
+              onClick={onBackToStudio}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface text-body-md transition-colors mr-1 border border-outline-variant/40"
+              title="Return to Studio Timeline"
+            >
+              <ArrowLeft className="w-4 h-4 text-primary" />
+              <span>Back to Studio</span>
+            </button>
+          )}
+
+          {activeTab !== 'studio' && onBackToStudio ? (
+            <button
+              onClick={onBackToStudio}
+              className="text-outline hover:text-primary transition-colors cursor-pointer"
+            >
+              Studio
+            </button>
+          ) : (
+            <span className="text-outline">Studio</span>
+          )}
           <span className="text-outline-variant">/</span>
           <span className="text-on-surface font-medium">{TAB_LABEL[activeTab]}</span>
         </div>
 
+
         <div className="flex items-center gap-3">
           {/* Engine Status Badge */}
           <div
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border transition-all ${
+            onClick={() => {
+              if (!comfyOnline && !engineStarting && onStartEngine) {
+                onStartEngine();
+              }
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border transition-all select-none ${
               comfyOnline
                 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                : 'bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pulse'
+                : engineStarting
+                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse cursor-wait'
+                : 'bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20 cursor-pointer'
             }`}
             title={
               comfyOnline
                 ? 'ComfyUI Headless Engine is online and ready on port 8188'
-                : 'ComfyUI Engine is offline or still initializing. Check terminal.'
+                : engineStarting
+                ? 'ComfyUI Engine is currently starting up... Please wait.'
+                : 'ComfyUI Engine is offline. Click to start the engine.'
             }
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                comfyOnline ? 'bg-emerald-400' : 'bg-rose-400'
+                comfyOnline
+                  ? 'bg-emerald-400'
+                  : engineStarting
+                  ? 'bg-amber-400 animate-ping'
+                  : 'bg-rose-400'
               }`}
             />
-            <span>{comfyOnline ? 'Engine Online' : 'Engine Offline'}</span>
+            <span>
+              {comfyOnline
+                ? 'Engine Online'
+                : engineStarting
+                ? 'Engine Initializing...'
+                : 'Engine Offline (Click to Start)'}
+            </span>
           </div>
 
           <div className="flex items-center gap-1">

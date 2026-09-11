@@ -38,6 +38,7 @@ class InpaintRequest(BaseModel):
     steps: int = 30
     cfg_scale: float = 7.0
     seed: Optional[int] = -1
+    grow_mask_by: int = 6
     board_id: Optional[int] = None
     lora_name: Optional[str] = None
     lora_strength: float = 0.8
@@ -157,3 +158,7 @@ class ResolutionPreset(BaseModel):
     label: str
     aspect_ratio: str
     target: str
+
+class BatchDeleteImagesRequest(BaseModel):
+    image_ids: List[int]
+

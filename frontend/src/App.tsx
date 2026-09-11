@@ -13,7 +13,7 @@ import { SettingsModal } from './components/common/SettingsModal';
 import { api } from './services/api';
 import { ProgressWebSocket } from './services/websocket';
 import { urlToDataUrl } from './utils/image';
-import { looksLikeEdit, isTextRemoval } from './utils/editIntent';
+import { looksLikeEdit, isTextRemoval, isObjectRemoval, getObjectRemovalPreset, OBJECT_REMOVAL_PRESETS } from './utils/editIntent';
 import {
   StylePreset, ResolutionPreset, ModelInfo, LoraInfo, Board,
   ImageAsset, TaskProgress, WorkspaceTab, ChatTurn, RecentChat,
@@ -43,6 +43,7 @@ export const App: React.FC = () => {
   const [images, setImages] = useState<ImageAsset[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageAsset | null>(null);
   const [comfyOnline, setComfyOnline] = useState(false);
+  const [engineStarting, setEngineStarting] = useState(false);
 
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState(
@@ -53,6 +54,7 @@ export const App: React.FC = () => {
   const [expansionLevel, setExpansionLevel] = useState('medium');
   const [selectedModel, setSelectedModel] = useState('sd_xl_base_1.0.safetensors');
   const [selectedLora, setSelectedLora] = useState<string | null>(null);
+  const [loraEnabled, setLoraEnabled] = useState(true);
   const [loraStrength, setLoraStrength] = useState(0.8);
   const [width, setWidth] = useState(1024);
   const [height, setHeight] = useState(1024);
@@ -70,6 +72,7 @@ export const App: React.FC = () => {
     maskDataUrl: string;
     width: number;
     height: number;
+    growMaskBy?: number;
   } | null>(null);
 
   const [imageReference, setImageReference] = useState<ImageReference | null>(null);
@@ -88,7 +91,7 @@ export const App: React.FC = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedMetadata, setCopiedMetadata] = useState(false);
 
-  const loraPayload = selectedLora
+  const loraPayload = (selectedLora && loraEnabled)
     ? { lora_name: selectedLora, lora_strength: loraStrength }
     : { lora_name: null, lora_strength: loraStrength };
 
@@ -113,6 +116,7 @@ export const App: React.FC = () => {
         setImages(imgList);
         if (imgList.length > 0) setSelectedImage(imgList[0]);
         setComfyOnline(status.comfyui_online);
+        setEngineStarting(Boolean(status.engine_starting));
       } catch (err) {
         console.error('Failed to load suite data', err);
       }
@@ -123,10 +127,12 @@ export const App: React.FC = () => {
       try {
         const status = await api.getSystemStatus();
         setComfyOnline(status.comfyui_online);
+        setEngineStarting(Boolean(status.engine_starting));
       } catch (err) {
         setComfyOnline(false);
+        setEngineStarting(false);
       }
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(pollInterval);
   }, []);
@@ -227,11 +233,34 @@ export const App: React.FC = () => {
     const runAutoExpand = override?.autoExpand ?? autoExpand;
     const editIntent = looksLikeEdit(nextPrompt);
     const textEdit = isTextRemoval(nextPrompt);
+    const objectEdit = isObjectRemoval(nextPrompt);
     const fallbackSource = selectedImage?.url || images[0]?.url || null;
     const sourceImage =
       override?.baseImage ||
       imageReference?.dataUrl ||
       (editIntent ? fallbackSource : null);
+
+    // If user has a source image and requests object removal while in Studio mode,
+    // redirect them to the surgical Inpaint Canvas where they can brush a mask over
+    // the target object (glasses, hat, beard, etc.) and execute replacement inpainting
+    // with 100% boundary preservation.
+    if (activeTab !== 'canvas' && objectEdit && sourceImage && override?.mode !== 'txt2img') {
+      setCanvasBaseImage(sourceImage);
+      const preset = getObjectRemovalPreset(nextPrompt);
+      if (preset) {
+        setPrompt(preset.replacementPrompt);
+        setNegativePrompt((prev) => {
+          const items = prev.split(',').map((s) => s.trim()).filter(Boolean);
+          const newItems = preset.negativePrompt.split(',').map((s) => s.trim()).filter(Boolean);
+          for (const item of newItems) {
+            if (!items.includes(item)) items.push(item);
+          }
+          return items.join(', ');
+        });
+      }
+      setActiveTab('canvas');
+      return;
+    }
 
     setIsGenerating(true);
     setCurrentProgress(null);
@@ -261,6 +290,7 @@ export const App: React.FC = () => {
           denoise,
           width: inpaintData.width,
           height: inpaintData.height,
+          grow_mask_by: inpaintData.growMaskBy ?? 6,
           model_name: selectedModel,
           sampler,
           scheduler,
@@ -271,6 +301,10 @@ export const App: React.FC = () => {
           ...loraPayload,
         });
         task_id = res.task_id;
+      } else if (activeTab === 'canvas') {
+        setIsGenerating(false);
+        setPendingTurn(null);
+        return;
       } else if (sourceImage) {
         const fidelity = override?.fidelity
           ?? (textEdit ? 0.60 : (imageReference?.fidelity ?? 0.65));
@@ -348,7 +382,12 @@ export const App: React.FC = () => {
           const updatedImages = await api.getImages();
           setImages(updatedImages);
           const latest = updatedImages[0];
-          if (latest) setSelectedImage(latest);
+          if (latest) {
+            setSelectedImage(latest);
+            if (activeTab === 'canvas') {
+              setCanvasBaseImage(latest.url);
+            }
+          }
           setPendingTurn((prev) => prev && latest && prev.progress?.type !== 'failed' && prev.progress?.status !== 'failed' ? {
             ...prev,
             generating: false,
@@ -384,7 +423,7 @@ export const App: React.FC = () => {
     prompt, isGenerating, activeTab, inpaintData, imageReference, negativePrompt, selectedStyles,
     autoExpand, expansionLevel, width, height, selectedModel, sampler, scheduler,
     steps, cfgScale, seed, selectedBoardId, denoise, selectedImage, images,
-    selectedLora, loraStrength,
+    selectedLora, loraStrength, loraEnabled,
   ]);
 
   const handleInterrupt = async () => {
@@ -490,7 +529,7 @@ export const App: React.FC = () => {
         },
       } : null);
     }
-  }, [isGenerating, selectedLora, loraStrength]);
+  }, [isGenerating, selectedLora, loraStrength, loraEnabled]);
 
   const handleUseAsReference = async (img: ImageAsset) => {
     try {
@@ -509,10 +548,32 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleSendToCanvas = (imageUrl: string) => {
+  const handleSendToCanvas = (imageUrl: string, promptText?: string) => {
     setCanvasBaseImage(imageUrl);
+    if (promptText) {
+      const clean = promptText.replace(/^\[Upscaled \d+x\]\s*/i, '');
+      const preset = getObjectRemovalPreset(clean);
+      if (preset) {
+        setPrompt(preset.replacementPrompt);
+        setNegativePrompt((prev) => {
+          const items = prev.split(',').map((s) => s.trim()).filter(Boolean);
+          const newItems = preset.negativePrompt.split(',').map((s) => s.trim()).filter(Boolean);
+          for (const item of newItems) {
+            if (!items.includes(item)) items.push(item);
+          }
+          return items.join(', ');
+        });
+        setDenoise(0.85);
+      } else {
+        setPrompt(clean);
+      }
+    }
     setActiveTab('canvas');
   };
+
+  const handleMaskReady = useCallback((baseDataUrl: string, maskDataUrl: string, width: number, height: number, growMaskBy?: number) => {
+    setInpaintData({ baseDataUrl, maskDataUrl, width, height, growMaskBy });
+  }, []);
 
   const handleReuseSettings = (image: ImageAsset) => {
     setPrompt(image.prompt);
@@ -534,6 +595,47 @@ export const App: React.FC = () => {
     await api.deleteImage(id);
     await refreshGallery();
   };
+
+  const handleUploadToInpaint = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        setCanvasBaseImage(dataUrl);
+        setActiveTab('canvas');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDeleteRecent = async (recent: RecentChat) => {
+    const key = chatTitle(recent.prompt).toLowerCase();
+    const toDelete = images.filter((img) => chatTitle(img.prompt).toLowerCase() === key);
+    const toDeleteIds = toDelete.map((img) => img.id);
+
+    // Optimistically update local state immediately
+    setImages((prev) => prev.filter((img) => chatTitle(img.prompt).toLowerCase() !== key));
+
+    if (activeRecentId === recent.id) {
+      handleNewGeneration();
+    }
+
+    try {
+      if (toDeleteIds.length > 0) {
+        await api.deleteImagesBatch(toDeleteIds);
+      }
+    } catch (err) {
+      console.error('Failed to batch delete images for recent chat', err);
+      for (const id of toDeleteIds) {
+        try {
+          await api.deleteImage(id);
+        } catch {}
+      }
+    } finally {
+      await refreshGallery();
+    }
+  };
+
 
   const handleCreateBoard = async (name: string, description?: string) => {
     await api.createBoard(name, description);
@@ -576,6 +678,18 @@ export const App: React.FC = () => {
     setTimeout(() => setCopiedMetadata(false), 2000);
   };
 
+  const handleStartEngine = async () => {
+    setEngineStarting(true);
+    try {
+      await api.startEngine();
+      const status = await api.getSystemStatus();
+      setComfyOnline(status.comfyui_online);
+      setEngineStarting(Boolean(status.engine_starting));
+    } catch (err) {
+      console.error('Failed to trigger start engine', err);
+    }
+  };
+
   const pad = sidebarCollapsed ? 'pl-14' : 'pl-sidebar';
 
   return (
@@ -591,7 +705,9 @@ export const App: React.FC = () => {
         imageCount={images.length}
         onNewGeneration={handleNewGeneration}
         onOpenGallery={() => setActiveTab('gallery')}
+        onOpenCanvas={() => setActiveTab('canvas')}
         onSelectRecent={handleSelectRecent}
+        onDeleteRecent={handleDeleteRecent}
       />
 
       <div className={`${pad} min-h-screen flex flex-col h-full`}>
@@ -599,7 +715,10 @@ export const App: React.FC = () => {
           sidebarCollapsed={sidebarCollapsed}
           activeTab={activeTab}
           comfyOnline={comfyOnline}
+          engineStarting={engineStarting}
+          onStartEngine={handleStartEngine}
           onOpenSettings={() => setShowSettingsModal(true)}
+          onBackToStudio={() => setActiveTab('studio')}
         />
 
         <main className="w-full pt-16 bg-surface-dim flex-1 flex flex-col min-h-0 relative">
@@ -642,12 +761,24 @@ export const App: React.FC = () => {
           )}
 
           {activeTab === 'canvas' && (
-            <div className="flex-1 overflow-hidden p-4 pb-44 relative z-10">
+            <div className="flex-1 overflow-hidden p-4 relative z-10 flex flex-col min-h-0">
               <InpaintCanvas
                 initialImage={canvasBaseImage || selectedImage?.url}
-                onMaskReady={(baseDataUrl, maskDataUrl, w, h) => {
-                  setInpaintData({ baseDataUrl, maskDataUrl, width: w, height: h });
+                onMaskReady={handleMaskReady}
+                onBack={() => setActiveTab('studio')}
+                onInpaint={(canvasPrompt?: string) => {
+                  const runPrompt = (canvasPrompt ?? prompt).trim();
+                  if (!runPrompt) return;
+                  if (canvasPrompt) setPrompt(canvasPrompt);
+                  startGeneration({ prompt: runPrompt });
                 }}
+                isGenerating={isGenerating}
+                prompt={prompt}
+                setPrompt={setPrompt}
+                negativePrompt={negativePrompt}
+                setNegativePrompt={setNegativePrompt}
+                denoise={denoise}
+                setDenoise={setDenoise}
               />
             </div>
           )}
@@ -659,7 +790,15 @@ export const App: React.FC = () => {
               onCopyPrompt={handleCopyPrompt}
               onDownload={handleExportPng}
               onInpaint={handleSendToCanvas}
-              onOpenCanvas={handleSendToCanvas}
+              onRemoveObject={(imageUrl, promptText) => {
+                handleSendToCanvas(imageUrl, promptText);
+              }}
+              onOpenCanvas={(url, promptText) => {
+                if (url) setCanvasBaseImage(url);
+                if (promptText) setPrompt(promptText.replace(/^\[Upscaled \d+x\]\s*/i, ''));
+                setActiveTab('canvas');
+              }}
+              onUploadToInpaint={handleUploadToInpaint}
               onOpenDag={() => setActiveTab('dag')}
               onOpenMetadata={(img) => { setSelectedImage(img); setShowMetadataModal(true); }}
               onFullscreen={(img) => { setSelectedImage(img); setShowFullScreen(true); }}
@@ -686,7 +825,7 @@ export const App: React.FC = () => {
             />
           )}
 
-          {(activeTab === 'studio' || activeTab === 'canvas') && (
+          {activeTab === 'studio' && (
             <PromptDock
               sidebarCollapsed={sidebarCollapsed}
               prompt={prompt}
@@ -697,6 +836,8 @@ export const App: React.FC = () => {
               loras={loras}
               selectedLora={selectedLora}
               setSelectedLora={setSelectedLora}
+              loraEnabled={loraEnabled}
+              setLoraEnabled={setLoraEnabled}
               loraStrength={loraStrength}
               setLoraStrength={setLoraStrength}
               width={width}
@@ -711,6 +852,25 @@ export const App: React.FC = () => {
               onOpenNegative={() => setShowAdvanced(true)}
               onOpenAdvanced={() => setShowAdvanced(true)}
               onAttachImage={() => setShowReferenceModal(true)}
+              onUploadToInpaint={handleUploadToInpaint}
+              onOpenInpaint={() => setActiveTab('canvas')}
+              onEditReferenceInCanvas={(ref) => {
+                handleSendToCanvas(ref.dataUrl);
+              }}
+              onRemoveObjectFromReference={(ref) => {
+                handleSendToCanvas(ref.dataUrl);
+                const preset = OBJECT_REMOVAL_PRESETS.glasses;
+                setPrompt(preset.replacementPrompt);
+                setNegativePrompt((prev) => {
+                  const items = prev.split(',').map((s) => s.trim()).filter(Boolean);
+                  const newItems = preset.negativePrompt.split(',').map((s) => s.trim()).filter(Boolean);
+                  for (const item of newItems) {
+                    if (!items.includes(item)) items.push(item);
+                  }
+                  return items.join(', ');
+                });
+                setDenoise(0.85);
+              }}
               imageReference={imageReference}
               onUpdateReferenceFidelity={(fid) => {
                 setImageReference((prev) => prev ? { ...prev, fidelity: fid } : prev);
@@ -720,6 +880,7 @@ export const App: React.FC = () => {
               setAutoExpand={setAutoExpand}
             />
           )}
+
         </main>
       </div>
 
@@ -802,6 +963,10 @@ export const App: React.FC = () => {
           onSelect={(ref) => {
             setImageReference(ref);
             setShowReferenceModal(false);
+          }}
+          onSelectForInpaint={(imageUrl) => {
+            setShowReferenceModal(false);
+            handleSendToCanvas(imageUrl);
           }}
         />
       )}

@@ -138,3 +138,162 @@ def test_upscale_without_model_returns_400():
     resp = client.post("/api/upscale", json={"image": "data:image/png;base64,aaaa", "scale_factor": 2})
     assert resp.status_code == 400
     assert "upscale model" in resp.json()["detail"].lower()
+
+
+def test_object_removal_glasses_prompt_rewrite():
+    pipeline = PromptPipeline()
+    for prompt in ["remove glasses", "remove the glasses", "erase glasses"]:
+        res = pipeline.process(prompt)
+        assert res["is_edit"] is True
+        assert res["detected_target"] == "glasses"
+        # Golden rule: Replacement description in positive, NOT "remove glasses"
+        pos = res["positive_prompt"].lower()
+        assert "natural clear eyes" in pos
+        assert "clean nose bridge" in pos
+        assert "remove glasses" not in pos
+        assert "remove the glasses" not in pos
+        # Glasses must be in negative prompt
+        neg = res["negative_prompt"].lower()
+        assert "glasses" in neg
+        assert "sunglasses" in neg
+        assert "frames" in neg
+        # Auto-expand must be disabled for edits
+        assert "ambient cinematic lighting" not in pos
+
+
+def test_object_removal_hat_prompt_rewrite():
+    pipeline = PromptPipeline()
+    res = pipeline.process("remove the hat")
+    assert res["is_edit"] is True
+    assert res["detected_target"] == "hat"
+    pos = res["positive_prompt"].lower()
+    assert "natural hair" in pos
+    assert "realistic hair texture" in pos
+    assert "remove the hat" not in pos
+    neg = res["negative_prompt"].lower()
+    assert "hat" in neg
+    assert "cap" in neg
+
+
+def test_object_removal_accessory_prompt_rewrite():
+    pipeline = PromptPipeline()
+    res = pipeline.process("remove this accessory")
+    assert res["is_edit"] is True
+    assert res["detected_target"] == "accessory"
+    neg = res["negative_prompt"].lower()
+    assert "accessory" in neg
+
+
+def test_object_removal_general_object_prompt_rewrite():
+    pipeline = PromptPipeline()
+    res = pipeline.process("delete the object")
+    assert res["is_edit"] is True
+    assert res["detected_target"] == "general_object"
+    pos = res["positive_prompt"].lower()
+    assert "seamless matching background" in pos
+    neg = res["negative_prompt"].lower()
+    assert "unwanted object" in neg
+
+
+def test_compile_inpaint_dag_structure_and_lora():
+    # 1. Inpaint without LoRA
+    compiled_no_lora = WorkflowCompiler.compile_inpaint(
+        prompt="natural clear eyes, bare skin",
+        base_image_name="base.png",
+        mask_image_name="mask.png",
+        negative_prompt="glasses, frames",
+        denoise=0.85,
+        grow_mask_by=6,
+        seed=42,
+    )
+    dag1 = compiled_no_lora["workflow"]
+    assert dag1["10"]["class_type"] == "LoadImage"
+    assert dag1["11"]["class_type"] == "LoadImage"
+    assert dag1["12"]["class_type"] == "VAEEncodeForInpaint"
+    assert dag1["12"]["inputs"]["grow_mask_by"] == 6
+    assert dag1["12"]["inputs"]["pixels"] == ["10", 0]
+    assert dag1["12"]["inputs"]["mask"] == ["11", 1]
+    assert dag1["5"]["class_type"] == "KSampler"
+    assert dag1["5"]["inputs"]["denoise"] == 0.85
+    assert dag1["5"]["inputs"]["latent_image"] == ["12", 0]
+    assert dag1["6"]["class_type"] == "VAEDecode"
+    assert dag1["7"]["class_type"] == "SaveImage"
+    assert "9" not in dag1  # No LoraLoader
+
+    # 2. Inpaint with optional LoRA
+    compiled_with_lora = WorkflowCompiler.compile_inpaint(
+        prompt="natural clear eyes, bare skin",
+        base_image_name="base.png",
+        mask_image_name="mask.png",
+        denoise=0.85,
+        grow_mask_by=8,
+        seed=42,
+        lora_name="character_lora.safetensors",
+        lora_strength=0.75,
+    )
+    dag2 = compiled_with_lora["workflow"]
+    assert dag2["9"]["class_type"] == "LoraLoader"
+    assert dag2["9"]["inputs"]["lora_name"] == "character_lora.safetensors"
+    assert dag2["9"]["inputs"]["strength_model"] == 0.75
+    assert dag2["5"]["inputs"]["model"] == ["9", 0]
+    assert dag2["12"]["inputs"]["grow_mask_by"] == 8
+
+
+def test_descriptive_prompt_with_without_not_rewritten():
+    pipeline = PromptPipeline()
+    # Prepositional descriptions with "without" should NOT be hijacked or rewritten as inpaint replacements
+    for prompt in ["portrait of a man without glasses", "a wizard without beard", "a girl without jewelry"]:
+        res = pipeline.process(prompt)
+        assert res["is_edit"] is False
+        assert res["detected_target"] is None
+        assert prompt in res["positive_prompt"]
+        # Must not have been overwritten with localized replacement prompt
+        assert "natural clear eyes" not in res["positive_prompt"]
+        assert "clean-shaven skin" not in res["positive_prompt"]
+
+
+def test_object_removal_take_off_and_without_prefix():
+    pipeline = PromptPipeline()
+    res1 = pipeline.process("take off the glasses")
+    assert res1["is_edit"] is True
+    assert res1["detected_target"] == "glasses"
+    assert "natural clear eyes" in res1["positive_prompt"].lower()
+
+    res2 = pipeline.process("without glasses")
+    assert res2["is_edit"] is True
+    assert res2["detected_target"] == "glasses"
+    assert "natural clear eyes" in res2["positive_prompt"].lower()
+
+    res3 = pipeline.process("get rid of the hat")
+    assert res3["is_edit"] is True
+    assert res3["detected_target"] == "hat"
+    assert "natural hair" in res3["positive_prompt"].lower()
+
+
+def test_prepare_lora_dataset_script():
+    import tempfile
+    import subprocess
+    from PIL import Image
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        src_dir = Path(tmpdir) / "input"
+        out_dir = Path(tmpdir) / "output"
+        src_dir.mkdir()
+
+        img = Image.new("RGB", (256, 256), color="green")
+        img.save(src_dir / "sample.png")
+
+        script_path = Path(__file__).resolve().parent.parent.parent / "scripts" / "prepare_lora_dataset.py"
+        res = subprocess.run([
+            sys.executable,
+            str(script_path),
+            "--input", str(src_dir),
+            "--output", str(out_dir),
+            "--trigger", "ohwx testchar",
+            "--repeats", "5",
+        ], capture_output=True, text=True)
+
+        assert res.returncode == 0, f"Script failed with stderr: {res.stderr}"
+        assert "[DONE] 1 images in" in res.stdout
+        assert "ohwx testchar" in res.stdout
+
