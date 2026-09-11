@@ -41,7 +41,7 @@ Do not add any of the following. They violate the PDF.
 - Parallel generation, batch size greater than 1, or loading more than one checkpoint at a time
 - Login, cloud upload, or exposing ComfyUI to the public internet
 
-ComfyUI Desktop on Bosba’s Windows laptop is the **only** generation engine. This repo records hardware, stores the frozen prompts, registers the 54 images, scores them, shows the gallery, and exports a PDF.
+ComfyUI Desktop on Bosba’s Windows laptop is the **only** generation engine. This repo can queue **one** local job at a time through ComfyUI’s API, copy the PNG into the benchmark folders, and write duration / peak VRAM into `dataset.json`. It does not dump 18 prompts, retry weak images, or expose ComfyUI to the network.
 
 ---
 
@@ -243,20 +243,23 @@ Edit prompts only in `benchmark/prompts/prompts.json` (or the Prompts page). Aft
 
 ## 10. Controlled generation (every core image)
 
-HourMeng, for each of the 54 images, one at a time:
+On Bosba’s Windows laptop: ComfyUI Desktop must be **open and idle**. Then start this toolkit (`start.bat`) and open **Generate**.
 
-1. Confirm prompt ID, exact checkpoint, and approved workflow.
+For each of the 54 images, one at a time:
+
+1. Confirm prompt ID, exact checkpoint, and approved workflow (Generate page loads frozen prompt + locked seed/steps/CFG).
 2. Confirm 512 × 512, batch size 1, assigned seed, empty negative prompt.
 3. Close extra GPU apps and confirm available VRAM.
-4. Generate **once**. Do not retry because the result looks weak.
-5. Save the original PNG using the filename convention, plus duration and workflow metadata.
-6. Record peak VRAM, technical errors, and whether generation completed.
-7. Enter those measurements in the toolkit (Gallery / dataset form). Confirm the data row is complete.
+4. Click **Generate this image once**. Do not click again because the result looks weak. The page refuses if the PNG already exists.
+5. The app copies the PNG to the official filename and writes duration, peak VRAM, RAM, errors, and completion into `dataset.json`.
+6. If ComfyUI is not running, Generate shows an error. Start Desktop, then refresh.
+
+You can still generate by hand in ComfyUI and type measurements in the Gallery form. Prefer Generate so the log is complete.
 
 Day 3: P01–P09 × three models (27 images).
 Day 4: P10–P18 × three models (27 images), then audit IDs for missing, duplicate, or wrong names.
 
-Warm-up images are extra and excluded. Optional native-size demos are extra and excluded.
+Warm-ups: Generate page → **Warm-up**. Saved under `benchmark/images/warmup/` and excluded from scores.
 
 ---
 
@@ -409,17 +412,17 @@ Completion standard: another student can follow the README, load the workflows, 
 
 | Work | Where |
 | --- | --- |
-| Install ComfyUI, load checkpoints, run workflows, generate PNGs | ComfyUI Desktop on the Windows laptop |
+| Install ComfyUI, load checkpoints | ComfyUI Desktop on the Windows laptop |
+| Queue one image, copy PNG, log time/VRAM | Toolkit **Generate** page (`127.0.0.1:8188` only) |
 | Record `Computer_info.json` | `python scripts/collect_computer_info.py` on that laptop |
 | Freeze 18 prompts and seeds | `benchmark/prompts/prompts.json` |
-| File PNGs | `benchmark/images/core/{SD15,SDXL,TURBO}/` |
-| Enter time / VRAM / errors | Toolkit Gallery / dataset form |
+| Filed PNGs | `benchmark/images/core/{SD15,SDXL,TURBO}/` |
 | Independent scoring and PDF | Toolkit Scoring page |
 | Side-by-side comparison | Toolkit Gallery page |
 | Four charts | Toolkit Charts page |
 | Personal daily checklist | Toolkit Progress page (saved under `.progress/`, gitignored) |
 
-There is no “generate 18 prompts at once” button. HourMeng uses the **Prompts and run sheet** page as a checklist and generates **one image at a time** in ComfyUI.
+There is no “generate 18 prompts at once” button. Bosba pulls this repo, starts ComfyUI Desktop, runs `start.bat`, and uses **Generate** for one image at a time.
 
 ---
 
