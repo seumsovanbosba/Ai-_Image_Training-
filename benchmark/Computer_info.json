@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "project": "KiTH open source image generation benchmark",
+  "note": "Run scripts/collect_computer_info.py --stage before-install on Bosba's Windows laptop before installing ComfyUI.",
+  "before_install": null,
+  "after_install": null,
+  "comfyui": {
+    "version": "",
+    "build_date": "",
+    "install_path": ""
+  },
+  "checkpoints": [
+    {
+      "filename": "v1-5-pruned-emaonly.safetensors",
+      "download_source": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "model_code": "SD15"
+    },
+    {
+      "filename": "sd_xl_base_1.0.safetensors",
+      "download_source": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0",
+      "model_code": "SDXL"
+    },
+    {
+      "filename": "sdxl_turbo_1.0_fp16.safetensors",
+      "download_source": "https://huggingface.co/stabilityai/sdxl-turbo",
+      "model_code": "TURBO"
+    }
+  ]
+}

@@ -6,40 +6,22 @@ __pycache__/
 env/
 *.sqlite
 *.sqlite-journal
-*.pytest_cache/
 .pytest_cache/
 *.log
+*.tmp
 
-
-# Node
+# Node leftovers (this repo is no longer a Node app)
 node_modules/
 .vite/
 
-# Large Model Checkpoints & Weights
+# Personal HourMeng / Bosba completion tracker (not a team deliverable)
+.progress/
+
+# Checkpoints must live in ComfyUI, never in git
 *.safetensors
 *.ckpt
 *.pt
 *.bin
-*.onnx
-models/checkpoints/*
-!models/checkpoints/.gitkeep
-models/loras/*
-!models/loras/.gitkeep
-models/vae/*
-!models/vae/.gitkeep
-models/controlnet/*
-!models/controlnet/.gitkeep
-models/upscale_models/*
-!models/upscale_models/.gitkeep
-models/cache/
 
-# Outputs
-outputs/*
-!outputs/.gitkeep
-
-# Cloned ComfyUI engine repository
-comfy_engine/ComfyUI/
-
-# Local MCP credentials (API keys)
+# Local MCP credentials
 .cursor/mcp.json
-

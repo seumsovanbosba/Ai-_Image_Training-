@@ -1,215 +1,160 @@
-# Antigravity Local AI Image Generation Suite
+# KiTH open-source image generation benchmark
 
-An enterprise-grade, **100% offline**, self-hosted local image generation suite fusing the best architectural paradigms of:
-1. **ComfyUI (Headless Engine)**: Asynchronous JSON API DAG workflow execution, dynamic model loading, sampling pipelines, and VRAM management.
-2. **Fooocus (Automation & UX)**: Automated prompt enhancement (deterministic rule-based scene expansion), multi-style preset injection, and negative prompt automation.
-3. **InvokeAI (Production Canvas & Workspace)**: Interactive dual-layer canvas for inpainting with brush/eraser/mask inversion, asset boards, and SQLite-backed generation history.
+Local research toolkit for **Soem Sovanbosba** and **Eang Hourmeng**.
 
----
+This repository does **not** generate images. ComfyUI Desktop on the Windows laptop is the only generation engine. This toolkit records hardware, stores the frozen 18-prompt benchmark, registers 54 images and measurements, supports independent scoring, exports a PDF, shows a side-by-side gallery, and draws the four required charts.
 
-## Architecture Diagram
+Full operating rules: [docs/INTERNSHIP_INSTRUCTION.md](docs/INTERNSHIP_INSTRUCTION.md)
 
+## Research question
+
+Which openly available text-to-image model provides the best balance of prompt adherence, visual quality, generation speed and memory use on an 8 GB VRAM computer?
+
+## Models (one at a time)
+
+| Model | ID | Locked core settings |
+| --- | --- | --- |
+| Stable Diffusion 1.5 | SD15 | 512x512, 25 steps, CFG 7, batch 1 |
+| Stable Diffusion XL Base 1.0 | SDXL | 512x512, 25 steps, CFG 7, batch 1 |
+| SDXL Turbo | TURBO | 512x512, 4 steps, CFG 1, batch 1 |
+
+Empty negative prompt for every scored image. Same prompt and seed across the three models. Do not retry a weak result.
+
+Official downloads:
+
+- ComfyUI Desktop (Windows): https://comfy.org/download/
+- SD 1.5: https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5
+- SDXL Base 1.0: https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0
+- SDXL Turbo: https://huggingface.co/stabilityai/sdxl-turbo
+
+Put checkpoints in the ComfyUI Desktop `models/checkpoints` folder, not in this git repo.
+
+## Install the toolkit (Linux or Windows 11)
+
+Python 3.10+ recommended. On this repo a `.venv` is fine:
+
+```bash
+python -m venv .venv
+# Linux / macOS
+source .venv/bin/activate
+# Windows
+.venv\Scripts\activate
+
+python -m pip install -r requirements.txt
 ```
-+-------------------------------------------------------------------------+
-|                  Modern SPA (React + Tailwind CSS)                      |
-|  - Production Inpaint Canvas (Brush / Eraser / Invert / Export)         |
-|  - Fooocus Style Tag Selector & Auto-Expansion Prompt Bar               |
-|  - Realtime WebSocket Latent Preview & Progress Meter                   |
-|  - InvokeAI-style Asset Boards & Metadata Inspector                     |
-+-------------------------------------------------------------------------+
-                                    |
-                            HTTP & WebSockets
-                                    |
-+-------------------------------------------------------------------------+
-|                  FastAPI Orchestrator Backend (:8000)                   |
-|  - app/services/prompt_pipeline.py: Fooocus rule-based prompt engine    |
-|  - app/services/workflow_compiler.py: Standard ComfyUI API DAG Compiler |
-|  - app/services/comfy_client.py: WebSocket bridge & execution client    |
-|  - app/database.py: SQLite / SQLModel asset & task persistence          |
-+-------------------------------------------------------------------------+
-                                    |
-                            HTTP /ws (:8188)
-                                    |
-+-------------------------------------------------------------------------+
-|                  ComfyUI Headless Engine (:8188)                        |
-|  - Reads models from /models/ via extra_model_paths.yaml               |
-|  - Isolated environment: HF_HUB_OFFLINE=1, TRANSFORMERS_OFFLINE=1       |
-+-------------------------------------------------------------------------+
-```
 
----
+### Start the local gallery / scoring app
 
-## Quick Start Guide
+Linux / macOS:
 
-### Windows
-Double-click `start.bat` or run:
-```cmd
-start.bat
-```
-This script automatically:
-1. Enforces strict offline environment variables (`HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, `HF_DATASETS_OFFLINE=1`).
-2. Validates or initializes the Python virtual environment (`.venv`).
-3. Launches the headless ComfyUI engine if present.
-4. Starts the FastAPI server on port 8000 and opens the browser to `http://127.0.0.1:8000`.
-
-### Linux / macOS
 ```bash
 chmod +x start.sh
 ./start.sh
 ```
 
----
-
-## Directory Structure
-
-```
-├── backend/
-│   ├── app/
-│   │   ├── config.py              # Configuration & offline flags
-│   │   ├── database.py            # SQLite database engine
-│   │   ├── main.py                # FastAPI entrypoint, CORS, static routes
-│   │   ├── models/                # SQLModel & Pydantic schemas
-│   │   │   ├── generation.py      # ImageAsset, Board, GenerationTask
-│   │   │   └── schemas.py         # GenerateRequest, InpaintRequest
-│   │   ├── services/
-│   │   │   ├── comfy_client.py    # ComfyUI API client & WebSocket listener
-│   │   │   ├── workflow_compiler.py # Compiles DAGs (SDXL, Flux, SD1.5, Inpaint)
-│   │   │   ├── prompt_pipeline.py # Fooocus prompt processor & style injector
-│   │   │   └── model_manager.py   # Local safetensors model scanner
-│   │   ├── routers/               # API endpoints
-│   │   │   ├── generate.py        # /api/generate, /api/inpaint, /api/interrupt
-│   │   │   ├── websocket.py       # /api/progress/{task_id}
-│   │   │   ├── gallery.py         # /api/images, /api/boards
-│   │   │   └── models.py          # /api/models, /api/styles, /api/resolutions
-│   │   └── data/
-│   │       ├── styles.json        # Curated Fooocus style presets
-│   │       └── resolutions.json   # Native SDXL & SD 1.5 aspect ratios
-│   ├── requirements.txt
-│   └── tests/
-│       └── test_api.py            # Automated test suite
-├── comfy_engine/
-│   ├── comfy_manager.py           # Headless supervisor & health monitor
-│   └── extra_model_paths.yaml     # Maps ComfyUI directly to /models
-├── frontend/                      # React + TypeScript + Vite + Tailwind CSS
-│   ├── dist/                      # Pre-built production SPA bundle
-│   └── src/
-│       ├── components/
-│       │   ├── canvas/            # Inpaint canvas with brush, eraser, mask export
-│       │   ├── prompt/            # Prompt bar with Fooocus style chips
-│       │   ├── controls/          # Engine controls & live latent progress
-│       │   └── gallery/           # Boards & image inspector
-│       ├── services/              # API & WebSocket client
-│       └── types/                 # TypeScript interfaces
-├── models/
-│   ├── checkpoints/               # Drop .safetensors (SDXL, Flux, SD 1.5) here
-│   ├── loras/                     # LoRA weights (pick in the prompt dock)
-│   ├── vae/                       # Variational Autoencoders
-│   ├── controlnet/                # ControlNet weights
-│   └── upscale_models/            # RealESRGAN / UltraSharp for Upscale 2x
-├── docs/
-│   └── LORA_TRAINING.md           # Kohya checklist for the Windows GPU PC
-├── outputs/                       # Generated image files
-├── start.bat                      # Windows launcher
-├── start.sh                       # Linux launcher
-└── README.md
-```
-
----
-
-## Adding Models (.safetensors)
-
-Place your `.safetensors` files directly in `models/checkpoints/`:
-- **SDXL**: `models/checkpoints/sd_xl_base_1.0.safetensors`
-- **Flux**: `models/checkpoints/flux1-schnell.safetensors`
-- **SD 1.5**: `models/checkpoints/v1-5-pruned-emaonly.safetensors`
-
-The application automatically scans this folder and populates the Model selector in the UI.
-
-### LoRA (trained add-on, not a full model)
-
-1. Train on the Windows 11 GPU PC using [docs/LORA_TRAINING.md](docs/LORA_TRAINING.md).
-2. Copy `your_lora.safetensors` into `models/loras/` (do not commit the file).
-3. Restart `start.bat`. Pick the LoRA in the prompt dock, strength 0.7–1.0, and include the trigger word in the prompt.
-
-### Upscale 2x (RealESRGAN, not bicubic stretch)
-
-Upscale needs a dedicated upscaler, not SDXL at 2048. On the GPU PC, once:
+Windows 11:
 
 ```bat
-python scripts/download_upscale_model.py
+start.bat
 ```
 
-That drops `RealESRGAN_x4plus.pth` into `models/upscale_models/`. Restart `start.bat`. The result chip shows pixel size (e.g. 1024×1024 → 2048×2048).
-
-If the file is missing, `/api/upscale` returns 400 instead of silently stretching the same picture.
-
-### Image edits (“remove the words from the banners”)
-
-Attach the photo (`+` → Image-to-Image Reference) or click **Use as Reference** on a result. An edit-shaped prompt auto-routes to img2img and is rewritten into a desired-state caption. For one specific word, mask it on **Canvas** (inpaint) — that is more reliable than a global regen.
-
----
-
-## Attaching ComfyUI
-
-The suite includes an automated fallback simulation engine so you can test and explore the interface immediately. To attach full GPU-accelerated ComfyUI inference:
+Or:
 
 ```bash
-git clone https://github.com/comfyanonymous/ComfyUI comfy_engine/ComfyUI
-.venv\Scripts\pip install -r comfy_engine/ComfyUI/requirements.txt
+python -m streamlit run gallery_app/app.py
 ```
 
-Once cloned, `start.bat` will detect `comfy_engine/ComfyUI/main.py` and run it automatically in headless mode on port 8188!
+The app stays on your machine. Do not expose it or ComfyUI to the public internet.
 
----
+## Installation and setup on the laptop (HourMeng)
 
-## API Reference
+1. Record the computer specification **before** installing software:
 
-### Text-to-Image Generation
-- `POST /api/generate`
-```json
-{
-  "prompt": "a cybernetic tiger in an overgrown temple",
-  "styles": ["Photographic", "Cinematic"],
-  "auto_expand": true,
-  "expansion_level": "medium",
-  "width": 1024,
-  "height": 1024,
-  "steps": 30,
-  "cfg_scale": 7.0,
-  "sampler": "dpmpp_2m",
-  "scheduler": "karras",
-  "seed": -1,
-  "lora_name": null,
-  "lora_strength": 0.8
-}
+   ```bat
+   python scripts/collect_computer_info.py --stage before-install
+   ```
+
+   This writes `benchmark/Computer_info.json`.
+
+2. Install the current ComfyUI Desktop release for Windows: https://comfy.org/download/
+
+3. Download each inference checkpoint from its official model page (filenames and URLs go in `Computer_info.json`).
+
+4. Place checkpoint files in the ComfyUI models checkpoints folder.
+
+5. Load or build one text-to-image workflow per model. Save them as:
+
+   - `benchmark/workflows/SD15.json`
+   - `benchmark/workflows/SDXL.json`
+   - `benchmark/workflows/TURBO.json`
+
+6. Generate one warm-up image per model. Save as `benchmark/images/warmup/WARMUP_SD15.png` (and SDXL, TURBO). Exclude warm-ups from all measurements.
+
+7. Record after-install disk space, ComfyUI version, and checkpoints:
+
+   ```bat
+   python scripts/collect_computer_info.py --stage after-install --comfyui-version "YOUR_VERSION"
+   ```
+
+   You can also fill ComfyUI version and checkpoint sources on the **Computer info** page.
+
+## Controlled generation
+
+Use the **Prompts and run sheet** page as a checklist. For every image:
+
+1. Confirm prompt ID, checkpoint, and locked workflow.
+2. Confirm 512x512, batch 1, assigned seed, empty negative prompt.
+3. Close extra GPU apps.
+4. Generate **once** in ComfyUI Desktop. Do not retry because the image looks weak.
+5. Save `Pxx_MODEL.png` into `benchmark/images/core/SD15/` (or SDXL / TURBO).
+6. Enter duration, peak VRAM, RAM, errors, and completion on the **Gallery** measurement form.
+
+Optional native-size demos (one per model) go in `benchmark/images/optional_native/` and are never scored.
+
+## Scoring and PDF
+
+Both students score independently on the **Scoring** page (four criteria, 0-2, plus a short comment). You cannot see the other person's scores until both have finished all 54.
+
+Then discuss any criterion that differs by more than one point, record the agreed score, and keep both originals.
+
+**Export to PDF** builds `KiTH_independent_scores.pdf` with fpdf2. That path works on Linux and Windows 11 without a browser print dialog.
+
+## Gallery
+
+Select a prompt. The three model outputs appear side by side with model, seed, steps, CFG, time, VRAM, and agreed score. Previous / next moves between prompts. Missing PNGs or data rows show a clear error.
+
+## Charts
+
+The **Charts** page computes, per model:
+
+- Average quality (total agreed points / 18)
+- Average prompt adherence
+- Average generation time (seconds / 18)
+- Completion rate
+- Peak VRAM
+
+and draws the four required bar charts.
+
+## Folder map
+
+```
+benchmark/Computer_info.json
+benchmark/prompts/prompts.json
+benchmark/workflows/
+benchmark/images/core/{SD15,SDXL,TURBO}/
+benchmark/images/warmup/
+benchmark/images/optional_native/
+benchmark/dataset/dataset.json
+benchmark/scores/{hourmeng,bosba,agreed}.json
+gallery_app/          Streamlit toolkit
+scripts/collect_computer_info.py
+docs/INTERNSHIP_INSTRUCTION.md
 ```
 
-### Image-to-Image
-- `POST /api/img2img` — `image` (data URL or `/outputs/filename.png`) + `fidelity` (0.1–0.9, higher stays closer to the photo)
+## What this project will not do
 
-### Upscale
-- `POST /api/upscale` — `image_id` or `image`, `scale_factor` 2. Requires a file in `models/upscale_models/`
+No training, fine-tuning, LoRA, canvas, img2img, cloud hosting, login, or a generator that dumps all 18 prompts at once. One model loaded at a time. One image per request.
 
-### LoRAs
-- `GET /api/loras`
+## Licenses and responsible use
 
-### Inpainting
-- `POST /api/inpaint`
-```json
-{
-  "prompt": "golden royal crown",
-  "base_image": "data:image/png;base64,...",
-  "mask_image": "data:image/png;base64,...",
-  "denoise": 0.85,
-  "steps": 30
-}
-```
-
-### Real-time Progress & Preview WebSocket
-- `WS /api/progress/{task_id}`
-Streams JSON payloads with:
-- `progress`: 0 to 100%
-- `current_step`: current sampling step
-- `total_steps`: total steps
-- `preview_base64`: real-time latent preview frame data URI
-- `output_images`: completed file list
+Check each model's license on its official page before any public or commercial use. Do not create sexual, hateful, violent, deceptive, or discriminatory content. Do not imitate real people or use copyrighted characters, brand logos, or living artist names in prompts.

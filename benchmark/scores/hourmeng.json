@@ -1,0 +1,493 @@
+{
+  "evaluator": "hourmeng",
+  "evaluator_name": "Eang Hourmeng",
+  "updated_at": "2026-09-11T13:47:32+07:00",
+  "scores": {
+    "P01_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P01_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P01_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P02_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P02_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P02_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P03_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P03_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P03_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P04_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P04_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P04_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P05_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P05_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P05_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P06_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P06_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P06_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P07_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P07_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P07_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P08_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P08_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P08_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P09_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P09_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P09_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P10_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P10_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P10_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P11_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P11_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P11_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P12_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P12_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P12_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P13_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P13_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P13_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P14_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P14_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P14_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P15_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P15_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P15_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P16_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P16_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P16_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P17_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P17_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P17_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P18_SD15": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P18_SDXL": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    },
+    "P18_TURBO": {
+      "prompt_adherence": null,
+      "composition": null,
+      "visual_coherence": null,
+      "practical_usefulness": null,
+      "comment": "",
+      "total": null,
+      "updated_at": null
+    }
+  }
+}

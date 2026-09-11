@@ -1,0 +1,14 @@
+{
+  "_placeholder": true,
+  "_instruction": "Replace this entire file with the locked text-to-image workflow exported from ComfyUI Desktop. Do not generate images from this placeholder.",
+  "model_code": "SD15",
+  "model_name": "Stable Diffusion 1.5",
+  "locked_settings": {
+    "width": 512,
+    "height": 512,
+    "steps": 25,
+    "cfg": 7,
+    "batch": 1,
+    "negative_prompt": ""
+  }
+}

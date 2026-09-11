@@ -1,0 +1,235 @@
+{
+  "frozen": false,
+  "negative_prompt": "",
+  "resolution": {
+    "width": 512,
+    "height": 512
+  },
+  "pilot": {
+    "prompt_ids": [
+      "P01",
+      "P07",
+      "P16"
+    ],
+    "status": "not_started",
+    "notes": "Pilot P01, P07 and P16 with HourMeng. Revise ambiguity, then freeze all 18 before collection."
+  },
+  "prompts": [
+    {
+      "id": "P01",
+      "category": "Single subject",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "word_count": 19,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1501,
+      "notes": ""
+    },
+    {
+      "id": "P02",
+      "category": "Single subject",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "word_count": 19,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1502,
+      "notes": ""
+    },
+    {
+      "id": "P03",
+      "category": "Single subject",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "word_count": 19,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1503,
+      "notes": ""
+    },
+    {
+      "id": "P04",
+      "category": "Multiple objects",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "word_count": 16,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1504,
+      "notes": ""
+    },
+    {
+      "id": "P05",
+      "category": "Multiple objects",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "word_count": 16,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1505,
+      "notes": ""
+    },
+    {
+      "id": "P06",
+      "category": "Multiple objects",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "word_count": 16,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1506,
+      "notes": ""
+    },
+    {
+      "id": "P07",
+      "category": "Spatial relationships",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1507,
+      "notes": ""
+    },
+    {
+      "id": "P08",
+      "category": "Spatial relationships",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1508,
+      "notes": ""
+    },
+    {
+      "id": "P09",
+      "category": "Spatial relationships",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1509,
+      "notes": ""
+    },
+    {
+      "id": "P10",
+      "category": "Art and visual style",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "word_count": 18,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1510,
+      "notes": ""
+    },
+    {
+      "id": "P11",
+      "category": "Art and visual style",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "word_count": 18,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1511,
+      "notes": ""
+    },
+    {
+      "id": "P12",
+      "category": "Art and visual style",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "word_count": 18,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1512,
+      "notes": ""
+    },
+    {
+      "id": "P13",
+      "category": "Education and campus",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1513,
+      "notes": ""
+    },
+    {
+      "id": "P14",
+      "category": "Education and campus",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1514,
+      "notes": ""
+    },
+    {
+      "id": "P15",
+      "category": "Education and campus",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "word_count": 17,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1515,
+      "notes": ""
+    },
+    {
+      "id": "P16",
+      "category": "Short text rendering",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "word_count": 20,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1516,
+      "notes": ""
+    },
+    {
+      "id": "P17",
+      "category": "Short text rendering",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "word_count": 20,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1517,
+      "notes": ""
+    },
+    {
+      "id": "P18",
+      "category": "Short text rendering",
+      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "word_count": 20,
+      "visible_requirements": [
+        "TODO: visible requirement 1",
+        "TODO: visible requirement 2"
+      ],
+      "seed": 1518,
+      "notes": ""
+    }
+  ]
+}
