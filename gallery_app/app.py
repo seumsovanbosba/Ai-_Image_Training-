@@ -43,6 +43,7 @@ from gallery_app.pdf_export import build_scoring_pdf
 from gallery_app.progress import counts as progress_counts
 from gallery_app.progress import load_progress, save_progress
 from gallery_app.prompts import load_prompts, prompt_by_id, prompt_issues, save_prompts
+from gallery_app.ui_generate import page_generate
 from gallery_app.scoring import (
     both_complete,
     comparison_rows,
@@ -78,7 +79,7 @@ def _inject_css() -> None:
 
 def page_home() -> None:
     st.title("KiTH open-source image generation benchmark")
-    st.caption("Local research toolkit for Eang Hourmeng and Soem Sovanbosba. Generation happens in ComfyUI Desktop, not here.")
+    st.caption("Local research toolkit for Eang Hourmeng and Soem Sovanbosba. ComfyUI Desktop on this computer runs the models; this app queues one image at a time and stores the logs.")
     st.markdown(
         """
         **Research question.** Which openly available text-to-image model provides the best
@@ -88,11 +89,12 @@ def page_home() -> None:
         Use the sidebar:
 
         1. **Computer info** — capture laptop specs into `Computer_info.json` (before and after install).
-        2. **Prompts and run sheet** — freeze 18 prompts; HourMeng generates **one image at a time** in ComfyUI.
-        3. **Scoring** — independent HourMeng / Bosba scores, then agreed scores. Export PDF.
-        4. **Gallery** — same prompt, three models side by side, with model / effort / VRAM.
-        5. **Charts** — the four required comparisons.
-        6. **Progress** — personal checklist (saved in `.progress/`, gitignored).
+        2. **Prompts and run sheet** — freeze 18 prompts.
+        3. **Generate** — on the laptop, send **one** prompt to local ComfyUI; PNG + VRAM/time are stored here.
+        4. **Scoring** — independent HourMeng / Bosba scores, then agreed scores. Export PDF.
+        5. **Gallery** — same prompt, three models side by side, with model / effort / VRAM.
+        6. **Charts** — the four required comparisons.
+        7. **Progress** — personal checklist (saved in `.progress/`, gitignored).
         """
     )
     prompts = load_prompts()
@@ -250,7 +252,10 @@ def page_prompts() -> None:
                 st.rerun()
 
     st.subheader("HourMeng run sheet — one model, one image at a time")
-    st.markdown("There is no batch generate. Copy the prompt into ComfyUI Desktop, set the seed, save the PNG with the official name.")
+    st.markdown(
+        "Use the **Generate** page on the Windows laptop (ComfyUI Desktop must be running). "
+        "There is no batch of 18. Each click queues one image, copies the PNG here, and logs time/VRAM."
+    )
     model_code = st.selectbox(
         "Model for this session",
         MODEL_CODES,
@@ -672,6 +677,7 @@ PAGES = {
     "Home": page_home,
     "Computer info": page_computer,
     "Prompts and run sheet": page_prompts,
+    "Generate": page_generate,
     "Scoring": page_scoring,
     "Gallery": page_gallery,
     "Charts": page_charts,

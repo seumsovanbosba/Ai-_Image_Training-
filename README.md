@@ -2,7 +2,7 @@
 
 Local research toolkit for **Soem Sovanbosba** and **Eang Hourmeng**.
 
-This repository does **not** generate images. ComfyUI Desktop on the Windows laptop is the only generation engine. This toolkit records hardware, stores the frozen 18-prompt benchmark, registers 54 images and measurements, supports independent scoring, exports a PDF, shows a side-by-side gallery, and draws the four required charts.
+ComfyUI Desktop on the Windows laptop is the only generation engine. This toolkit can queue **one local job at a time** to that app, copy the PNG into the benchmark folders, and log duration / peak VRAM. It also records hardware, stores the frozen 18-prompt benchmark, supports independent scoring, exports a PDF, shows a side-by-side gallery, and draws the four required charts.
 
 Full operating rules: [docs/INTERNSHIP_INSTRUCTION.md](docs/INTERNSHIP_INSTRUCTION.md)
 
@@ -100,16 +100,19 @@ The app stays on your machine. Do not expose it or ComfyUI to the public interne
 
 ## Controlled generation
 
-Use the **Prompts and run sheet** page as a checklist. For every image:
+On the **same Windows laptop** as ComfyUI Desktop:
 
-1. Confirm prompt ID, checkpoint, and locked workflow.
-2. Confirm 512x512, batch 1, assigned seed, empty negative prompt.
-3. Close extra GPU apps.
-4. Generate **once** in ComfyUI Desktop. Do not retry because the image looks weak.
-5. Save `Pxx_MODEL.png` into `benchmark/images/core/SD15/` (or SDXL / TURBO).
-6. Enter duration, peak VRAM, RAM, errors, and completion on the **Gallery** measurement form.
+1. Start ComfyUI Desktop and wait until it is idle (API at `http://127.0.0.1:8188`).
+2. Run `start.bat` and open **Generate**.
+3. Pick **one** model and **one** prompt. Confirm the checkpoint filename matches a file in ComfyUI `models/checkpoints`.
+4. Click **Generate this image once**. Do not retry because the picture looks weak. The page blocks if `Pxx_MODEL.png` already exists.
+5. The PNG is copied to `benchmark/images/core/{SD15,SDXL,TURBO}/` and duration, peak VRAM, RAM, seed, and errors are written to `benchmark/dataset/dataset.json`.
 
-Optional native-size demos (one per model) go in `benchmark/images/optional_native/` and are never scored.
+Warm-up (once per model, never scored): Generate → Warm-up.
+
+Close games and other GPU apps first. One checkpoint at a time. Optional native-size demos still go in `benchmark/images/optional_native/` by hand.
+
+If ComfyUI is closed, Generate will say it cannot connect. You can still generate inside ComfyUI manually and fill the Gallery measurement form, but Generate is the intended path so logs stay complete.
 
 ## Scoring and PDF
 

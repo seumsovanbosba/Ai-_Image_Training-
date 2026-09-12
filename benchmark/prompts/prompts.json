@@ -1,5 +1,5 @@
 {
-  "frozen": false,
+  "frozen": true,
   "negative_prompt": "",
   "resolution": {
     "width": 512,
@@ -11,225 +11,243 @@
       "P07",
       "P16"
     ],
-    "status": "not_started",
-    "notes": "Pilot P01, P07 and P16 with HourMeng. Revise ambiguity, then freeze all 18 before collection."
+    "status": "completed",
+    "notes": "Piloted P01 (single subject), P07 (spatial relationships), and P16 (short text rendering) with HourMeng. Ambiguity removed and full benchmark frozen."
   },
   "prompts": [
     {
       "id": "P01",
       "category": "Single subject",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
-      "word_count": 19,
+      "prompt": "A ceramic white tea cup filled with steaming green matcha tea sits on a rough dark slate coaster against a soft-focus wooden table, illuminated by gentle morning window light with a warm earthy color palette.",
+      "word_count": 35,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly one white ceramic cup containing visible green liquid",
+        "Steam rising visibly from the cup",
+        "Dark slate coaster beneath the cup on a wooden surface"
       ],
       "seed": 1501,
-      "notes": ""
+      "notes": "Pilot prompt 1 (single subject). Tested for subject isolation, surface texture, and steam render."
     },
     {
       "id": "P02",
       "category": "Single subject",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
-      "word_count": 19,
+      "prompt": "A solitary mechanical bronze pocket watch lies open showing intricate moving gears on an aged leather notebook, captured in sharp macro detail under warm directional spotlighting with deep amber shadows.",
+      "word_count": 30,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "An open bronze pocket watch displaying internal gears",
+        "An aged leather notebook directly beneath the watch",
+        "Directional warm lighting creating defined shadows"
       ],
       "seed": 1502,
-      "notes": ""
+      "notes": "Single subject detail and metallic texture test."
     },
     {
       "id": "P03",
       "category": "Single subject",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
-      "word_count": 19,
+      "prompt": "A red monarch butterfly perches on a vibrant purple lavender blossom in a sunny garden, photographed in close-up with a softly blurred green bokeh background under bright afternoon sunlight.",
+      "word_count": 29,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "A single butterfly with patterned wings",
+        "Perched directly on purple lavender flowers",
+        "Softly blurred green background bokeh"
       ],
       "seed": 1503,
-      "notes": ""
+      "notes": "Single subject biological creature and depth-of-field test."
     },
     {
       "id": "P04",
       "category": "Multiple objects",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
-      "word_count": 16,
+      "prompt": "Three ceramic bowls arranged in a row on a clean bamboo tabletop, consisting of one red bowl, one blue bowl, and one yellow bowl, captured in crisp studio product photography under even neutral lighting.",
+      "word_count": 34,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly three ceramic bowls arranged in a row",
+        "Distinct bowl colors: exactly one red, one blue, and one yellow bowl",
+        "Bowls resting on a clean bamboo tabletop"
       ],
       "seed": 1504,
-      "notes": ""
+      "notes": "Multiple objects count and distinct primary color binding test."
     },
     {
       "id": "P05",
       "category": "Multiple objects",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
-      "word_count": 16,
+      "prompt": "Two ripe green apples and two bright red strawberries rest together inside a woven wicker basket on a rustic kitchen counter, illuminated by soft diffuse daylight.",
+      "word_count": 26,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly two green apples",
+        "Exactly two red strawberries",
+        "All items contained together inside a woven wicker basket"
       ],
       "seed": 1505,
-      "notes": ""
+      "notes": "Multiple objects count (2+2) and color-attribute alignment test."
     },
     {
       "id": "P06",
       "category": "Multiple objects",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
-      "word_count": 16,
+      "prompt": "Four colorful hardcover books stacked neatly on a white desk, with a green book at the bottom, followed by a red book, an orange book, and a blue book on top, under clean studio lighting.",
+      "word_count": 35,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly four hardcover books in a vertical stack",
+        "Four distinct spine colors: green at bottom, red, orange, and blue on top",
+        "Stack resting on a clean white desk"
       ],
       "seed": 1506,
-      "notes": ""
+      "notes": "Multiple objects count (4) and ordered vertical stacking test."
     },
     {
       "id": "P07",
       "category": "Spatial relationships",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
-      "word_count": 17,
+      "prompt": "A transparent glass vase with yellow sunflowers stands beside a stack of old leather journals on a polished dark mahogany desk, with a framed landscape painting hanging on the wall directly behind them under soft lamp light.",
+      "word_count": 37,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glass vase with yellow sunflowers placed beside leather journals",
+        "Framed landscape painting visible on the wall behind the desk objects",
+        "Objects resting on a dark mahogany desk"
       ],
       "seed": 1507,
-      "notes": ""
+      "notes": "Pilot prompt 2 (spatial relationships). Tested for 'beside' and 'behind' preposition adherence."
     },
     {
       "id": "P08",
       "category": "Spatial relationships",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
-      "word_count": 17,
+      "prompt": "In the foreground, a red apple sits on a wooden chopping board, while in the background behind it, a silver chef knife rests beside a clear glass bottle of olive oil under bright kitchen illumination.",
+      "word_count": 35,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Red apple prominently in the foreground on a chopping board",
+        "Silver chef knife located in the background behind the apple",
+        "Clear glass bottle of olive oil beside the knife"
       ],
       "seed": 1508,
-      "notes": ""
+      "notes": "Spatial depth test: foreground vs background arrangement."
     },
     {
       "id": "P09",
       "category": "Spatial relationships",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
-      "word_count": 17,
+      "prompt": "A sleek black laptop rests open on a modern office desk, with a white coffee mug placed to the right side and a brass desk lamp positioned above illuminating the keyboard.",
+      "word_count": 31,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Open black laptop centered on the desk",
+        "White coffee mug positioned to the right of the laptop",
+        "Brass desk lamp positioned above illuminating the keyboard"
       ],
       "seed": 1509,
-      "notes": ""
+      "notes": "Spatial placement test: right side and above."
     },
     {
       "id": "P10",
       "category": "Art and visual style",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
-      "word_count": 18,
+      "prompt": "A vibrant watercolor painting of a tranquil mountain lake surrounded by pine trees during sunrise, featuring soft translucent paint washes, visible paper grain, and delicate pastel pink and turquoise tones.",
+      "word_count": 30,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Distinct watercolor style with translucent paint washes and visible paper texture",
+        "Landscape depicting a mountain lake and pine trees at sunrise",
+        "Pastel pink and turquoise color palette"
       ],
       "seed": 1510,
-      "notes": ""
+      "notes": "Art style test: traditional watercolor medium emulation."
     },
     {
       "id": "P11",
       "category": "Art and visual style",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
-      "word_count": 18,
+      "prompt": "A layered paper cut craft illustration depicting a mystical forest fox under a crescent moon, constructed with crisp curved paper edges, visible paper depth, casting delicate drop shadows in warm orange and midnight blue shades.",
+      "word_count": 35,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Layered paper cut craft style with visible depth and drop shadows between sheets",
+        "Stylized fox silhouette as central subject",
+        "Crescent moon in a midnight blue sky"
       ],
       "seed": 1511,
-      "notes": ""
+      "notes": "Art style test: physical paper cut craft and shadow layering."
     },
     {
       "id": "P12",
       "category": "Art and visual style",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
-      "word_count": 18,
+      "prompt": "An isometric 3D render of a futuristic miniature greenhouse module with glowing neon plant shelves, smooth matte pastel polymer surfaces, polished glass panels, and ambient lighting in mint green and violet tones.",
+      "word_count": 32,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Isometric 3D digital render perspective",
+        "Miniature greenhouse structure with plant shelves and glass panels",
+        "Mint green and violet ambient lighting scheme"
       ],
       "seed": 1512,
-      "notes": ""
+      "notes": "Art style test: isometric 3D CGI rendering style."
     },
     {
       "id": "P13",
       "category": "Education and campus",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
-      "word_count": 17,
+      "prompt": "A bright university science laboratory where glass beakers and test tubes holding blue and green liquids stand on a black granite workbench before a background chalkboard filled with chemical formulas.",
+      "word_count": 30,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "University science laboratory setting with black granite workbench",
+        "Glass beakers and test tubes containing blue and green liquids",
+        "Chalkboard in background displaying chemical formulas"
       ],
       "seed": 1513,
-      "notes": ""
+      "notes": "Education & campus test: STEM laboratory setting."
     },
     {
       "id": "P14",
       "category": "Education and campus",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
-      "word_count": 17,
+      "prompt": "A sunlit modern campus library interior with wooden study desks, tall bookshelves filled with colorful books, and large glass windows overlooking green trees under calm morning lighting.",
+      "word_count": 27,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Modern campus library interior with wooden study desks",
+        "Tall bookshelves filled with books",
+        "Large glass windows showing trees and daylight outside"
       ],
       "seed": 1514,
-      "notes": ""
+      "notes": "Education & campus test: academic library environment."
     },
     {
       "id": "P15",
       "category": "Education and campus",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
-      "word_count": 17,
+      "prompt": "An open university courtyard during a lively student orientation day, featuring informational banner stands, wooden picnic tables, and trees casting soft shadows on brick pavement under a clear blue sky.",
+      "word_count": 30,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Outdoor university courtyard with brick pavement",
+        "Student event elements including informational banner stands",
+        "Picnic tables and trees under a clear blue sky"
       ],
       "seed": 1515,
-      "notes": ""
+      "notes": "Education & campus test: student campus life and outdoor event."
     },
     {
       "id": "P16",
       "category": "Short text rendering",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
-      "word_count": 20,
+      "prompt": "A minimalist ceramic coffee cup with the single word 'OPEN' cleanly embossed in dark serif typography on its front face, centered on a light wooden tabletop under soft morning studio lighting.",
+      "word_count": 31,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Ceramic coffee cup centered on a light wooden tabletop",
+        "The exact single word 'OPEN' legibly embossed on the cup",
+        "Clean minimalist composition without extraneous text"
       ],
       "seed": 1516,
-      "notes": ""
+      "notes": "Pilot prompt 3 (short text). Single short 4-letter word rendering test."
     },
     {
       "id": "P17",
       "category": "Short text rendering",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
-      "word_count": 20,
+      "prompt": "A wooden rectangular hanging shop sign displaying the clear carved letters 'AI LAB' in bold sans-serif text, suspended by metal chains against a whitewashed brick wall under warm spotlighting.",
+      "word_count": 29,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Rectangular wooden hanging sign supported by metal chains",
+        "Legible carved text displaying exactly 'AI LAB' in bold sans-serif",
+        "Whitewashed brick wall background"
       ],
       "seed": 1517,
-      "notes": ""
+      "notes": "Short text rendering test: two-word acronym phrase."
     },
     {
       "id": "P18",
       "category": "Short text rendering",
-      "prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
-      "word_count": 20,
+      "prompt": "A modern neon sign glowing with the word 'STUDY' in vibrant warm amber tubes, mounted on a dark textured concrete wall in a dimly lit minimalist interior.",
+      "word_count": 27,
       "visible_requirements": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glowing amber neon sign spelling the word 'STUDY'",
+        "Mounted on a dark textured concrete wall",
+        "Dimly lit minimalist interior emphasizing the neon glow"
       ],
       "seed": 1518,
-      "notes": ""
+      "notes": "Short text rendering test: stylized 5-letter neon typography."
     }
   ]
 }
