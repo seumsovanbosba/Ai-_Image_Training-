@@ -1,20 +1,21 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-11T14:15:14+07:00",
+  "updated_at": "2026-09-12T22:46:32+07:00",
   "images": {
     "P01_SD15": {
       "image_id": "P01_SD15",
       "prompt_id": "P01",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly one white ceramic cup containing visible green liquid",
+        "Steam rising visibly from the cup",
+        "Dark slate coaster beneath the cup on a wooden surface"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A ceramic white tea cup filled with steaming green matcha tea sits on a rough dark slate coaster against a soft-focus wooden table, illuminated by gentle morning window light with a warm earthy color palette.",
       "negative_prompt": "",
       "seed": 1501,
       "width": 512,
@@ -40,14 +41,15 @@
       "prompt_id": "P01",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly one white ceramic cup containing visible green liquid",
+        "Steam rising visibly from the cup",
+        "Dark slate coaster beneath the cup on a wooden surface"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A ceramic white tea cup filled with steaming green matcha tea sits on a rough dark slate coaster against a soft-focus wooden table, illuminated by gentle morning window light with a warm earthy color palette.",
       "negative_prompt": "",
       "seed": 1501,
       "width": 512,
@@ -73,14 +75,15 @@
       "prompt_id": "P01",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly one white ceramic cup containing visible green liquid",
+        "Steam rising visibly from the cup",
+        "Dark slate coaster beneath the cup on a wooden surface"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A ceramic white tea cup filled with steaming green matcha tea sits on a rough dark slate coaster against a soft-focus wooden table, illuminated by gentle morning window light with a warm earthy color palette.",
       "negative_prompt": "",
       "seed": 1501,
       "width": 512,
@@ -106,14 +109,15 @@
       "prompt_id": "P02",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "An open bronze pocket watch displaying internal gears",
+        "An aged leather notebook directly beneath the watch",
+        "Directional warm lighting creating defined shadows"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A solitary mechanical bronze pocket watch lies open showing intricate moving gears on an aged leather notebook, captured in sharp macro detail under warm directional spotlighting with deep amber shadows.",
       "negative_prompt": "",
       "seed": 1502,
       "width": 512,
@@ -139,14 +143,15 @@
       "prompt_id": "P02",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "An open bronze pocket watch displaying internal gears",
+        "An aged leather notebook directly beneath the watch",
+        "Directional warm lighting creating defined shadows"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A solitary mechanical bronze pocket watch lies open showing intricate moving gears on an aged leather notebook, captured in sharp macro detail under warm directional spotlighting with deep amber shadows.",
       "negative_prompt": "",
       "seed": 1502,
       "width": 512,
@@ -172,14 +177,15 @@
       "prompt_id": "P02",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "An open bronze pocket watch displaying internal gears",
+        "An aged leather notebook directly beneath the watch",
+        "Directional warm lighting creating defined shadows"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A solitary mechanical bronze pocket watch lies open showing intricate moving gears on an aged leather notebook, captured in sharp macro detail under warm directional spotlighting with deep amber shadows.",
       "negative_prompt": "",
       "seed": 1502,
       "width": 512,
@@ -205,14 +211,15 @@
       "prompt_id": "P03",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "A single butterfly with patterned wings",
+        "Perched directly on purple lavender flowers",
+        "Softly blurred green background bokeh"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A red monarch butterfly perches on a vibrant purple lavender blossom in a sunny garden, photographed in close-up with a softly blurred green bokeh background under bright afternoon sunlight.",
       "negative_prompt": "",
       "seed": 1503,
       "width": 512,
@@ -238,14 +245,15 @@
       "prompt_id": "P03",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "A single butterfly with patterned wings",
+        "Perched directly on purple lavender flowers",
+        "Softly blurred green background bokeh"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A red monarch butterfly perches on a vibrant purple lavender blossom in a sunny garden, photographed in close-up with a softly blurred green bokeh background under bright afternoon sunlight.",
       "negative_prompt": "",
       "seed": 1503,
       "width": 512,
@@ -271,14 +279,15 @@
       "prompt_id": "P03",
       "category": "Single subject",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "A single butterfly with patterned wings",
+        "Perched directly on purple lavender flowers",
+        "Softly blurred green background bokeh"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One clear object or character with lighting and background.",
+      "positive_prompt": "A red monarch butterfly perches on a vibrant purple lavender blossom in a sunny garden, photographed in close-up with a softly blurred green bokeh background under bright afternoon sunlight.",
       "negative_prompt": "",
       "seed": 1503,
       "width": 512,
@@ -304,14 +313,15 @@
       "prompt_id": "P04",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly three ceramic bowls arranged in a row",
+        "Distinct bowl colors: exactly one red, one blue, and one yellow bowl",
+        "Bowls resting on a clean bamboo tabletop"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Three ceramic bowls arranged in a row on a clean bamboo tabletop, consisting of one red bowl, one blue bowl, and one yellow bowl, captured in crisp studio product photography under even neutral lighting.",
       "negative_prompt": "",
       "seed": 1504,
       "width": 512,
@@ -337,14 +347,15 @@
       "prompt_id": "P04",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly three ceramic bowls arranged in a row",
+        "Distinct bowl colors: exactly one red, one blue, and one yellow bowl",
+        "Bowls resting on a clean bamboo tabletop"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Three ceramic bowls arranged in a row on a clean bamboo tabletop, consisting of one red bowl, one blue bowl, and one yellow bowl, captured in crisp studio product photography under even neutral lighting.",
       "negative_prompt": "",
       "seed": 1504,
       "width": 512,
@@ -370,14 +381,15 @@
       "prompt_id": "P04",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly three ceramic bowls arranged in a row",
+        "Distinct bowl colors: exactly one red, one blue, and one yellow bowl",
+        "Bowls resting on a clean bamboo tabletop"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Three ceramic bowls arranged in a row on a clean bamboo tabletop, consisting of one red bowl, one blue bowl, and one yellow bowl, captured in crisp studio product photography under even neutral lighting.",
       "negative_prompt": "",
       "seed": 1504,
       "width": 512,
@@ -403,14 +415,15 @@
       "prompt_id": "P05",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly two green apples",
+        "Exactly two red strawberries",
+        "All items contained together inside a woven wicker basket"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Two ripe green apples and two bright red strawberries rest together inside a woven wicker basket on a rustic kitchen counter, illuminated by soft diffuse daylight.",
       "negative_prompt": "",
       "seed": 1505,
       "width": 512,
@@ -436,14 +449,15 @@
       "prompt_id": "P05",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly two green apples",
+        "Exactly two red strawberries",
+        "All items contained together inside a woven wicker basket"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Two ripe green apples and two bright red strawberries rest together inside a woven wicker basket on a rustic kitchen counter, illuminated by soft diffuse daylight.",
       "negative_prompt": "",
       "seed": 1505,
       "width": 512,
@@ -469,14 +483,15 @@
       "prompt_id": "P05",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly two green apples",
+        "Exactly two red strawberries",
+        "All items contained together inside a woven wicker basket"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Two ripe green apples and two bright red strawberries rest together inside a woven wicker basket on a rustic kitchen counter, illuminated by soft diffuse daylight.",
       "negative_prompt": "",
       "seed": 1505,
       "width": 512,
@@ -502,14 +517,15 @@
       "prompt_id": "P06",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly four hardcover books in a vertical stack",
+        "Four distinct spine colors: green at bottom, red, orange, and blue on top",
+        "Stack resting on a clean white desk"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Four colorful hardcover books stacked neatly on a white desk, with a green book at the bottom, followed by a red book, an orange book, and a blue book on top, under clean studio lighting.",
       "negative_prompt": "",
       "seed": 1506,
       "width": 512,
@@ -535,14 +551,15 @@
       "prompt_id": "P06",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly four hardcover books in a vertical stack",
+        "Four distinct spine colors: green at bottom, red, orange, and blue on top",
+        "Stack resting on a clean white desk"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Four colorful hardcover books stacked neatly on a white desk, with a green book at the bottom, followed by a red book, an orange book, and a blue book on top, under clean studio lighting.",
       "negative_prompt": "",
       "seed": 1506,
       "width": 512,
@@ -568,14 +585,15 @@
       "prompt_id": "P06",
       "category": "Multiple objects",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Exactly four hardcover books in a vertical stack",
+        "Four distinct spine colors: green at bottom, red, orange, and blue on top",
+        "Stack resting on a clean white desk"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Object count, color and attribute accuracy.",
+      "positive_prompt": "Four colorful hardcover books stacked neatly on a white desk, with a green book at the bottom, followed by a red book, an orange book, and a blue book on top, under clean studio lighting.",
       "negative_prompt": "",
       "seed": 1506,
       "width": 512,
@@ -601,14 +619,15 @@
       "prompt_id": "P07",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glass vase with yellow sunflowers placed beside leather journals",
+        "Framed landscape painting visible on the wall behind the desk objects",
+        "Objects resting on a dark mahogany desk"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A transparent glass vase with yellow sunflowers stands beside a stack of old leather journals on a polished dark mahogany desk, with a framed landscape painting hanging on the wall directly behind them under soft lamp light.",
       "negative_prompt": "",
       "seed": 1507,
       "width": 512,
@@ -634,14 +653,15 @@
       "prompt_id": "P07",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glass vase with yellow sunflowers placed beside leather journals",
+        "Framed landscape painting visible on the wall behind the desk objects",
+        "Objects resting on a dark mahogany desk"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A transparent glass vase with yellow sunflowers stands beside a stack of old leather journals on a polished dark mahogany desk, with a framed landscape painting hanging on the wall directly behind them under soft lamp light.",
       "negative_prompt": "",
       "seed": 1507,
       "width": 512,
@@ -667,14 +687,15 @@
       "prompt_id": "P07",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glass vase with yellow sunflowers placed beside leather journals",
+        "Framed landscape painting visible on the wall behind the desk objects",
+        "Objects resting on a dark mahogany desk"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A transparent glass vase with yellow sunflowers stands beside a stack of old leather journals on a polished dark mahogany desk, with a framed landscape painting hanging on the wall directly behind them under soft lamp light.",
       "negative_prompt": "",
       "seed": 1507,
       "width": 512,
@@ -700,14 +721,15 @@
       "prompt_id": "P08",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Red apple prominently in the foreground on a chopping board",
+        "Silver chef knife located in the background behind the apple",
+        "Clear glass bottle of olive oil beside the knife"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "In the foreground, a red apple sits on a wooden chopping board, while in the background behind it, a silver chef knife rests beside a clear glass bottle of olive oil under bright kitchen illumination.",
       "negative_prompt": "",
       "seed": 1508,
       "width": 512,
@@ -733,14 +755,15 @@
       "prompt_id": "P08",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Red apple prominently in the foreground on a chopping board",
+        "Silver chef knife located in the background behind the apple",
+        "Clear glass bottle of olive oil beside the knife"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "In the foreground, a red apple sits on a wooden chopping board, while in the background behind it, a silver chef knife rests beside a clear glass bottle of olive oil under bright kitchen illumination.",
       "negative_prompt": "",
       "seed": 1508,
       "width": 512,
@@ -766,14 +789,15 @@
       "prompt_id": "P08",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Red apple prominently in the foreground on a chopping board",
+        "Silver chef knife located in the background behind the apple",
+        "Clear glass bottle of olive oil beside the knife"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "In the foreground, a red apple sits on a wooden chopping board, while in the background behind it, a silver chef knife rests beside a clear glass bottle of olive oil under bright kitchen illumination.",
       "negative_prompt": "",
       "seed": 1508,
       "width": 512,
@@ -799,14 +823,15 @@
       "prompt_id": "P09",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Open black laptop centered on the desk",
+        "White coffee mug positioned to the right of the laptop",
+        "Brass desk lamp positioned above illuminating the keyboard"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A sleek black laptop rests open on a modern office desk, with a white coffee mug placed to the right side and a brass desk lamp positioned above illuminating the keyboard.",
       "negative_prompt": "",
       "seed": 1509,
       "width": 512,
@@ -832,14 +857,15 @@
       "prompt_id": "P09",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Open black laptop centered on the desk",
+        "White coffee mug positioned to the right of the laptop",
+        "Brass desk lamp positioned above illuminating the keyboard"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A sleek black laptop rests open on a modern office desk, with a white coffee mug placed to the right side and a brass desk lamp positioned above illuminating the keyboard.",
       "negative_prompt": "",
       "seed": 1509,
       "width": 512,
@@ -865,14 +891,15 @@
       "prompt_id": "P09",
       "category": "Spatial relationships",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Open black laptop centered on the desk",
+        "White coffee mug positioned to the right of the laptop",
+        "Brass desk lamp positioned above illuminating the keyboard"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Above, below, beside, behind and foreground instructions.",
+      "positive_prompt": "A sleek black laptop rests open on a modern office desk, with a white coffee mug placed to the right side and a brass desk lamp positioned above illuminating the keyboard.",
       "negative_prompt": "",
       "seed": 1509,
       "width": 512,
@@ -898,14 +925,15 @@
       "prompt_id": "P10",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Distinct watercolor style with translucent paint washes and visible paper texture",
+        "Landscape depicting a mountain lake and pine trees at sunrise",
+        "Pastel pink and turquoise color palette"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A vibrant watercolor painting of a tranquil mountain lake surrounded by pine trees during sunrise, featuring soft translucent paint washes, visible paper grain, and delicate pastel pink and turquoise tones.",
       "negative_prompt": "",
       "seed": 1510,
       "width": 512,
@@ -931,14 +959,15 @@
       "prompt_id": "P10",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Distinct watercolor style with translucent paint washes and visible paper texture",
+        "Landscape depicting a mountain lake and pine trees at sunrise",
+        "Pastel pink and turquoise color palette"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A vibrant watercolor painting of a tranquil mountain lake surrounded by pine trees during sunrise, featuring soft translucent paint washes, visible paper grain, and delicate pastel pink and turquoise tones.",
       "negative_prompt": "",
       "seed": 1510,
       "width": 512,
@@ -964,14 +993,15 @@
       "prompt_id": "P10",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Distinct watercolor style with translucent paint washes and visible paper texture",
+        "Landscape depicting a mountain lake and pine trees at sunrise",
+        "Pastel pink and turquoise color palette"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A vibrant watercolor painting of a tranquil mountain lake surrounded by pine trees during sunrise, featuring soft translucent paint washes, visible paper grain, and delicate pastel pink and turquoise tones.",
       "negative_prompt": "",
       "seed": 1510,
       "width": 512,
@@ -997,14 +1027,15 @@
       "prompt_id": "P11",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Layered paper cut craft style with visible depth and drop shadows between sheets",
+        "Stylized fox silhouette as central subject",
+        "Crescent moon in a midnight blue sky"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A layered paper cut craft illustration depicting a mystical forest fox under a crescent moon, constructed with crisp curved paper edges, visible paper depth, casting delicate drop shadows in warm orange and midnight blue shades.",
       "negative_prompt": "",
       "seed": 1511,
       "width": 512,
@@ -1030,14 +1061,15 @@
       "prompt_id": "P11",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Layered paper cut craft style with visible depth and drop shadows between sheets",
+        "Stylized fox silhouette as central subject",
+        "Crescent moon in a midnight blue sky"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A layered paper cut craft illustration depicting a mystical forest fox under a crescent moon, constructed with crisp curved paper edges, visible paper depth, casting delicate drop shadows in warm orange and midnight blue shades.",
       "negative_prompt": "",
       "seed": 1511,
       "width": 512,
@@ -1063,14 +1095,15 @@
       "prompt_id": "P11",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Layered paper cut craft style with visible depth and drop shadows between sheets",
+        "Stylized fox silhouette as central subject",
+        "Crescent moon in a midnight blue sky"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "A layered paper cut craft illustration depicting a mystical forest fox under a crescent moon, constructed with crisp curved paper edges, visible paper depth, casting delicate drop shadows in warm orange and midnight blue shades.",
       "negative_prompt": "",
       "seed": 1511,
       "width": 512,
@@ -1096,14 +1129,15 @@
       "prompt_id": "P12",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Isometric 3D digital render perspective",
+        "Miniature greenhouse structure with plant shelves and glass panels",
+        "Mint green and violet ambient lighting scheme"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "An isometric 3D render of a futuristic miniature greenhouse module with glowing neon plant shelves, smooth matte pastel polymer surfaces, polished glass panels, and ambient lighting in mint green and violet tones.",
       "negative_prompt": "",
       "seed": 1512,
       "width": 512,
@@ -1129,14 +1163,15 @@
       "prompt_id": "P12",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Isometric 3D digital render perspective",
+        "Miniature greenhouse structure with plant shelves and glass panels",
+        "Mint green and violet ambient lighting scheme"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "An isometric 3D render of a futuristic miniature greenhouse module with glowing neon plant shelves, smooth matte pastel polymer surfaces, polished glass panels, and ambient lighting in mint green and violet tones.",
       "negative_prompt": "",
       "seed": 1512,
       "width": 512,
@@ -1162,14 +1197,15 @@
       "prompt_id": "P12",
       "category": "Art and visual style",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Isometric 3D digital render perspective",
+        "Miniature greenhouse structure with plant shelves and glass panels",
+        "Mint green and violet ambient lighting scheme"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Watercolor, paper cut, 3D render or flat illustration.",
+      "positive_prompt": "An isometric 3D render of a futuristic miniature greenhouse module with glowing neon plant shelves, smooth matte pastel polymer surfaces, polished glass panels, and ambient lighting in mint green and violet tones.",
       "negative_prompt": "",
       "seed": 1512,
       "width": 512,
@@ -1195,14 +1231,15 @@
       "prompt_id": "P13",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "University science laboratory setting with black granite workbench",
+        "Glass beakers and test tubes containing blue and green liquids",
+        "Chalkboard in background displaying chemical formulas"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A bright university science laboratory where glass beakers and test tubes holding blue and green liquids stand on a black granite workbench before a background chalkboard filled with chemical formulas.",
       "negative_prompt": "",
       "seed": 1513,
       "width": 512,
@@ -1228,14 +1265,15 @@
       "prompt_id": "P13",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "University science laboratory setting with black granite workbench",
+        "Glass beakers and test tubes containing blue and green liquids",
+        "Chalkboard in background displaying chemical formulas"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A bright university science laboratory where glass beakers and test tubes holding blue and green liquids stand on a black granite workbench before a background chalkboard filled with chemical formulas.",
       "negative_prompt": "",
       "seed": 1513,
       "width": 512,
@@ -1261,14 +1299,15 @@
       "prompt_id": "P13",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "University science laboratory setting with black granite workbench",
+        "Glass beakers and test tubes containing blue and green liquids",
+        "Chalkboard in background displaying chemical formulas"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A bright university science laboratory where glass beakers and test tubes holding blue and green liquids stand on a black granite workbench before a background chalkboard filled with chemical formulas.",
       "negative_prompt": "",
       "seed": 1513,
       "width": 512,
@@ -1294,14 +1333,15 @@
       "prompt_id": "P14",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Modern campus library interior with wooden study desks",
+        "Tall bookshelves filled with books",
+        "Large glass windows showing trees and daylight outside"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A sunlit modern campus library interior with wooden study desks, tall bookshelves filled with colorful books, and large glass windows overlooking green trees under calm morning lighting.",
       "negative_prompt": "",
       "seed": 1514,
       "width": 512,
@@ -1327,14 +1367,15 @@
       "prompt_id": "P14",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Modern campus library interior with wooden study desks",
+        "Tall bookshelves filled with books",
+        "Large glass windows showing trees and daylight outside"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A sunlit modern campus library interior with wooden study desks, tall bookshelves filled with colorful books, and large glass windows overlooking green trees under calm morning lighting.",
       "negative_prompt": "",
       "seed": 1514,
       "width": 512,
@@ -1360,14 +1401,15 @@
       "prompt_id": "P14",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Modern campus library interior with wooden study desks",
+        "Tall bookshelves filled with books",
+        "Large glass windows showing trees and daylight outside"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "A sunlit modern campus library interior with wooden study desks, tall bookshelves filled with colorful books, and large glass windows overlooking green trees under calm morning lighting.",
       "negative_prompt": "",
       "seed": 1514,
       "width": 512,
@@ -1393,14 +1435,15 @@
       "prompt_id": "P15",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Outdoor university courtyard with brick pavement",
+        "Student event elements including informational banner stands",
+        "Picnic tables and trees under a clear blue sky"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "An open university courtyard during a lively student orientation day, featuring informational banner stands, wooden picnic tables, and trees casting soft shadows on brick pavement under a clear blue sky.",
       "negative_prompt": "",
       "seed": 1515,
       "width": 512,
@@ -1426,14 +1469,15 @@
       "prompt_id": "P15",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Outdoor university courtyard with brick pavement",
+        "Student event elements including informational banner stands",
+        "Picnic tables and trees under a clear blue sky"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "An open university courtyard during a lively student orientation day, featuring informational banner stands, wooden picnic tables, and trees casting soft shadows on brick pavement under a clear blue sky.",
       "negative_prompt": "",
       "seed": 1515,
       "width": 512,
@@ -1459,14 +1503,15 @@
       "prompt_id": "P15",
       "category": "Education and campus",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Outdoor university courtyard with brick pavement",
+        "Student event elements including informational banner stands",
+        "Picnic tables and trees under a clear blue sky"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: Classroom, laboratory, student event or recruitment concept.",
+      "positive_prompt": "An open university courtyard during a lively student orientation day, featuring informational banner stands, wooden picnic tables, and trees casting soft shadows on brick pavement under a clear blue sky.",
       "negative_prompt": "",
       "seed": 1515,
       "width": 512,
@@ -1492,14 +1537,15 @@
       "prompt_id": "P16",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Ceramic coffee cup centered on a light wooden tabletop",
+        "The exact single word 'OPEN' legibly embossed on the cup",
+        "Clean minimalist composition without extraneous text"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A minimalist ceramic coffee cup with the single word 'OPEN' cleanly embossed in dark serif typography on its front face, centered on a light wooden tabletop under soft morning studio lighting.",
       "negative_prompt": "",
       "seed": 1516,
       "width": 512,
@@ -1525,14 +1571,15 @@
       "prompt_id": "P16",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Ceramic coffee cup centered on a light wooden tabletop",
+        "The exact single word 'OPEN' legibly embossed on the cup",
+        "Clean minimalist composition without extraneous text"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A minimalist ceramic coffee cup with the single word 'OPEN' cleanly embossed in dark serif typography on its front face, centered on a light wooden tabletop under soft morning studio lighting.",
       "negative_prompt": "",
       "seed": 1516,
       "width": 512,
@@ -1558,14 +1605,15 @@
       "prompt_id": "P16",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Ceramic coffee cup centered on a light wooden tabletop",
+        "The exact single word 'OPEN' legibly embossed on the cup",
+        "Clean minimalist composition without extraneous text"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A minimalist ceramic coffee cup with the single word 'OPEN' cleanly embossed in dark serif typography on its front face, centered on a light wooden tabletop under soft morning studio lighting.",
       "negative_prompt": "",
       "seed": 1516,
       "width": 512,
@@ -1591,14 +1639,15 @@
       "prompt_id": "P17",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Rectangular wooden hanging sign supported by metal chains",
+        "Legible carved text displaying exactly 'AI LAB' in bold sans-serif",
+        "Whitewashed brick wall background"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A wooden rectangular hanging shop sign displaying the clear carved letters 'AI LAB' in bold sans-serif text, suspended by metal chains against a whitewashed brick wall under warm spotlighting.",
       "negative_prompt": "",
       "seed": 1517,
       "width": 512,
@@ -1624,14 +1673,15 @@
       "prompt_id": "P17",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Rectangular wooden hanging sign supported by metal chains",
+        "Legible carved text displaying exactly 'AI LAB' in bold sans-serif",
+        "Whitewashed brick wall background"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A wooden rectangular hanging shop sign displaying the clear carved letters 'AI LAB' in bold sans-serif text, suspended by metal chains against a whitewashed brick wall under warm spotlighting.",
       "negative_prompt": "",
       "seed": 1517,
       "width": 512,
@@ -1657,14 +1707,15 @@
       "prompt_id": "P17",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Rectangular wooden hanging sign supported by metal chains",
+        "Legible carved text displaying exactly 'AI LAB' in bold sans-serif",
+        "Whitewashed brick wall background"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A wooden rectangular hanging shop sign displaying the clear carved letters 'AI LAB' in bold sans-serif text, suspended by metal chains against a whitewashed brick wall under warm spotlighting.",
       "negative_prompt": "",
       "seed": 1517,
       "width": 512,
@@ -1690,14 +1741,15 @@
       "prompt_id": "P18",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glowing amber neon sign spelling the word 'STUDY'",
+        "Mounted on a dark textured concrete wall",
+        "Dimly lit minimalist interior emphasizing the neon glow"
       ],
       "model_name": "Stable Diffusion 1.5",
       "model_code": "SD15",
       "checkpoint_filename": "",
       "workflow_version": "SD15.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A modern neon sign glowing with the word 'STUDY' in vibrant warm amber tubes, mounted on a dark textured concrete wall in a dimly lit minimalist interior.",
       "negative_prompt": "",
       "seed": 1518,
       "width": 512,
@@ -1723,14 +1775,15 @@
       "prompt_id": "P18",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glowing amber neon sign spelling the word 'STUDY'",
+        "Mounted on a dark textured concrete wall",
+        "Dimly lit minimalist interior emphasizing the neon glow"
       ],
       "model_name": "Stable Diffusion XL Base 1.0",
       "model_code": "SDXL",
       "checkpoint_filename": "",
       "workflow_version": "SDXL.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A modern neon sign glowing with the word 'STUDY' in vibrant warm amber tubes, mounted on a dark textured concrete wall in a dimly lit minimalist interior.",
       "negative_prompt": "",
       "seed": 1518,
       "width": 512,
@@ -1756,14 +1809,15 @@
       "prompt_id": "P18",
       "category": "Short text rendering",
       "objective_checklist": [
-        "TODO: visible requirement 1",
-        "TODO: visible requirement 2"
+        "Glowing amber neon sign spelling the word 'STUDY'",
+        "Mounted on a dark textured concrete wall",
+        "Dimly lit minimalist interior emphasizing the neon glow"
       ],
       "model_name": "SDXL Turbo",
       "model_code": "TURBO",
       "checkpoint_filename": "",
       "workflow_version": "TURBO.json",
-      "positive_prompt": "TODO: write one English sentence (max 45 words) that tests: One short word or phrase integrated into a clean design.",
+      "positive_prompt": "A modern neon sign glowing with the word 'STUDY' in vibrant warm amber tubes, mounted on a dark textured concrete wall in a dimly lit minimalist interior.",
       "negative_prompt": "",
       "seed": 1518,
       "width": 512,
