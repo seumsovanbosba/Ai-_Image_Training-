@@ -2,28 +2,94 @@
   "schema_version": 1,
   "project": "KiTH open source image generation benchmark",
   "note": "Run scripts/collect_computer_info.py --stage before-install on Bosba's Windows laptop before installing ComfyUI.",
-  "before_install": null,
-  "after_install": null,
+  "before_install": {
+    "collected_at": "2026-09-11T21:03:19+07:00",
+    "hostname": "LAPTOP-O31ONU3M",
+    "operating_system": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64",
+      "python": "3.13.3"
+    },
+    "cpu": {
+      "model": "Intel(R) Core(TM) i9-14900HX",
+      "logical_cores": 30
+    },
+    "system_ram": {
+      "total_gb": 15.62,
+      "available_gb": 3.55,
+      "source": "psutil"
+    },
+    "gpu": {
+      "model": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "driver_version": "555.97",
+      "vram_total_mb": 8188.0,
+      "vram_available_mb": 7957.0,
+      "vram_total_gb": 8.0,
+      "source": "nvidia-smi"
+    },
+    "disk": {
+      "path": "C:\\Ai Training",
+      "total_gb": 825.37,
+      "used_gb": 431.27,
+      "free_gb": 394.11
+    }
+  },
+  "after_install": {
+    "collected_at": "2026-09-12T20:22:22+07:00",
+    "hostname": "LAPTOP-O31ONU3M",
+    "operating_system": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64",
+      "python": "3.13.3"
+    },
+    "cpu": {
+      "model": "Intel(R) Core(TM) i9-14900HX",
+      "logical_cores": 30
+    },
+    "system_ram": {
+      "total_gb": 15.62,
+      "available_gb": 2.91,
+      "source": "psutil"
+    },
+    "gpu": {
+      "model": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "driver_version": "555.97",
+      "vram_total_mb": 8188.0,
+      "vram_available_mb": 7957.0,
+      "vram_total_gb": 8.0,
+      "source": "nvidia-smi"
+    },
+    "disk": {
+      "path": "C:\\Ai Training",
+      "total_gb": 825.37,
+      "used_gb": 451.82,
+      "free_gb": 373.55
+    }
+  },
   "comfyui": {
-    "version": "",
-    "build_date": "",
-    "install_path": ""
+    "version": "v1.0.47",
+    "build_date": "2026/09/11",
+    "install_path": "C:\\Users\\User\\AppData\\Local\\Programs\\Comfy Desktop"
   },
   "checkpoints": [
     {
       "filename": "v1-5-pruned-emaonly.safetensors",
-      "download_source": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5",
-      "model_code": "SD15"
+      "download_source": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5"
     },
     {
       "filename": "sd_xl_base_1.0.safetensors",
-      "download_source": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0",
-      "model_code": "SDXL"
+      "download_source": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0"
     },
     {
       "filename": "sdxl_turbo_1.0_fp16.safetensors",
-      "download_source": "https://huggingface.co/stabilityai/sdxl-turbo",
-      "model_code": "TURBO"
+      "download_source": "https://huggingface.co/stabilityai/sdxl-turbo"
     }
-  ]
+  ],
+  "last_updated": "2026-09-12T20:22:25+07:00"
 }
