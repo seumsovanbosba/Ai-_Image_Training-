@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-14T21:37:00+07:00",
+  "updated_at": "2026-09-15T10:30:26+07:00",
   "images": {
     "P01_SD15": {
       "image_id": "P01_SD15",
@@ -33,7 +33,7 @@
       "filename": "P01_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P01_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P01_SDXL": {
@@ -67,7 +67,7 @@
       "filename": "P01_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P01_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P01_TURBO": {
@@ -101,7 +101,7 @@
       "filename": "P01_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P01_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P02_SD15": {
@@ -135,7 +135,7 @@
       "filename": "P02_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P02_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P02_SDXL": {
@@ -169,7 +169,7 @@
       "filename": "P02_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P02_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P02_TURBO": {
@@ -203,7 +203,7 @@
       "filename": "P02_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P02_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P03_SD15": {
@@ -237,7 +237,7 @@
       "filename": "P03_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P03_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P03_SDXL": {
@@ -271,7 +271,7 @@
       "filename": "P03_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P03_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P03_TURBO": {
@@ -305,7 +305,7 @@
       "filename": "P03_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P03_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P04_SD15": {
@@ -339,7 +339,7 @@
       "filename": "P04_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P04_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P04_SDXL": {
@@ -373,7 +373,7 @@
       "filename": "P04_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P04_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P04_TURBO": {
@@ -407,7 +407,7 @@
       "filename": "P04_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P04_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P05_SD15": {
@@ -441,7 +441,7 @@
       "filename": "P05_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P05_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P05_SDXL": {
@@ -475,7 +475,7 @@
       "filename": "P05_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P05_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P05_TURBO": {
@@ -509,7 +509,7 @@
       "filename": "P05_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P05_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P06_SD15": {
@@ -543,7 +543,7 @@
       "filename": "P06_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P06_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P06_SDXL": {
@@ -577,7 +577,7 @@
       "filename": "P06_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P06_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P06_TURBO": {
@@ -611,7 +611,7 @@
       "filename": "P06_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P06_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P07_SD15": {
@@ -645,7 +645,7 @@
       "filename": "P07_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P07_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P07_SDXL": {
@@ -679,7 +679,7 @@
       "filename": "P07_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P07_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P07_TURBO": {
@@ -713,7 +713,7 @@
       "filename": "P07_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P07_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P08_SD15": {
@@ -747,7 +747,7 @@
       "filename": "P08_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P08_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P08_SDXL": {
@@ -781,7 +781,7 @@
       "filename": "P08_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P08_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P08_TURBO": {
@@ -815,7 +815,7 @@
       "filename": "P08_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P08_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P09_SD15": {
@@ -849,7 +849,7 @@
       "filename": "P09_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P09_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P09_SDXL": {
@@ -883,7 +883,7 @@
       "filename": "P09_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P09_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P09_TURBO": {
@@ -917,7 +917,7 @@
       "filename": "P09_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P09_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P10_SD15": {
@@ -951,7 +951,7 @@
       "filename": "P10_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P10_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P10_SDXL": {
@@ -985,7 +985,7 @@
       "filename": "P10_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P10_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P10_TURBO": {
@@ -1019,7 +1019,7 @@
       "filename": "P10_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P10_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P11_SD15": {
@@ -1053,7 +1053,7 @@
       "filename": "P11_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P11_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P11_SDXL": {
@@ -1087,7 +1087,7 @@
       "filename": "P11_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P11_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P11_TURBO": {
@@ -1121,7 +1121,7 @@
       "filename": "P11_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P11_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P12_SD15": {
@@ -1155,7 +1155,7 @@
       "filename": "P12_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P12_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P12_SDXL": {
@@ -1189,7 +1189,7 @@
       "filename": "P12_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P12_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P12_TURBO": {
@@ -1223,7 +1223,7 @@
       "filename": "P12_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P12_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P13_SD15": {
@@ -1257,7 +1257,7 @@
       "filename": "P13_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P13_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P13_SDXL": {
@@ -1291,7 +1291,7 @@
       "filename": "P13_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P13_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P13_TURBO": {
@@ -1325,7 +1325,7 @@
       "filename": "P13_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P13_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P14_SD15": {
@@ -1359,7 +1359,7 @@
       "filename": "P14_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P14_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P14_SDXL": {
@@ -1393,7 +1393,7 @@
       "filename": "P14_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P14_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P14_TURBO": {
@@ -1427,7 +1427,7 @@
       "filename": "P14_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P14_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P15_SD15": {
@@ -1461,7 +1461,7 @@
       "filename": "P15_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P15_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P15_SDXL": {
@@ -1495,7 +1495,7 @@
       "filename": "P15_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P15_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P15_TURBO": {
@@ -1529,7 +1529,7 @@
       "filename": "P15_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P15_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P16_SD15": {
@@ -1563,7 +1563,7 @@
       "filename": "P16_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P16_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P16_SDXL": {
@@ -1597,7 +1597,7 @@
       "filename": "P16_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P16_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P16_TURBO": {
@@ -1631,7 +1631,7 @@
       "filename": "P16_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P16_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P17_SD15": {
@@ -1665,7 +1665,7 @@
       "filename": "P17_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P17_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P17_SDXL": {
@@ -1699,7 +1699,7 @@
       "filename": "P17_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P17_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P17_TURBO": {
@@ -1733,7 +1733,7 @@
       "filename": "P17_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P17_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P18_SD15": {
@@ -1767,7 +1767,7 @@
       "filename": "P18_SD15.png",
       "folder_location": "benchmark/images/core/SD15/P18_SD15.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P18_SDXL": {
@@ -1801,7 +1801,7 @@
       "filename": "P18_SDXL.png",
       "folder_location": "benchmark/images/core/SDXL/P18_SDXL.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     },
     "P18_TURBO": {
@@ -1835,7 +1835,7 @@
       "filename": "P18_TURBO.png",
       "folder_location": "benchmark/images/core/TURBO/P18_TURBO.png",
       "verification_status": "unverified",
-      "png_exists": false,
+      "png_exists": true,
       "excluded_from_scores": false
     }
   }
