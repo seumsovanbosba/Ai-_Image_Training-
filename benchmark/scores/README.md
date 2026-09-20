@@ -1,5 +1,5 @@
 # Scores
 
-- `hourmeng.json` — Eang Hourmeng independent scores (hidden from Bosba until both finish 54)
-- `bosba.json` — Soem Sovanbosba independent scores
-- `agreed.json` — agreed scores after comparison; original scores remain in the two files above
+- `hourmeng.json` — Independent evaluator 2 scores (blind evaluation)
+- `bosba.json` — Independent evaluator 1 scores (blind evaluation)
+- `agreed.json` — Reconciled consensus scores after comparing independent evaluations
